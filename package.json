@@ -4,8 +4,13 @@
   "description": "API of functions and classes for NestJS",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "npm run build",
+    "build": "tsc"
   },
+  "files": [
+    "lib"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/velascoandrs/excalibur.git"
@@ -24,5 +29,13 @@
   "homepage": "https://github.com/velascoandrs/excalibur#readme",
   "devDependencies": {
     "typescript": "^3.9.2"
+  },
+  "dependencies": {
+    "@nestjs/common": "^7.0.11",
+    "@nestjs/typeorm": "^7.0.0",
+    "@types/node": "^14.0.1",
+    "class-validator": "^0.12.2",
+    "rxjs": "^6.5.5",
+    "typeorm": "^0.2.24"
   }
 }
