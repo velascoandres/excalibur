@@ -1,0 +1,28 @@
+{
+  "name": "excalibur",
+  "version": "1.0.0",
+  "description": "API of functions and classes for NestJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/velascoandrs/excalibur.git"
+  },
+  "keywords": [
+    "nestjs",
+    "controllers",
+    "services",
+    "query-builder"
+  ],
+  "author": "gordon_freeman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/velascoandrs/excalibur/issues"
+  },
+  "homepage": "https://github.com/velascoandrs/excalibur#readme",
+  "devDependencies": {
+    "typescript": "^3.9.2"
+  }
+}
