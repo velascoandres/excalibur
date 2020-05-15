@@ -19,17 +19,17 @@ import "es6-shim";
 import {plainToClass} from 'class-transformer';
 import {ClassType} from 'class-transformer/ClassTransformer';
 
-export class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
+export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
     nombreClaseDtoEditar: ClassType<DtoEditar> | any;
     nombreClaseDtoCrear: ClassType<DtoCrear> | any;
 
-    constructor(
+    protected constructor(
         private readonly _principalService: PrincipalService<Entidad>,
     ) {
     }
 
     @Post()
-    async crear(
+    async create(
         @Body() nuevo: DtoCrear,
     ): Promise<Entidad> {
         const entidadoDto = plainToClass(this.nombreClaseDtoCrear, nuevo) as Object;
@@ -54,7 +54,7 @@ export class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
     }
 
     @Put(':id')
-    async editar(
+    async updateOne(
         @Body() datosActualizar: DtoEditar,
         @Param('id') id: number,
     ): Promise<RespuestaPrincipalInterface<Entidad | UpdateResult | any>> {
@@ -90,7 +90,7 @@ export class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
     }
 
     @Delete(':id')
-    async eliminar(
+    async deleteOne(
         @Param('id') id: number,
     ): Promise<RespuestaPrincipalInterface<Entidad>> {
         const idValido = !isNaN(Number(id));
@@ -118,7 +118,7 @@ export class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
     }
 
     @Get(':id')
-    async buscarPorId(
+    async findOneById(
         @Param('id') id: number,
     ): Promise<Entidad> {
         const idValido = !isNaN(Number(id));
@@ -137,7 +137,7 @@ export class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
     }
 
     @Get()
-    async buscarTodos(
+    async findAll(
         @Query() criteriosBusqueda: any,
     ): Promise<[Entidad[], number]> {
         const mandaParametrosBusqueda = criteriosBusqueda !== undefined;

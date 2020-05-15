@@ -1,13 +1,14 @@
 import {FindManyOptions, Repository} from 'typeorm';
 import {NotFoundException} from '@nestjs/common';
 
-export class PrincipalService<Entidad> {
-  constructor(private readonly _filaRepository: Repository<Entidad>) {}
+export abstract class PrincipalService<Entidad> {
+  protected constructor(private readonly _filaRepository: Repository<Entidad>) {}
 
-  async createOne(fila: Entidad | any): Promise<Entidad | undefined> {
+  async createOne(fila: Entidad | any): Promise<Entidad> {
     const filaInstanciado: any = await this._filaRepository.create(fila);
-    const filaCreado = await this._filaRepository.save(filaInstanciado); // Conectarse a la db
-    return await this._filaRepository.findOne(filaCreado.id);
+    // Conectarse a la db
+    const filaCreado = await this._filaRepository.save(filaInstanciado);
+    return await this._filaRepository.findOne(filaCreado.id) as Entidad;
   }
 
   async updateOne(
