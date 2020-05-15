@@ -15,9 +15,9 @@ import {
 import {PrincipalService} from './principalService';
 import {RespuestaPrincipalInterface} from '../interfaces/respuesta.principal.interface';
 import {validate} from 'class-validator';
-import {FindManyOptions, Like, UpdateResult} from 'typeorm';
-import "reflect-metadata";
-import "es6-shim";
+import {UpdateResult} from 'typeorm';
+import 'reflect-metadata';
+import 'es6-shim';
 import {plainToClass} from 'class-transformer';
 import {ClassType} from 'class-transformer/ClassTransformer';
 import {PrincipalAuthCrudValidation} from './seguridad.crud.abstracto';
@@ -42,7 +42,7 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar>{
     ): Promise<Entidad> {
         const puedeRealizarAccion: boolean = this._authSecurityCrud.createOneAuht(req, response, this);
         if (puedeRealizarAccion){
-            const entidadoDto = plainToClass(this.nombreClaseDtoCrear, nuevo) as Object;
+            const entidadoDto = plainToClass(this.nombreClaseDtoCrear, nuevo) as object;
             const erroresValidacion = await validate(entidadoDto);
             if (erroresValidacion.length > 0) {
                 throw new BadRequestException(erroresValidacion);
@@ -78,7 +78,7 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar>{
         if (puedeRealizarAccion){
             const idValido = !isNaN(Number(id));
             if (idValido) {
-                const entidadoDto = plainToClass(this.nombreClaseDtoEditar, datosActualizar) as Object;
+                const entidadoDto = plainToClass(this.nombreClaseDtoEditar, datosActualizar) as object;
                 const erroresValidacion = await validate(entidadoDto);
                 if (erroresValidacion.length > 0) {
                     throw new BadRequestException(erroresValidacion);

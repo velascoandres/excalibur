@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/velascoandrs/excalibur#readme",
   "devDependencies": {
+    "tslint": "^6.1.2",
     "typescript": "^3.9.2"
   },
   "dependencies": {

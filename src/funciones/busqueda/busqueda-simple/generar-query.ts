@@ -16,8 +16,8 @@ export function generarQuery(parametro: any) {
                 const llavesParametroWhere = Object.keys(parametrosWhere); // ['nombre',...]
                 valoresParametroWhere.forEach((valor: any, index) => {
                     if (typeof valor === 'object') {
-                        const llaves = Object.keys(valor);
-                        llaves.forEach(subLlave => {
+                        const llavesGeneradas = Object.keys(valor);
+                        llavesGeneradas.forEach(subLlave => {
                             if (subLlave === 'like') {
                                 parametrosWhere[llavesParametroWhere[index]] = Like(
                                     `%${valor.like}%`,
