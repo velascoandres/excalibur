@@ -2,7 +2,7 @@
   "name": "excalibur",
   "version": "1.0.0",
   "description": "API of functions and classes for NestJS",
-  "main": "index.js",
+  "main": "./src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npm run build",
