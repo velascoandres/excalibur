@@ -47,7 +47,7 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
                         mensaje: 'Error al crear',
                         data: {registro: nuevo},
                     }
-                )
+                );
                 throw new BadRequestException(error);
             }
         }
@@ -80,7 +80,7 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
                             mensaje: 'Error al actualizar',
                             data: {id, datosActualizar},
                         }
-                    )
+                    );
                     throw new InternalServerErrorException(error);
                 }
             }
@@ -109,7 +109,7 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
                         mensaje: 'Error al borrar el registro',
                         data: {id},
                     }
-                )
+                );
                 throw new InternalServerErrorException(error);
             }
         } else {
@@ -129,6 +129,13 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
                 );
                 return registrosBuscados as Entidad;
             } catch (error) {
+                console.error(
+                    {
+                        error,
+                        mensaje: 'Error al buscar registros',
+                        data: {id},
+                    },
+                );
                 throw new InternalServerErrorException(error);
             }
         } else {
@@ -155,8 +162,15 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
                 registros[0],
                 registros[1],
             ];
-        } catch (e) {
-            throw new BadRequestException(e);
+        } catch (error) {
+            console.error(
+                {
+                    error,
+                    mensaje: 'Error al buscar registros',
+                    data: criteriosBusqueda,
+                },
+            );
+            throw new InternalServerErrorException(error);
         }
     }
 }
