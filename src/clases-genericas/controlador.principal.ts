@@ -10,7 +10,7 @@ import {
     Put,
     Query,
 } from '@nestjs/common';
-import {ServicioPrincipal} from './servicio.principal';
+import {PrincipalService} from './principalService';
 import {RespuestaPrincipalInterface} from '../interfaces/respuesta.principal.interface';
 import {validate} from 'class-validator';
 import {FindManyOptions, Like, UpdateResult} from 'typeorm';
@@ -24,7 +24,7 @@ export class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
     nombreClaseDtoCrear: ClassType<DtoCrear> | any;
 
     constructor(
-        private readonly _principalService: ServicioPrincipal<Entidad>,
+        private readonly _principalService: PrincipalService<Entidad>,
     ) {
     }
 
@@ -38,7 +38,7 @@ export class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
             throw new BadRequestException(erroresValidacion);
         } else {
             try {
-                const nuevoRegistro = await this._principalService.crear(nuevo);
+                const nuevoRegistro = await this._principalService.createOne(nuevo);
                 return nuevoRegistro as Entidad;
             } catch (error) {
                 console.error(
@@ -66,7 +66,7 @@ export class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
                 throw new BadRequestException(erroresValidacion);
             } else {
                 try {
-                    const registroActualizadoActualizado = await this._principalService.editar(
+                    const registroActualizadoActualizado = await this._principalService.updateOne(
                         Number(id),
                         datosActualizar,
                     );
@@ -96,7 +96,7 @@ export class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
         const idValido = !isNaN(Number(id));
         if (idValido) {
             try {
-                const registroBorrado = await this._principalService.borrar(Number(id));
+                const registroBorrado = await this._principalService.deleteOne(Number(id));
                 return {
                     data: registroBorrado,
                     error: false,
@@ -124,7 +124,7 @@ export class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
         const idValido = !isNaN(Number(id));
         if (idValido) {
             try {
-                const registrosBuscados = await this._principalService.buscarPorId(
+                const registrosBuscados = await this._principalService.findOneById(
                     Number(id),
                 );
                 return registrosBuscados as Entidad;
@@ -145,10 +145,9 @@ export class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
             let registros: [Entidad[], number];
             if (mandaParametrosBusqueda) {
                 const query = generarQuery(criteriosBusqueda);
-                console.log(query);
-                registros = await this._principalService.listar(query);
+                registros = await this._principalService.findAll(query);
             } else {
-                registros = await this._principalService.listar({
+                registros = await this._principalService.findAll({
                     order: {id: 'DESC'},
                 });
             }

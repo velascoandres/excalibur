@@ -1,17 +1,17 @@
-import { ServicioPrincipal } from "../../clases-genericas/servicio.principal";
+import { PrincipalService } from "../../clases-genericas/principalService";
 
 // @ts-ignore
 declare var require: any;
 // tslint:disable-next-line:no-var-requires
 const fs = require('fs');
-export async function crearDatos(pathArchivo: string, service: ServicioPrincipal<any>) {
+export async function crearDatos(pathArchivo: string, service: PrincipalService<any>) {
   try {
     return new Promise((resolve, reject) => {
       fs.readFile(pathArchivo, 'UTF-8', (err: any, data: string) => {
         if (err) {
           reject(err);
         } else {
-          resolve(service.crear(JSON.parse(data)));
+          resolve(service.createOne(JSON.parse(data)));
         }
       });
     });
