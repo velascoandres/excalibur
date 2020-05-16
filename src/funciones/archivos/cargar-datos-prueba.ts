@@ -1,6 +1,5 @@
-import { PrincipalService } from "../../clases-genericas/principalService";
+import {PrincipalService} from '../..';
 
-// @ts-ignore
 declare var require: any;
 // tslint:disable-next-line:no-var-requires
 const fs = require('fs');
