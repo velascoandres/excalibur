@@ -1,8 +1,10 @@
 {
-  "name": "excalibur",
-  "version": "1.0.0",
+  "name": "nestjs-excalibur",
+  "version": "0.0.3-test",
+  "autor": "gordon_freeman",
   "description": "API of functions and classes for NestJS",
-  "main": "./src/index.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npm run build",

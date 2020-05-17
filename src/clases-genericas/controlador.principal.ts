@@ -1,35 +1,30 @@
 import {
-    BadRequestException,
     Body,
     Delete,
     Get,
     HttpStatus,
-    InternalServerErrorException,
     Param,
     Post,
     Put,
     Query,
     Request,
-    Response, UnauthorizedException,
+    Response,
 } from '@nestjs/common';
 import {PrincipalService} from './principalService';
-import {RespuestaPrincipalInterface} from '../interfaces/respuesta.principal.interface';
 import {validate} from 'class-validator';
-import {UpdateResult} from 'typeorm';
 import 'reflect-metadata';
 import 'es6-shim';
 import {plainToClass} from 'class-transformer';
-import {ClassType} from 'class-transformer/ClassTransformer';
 import {PrincipalAuthCrudValidation} from './seguridad.crud.abstracto';
 import {PrincipalAuthCrudGenerico} from './principal.auth.crud.generico';
 import {generarQuery} from '../funciones/busqueda/busqueda-simple/generar-query';
+import {DtoPrincipal} from './dto.principal';
 
-export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar>{
-    nombreClaseDtoEditar: ClassType<DtoEditar> | any;
-    nombreClaseDtoCrear: ClassType<DtoCrear> | any;
-
+export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
     protected constructor(
         private readonly _principalService: PrincipalService<Entidad>,
+        private readonly nombreClaseDtoEditar: typeof DtoPrincipal,
+        private readonly nombreClaseDtoCrear: typeof DtoPrincipal,
         private readonly _authSecurityCrud: PrincipalAuthCrudValidation<Entidad> = new PrincipalAuthCrudGenerico(),
     ) {
     }
@@ -39,17 +34,17 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar>{
         @Body() nuevo: DtoCrear,
         @Request() req: any,
         @Response() response: any,
-    ): Promise<Entidad> {
+    ) {
         const puedeRealizarAccion: boolean = this._authSecurityCrud.createOneAuht(req, response, this);
-        if (puedeRealizarAccion){
-            const entidadoDto = plainToClass(this.nombreClaseDtoCrear, nuevo) as object;
+        if (puedeRealizarAccion) {
+            const entidadoDto = plainToClass(this.nombreClaseDtoCrear as typeof DtoPrincipal, nuevo) as object;
             const erroresValidacion = await validate(entidadoDto);
             if (erroresValidacion.length > 0) {
-                throw new BadRequestException(erroresValidacion);
+                response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
             } else {
                 try {
                     const nuevoRegistro = await this._principalService.createOne(nuevo);
-                    return nuevoRegistro as Entidad;
+                    response.status(HttpStatus.OK).send(nuevoRegistro);
                 } catch (error) {
                     console.error(
                         {
@@ -58,11 +53,11 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar>{
                             data: {registro: nuevo},
                         }
                     );
-                    throw new BadRequestException(error);
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
                 }
             }
         } else {
-            throw new UnauthorizedException('Not access granted');
+            response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
         }
 
     }
@@ -73,24 +68,22 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar>{
         @Param('id') id: number,
         @Request() req: any,
         @Response() response: any,
-    ): Promise<RespuestaPrincipalInterface<Entidad | UpdateResult | any>> {
+    ) {
         const puedeRealizarAccion: boolean = this._authSecurityCrud.updateOneAuht(req, response, this);
-        if (puedeRealizarAccion){
+        if (puedeRealizarAccion) {
             const idValido = !isNaN(Number(id));
             if (idValido) {
-                const entidadoDto = plainToClass(this.nombreClaseDtoEditar, datosActualizar) as object;
+                const entidadoDto = plainToClass(this.nombreClaseDtoEditar as typeof DtoPrincipal, datosActualizar) as object;
                 const erroresValidacion = await validate(entidadoDto);
                 if (erroresValidacion.length > 0) {
-                    throw new BadRequestException(erroresValidacion);
+                    response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
                 } else {
                     try {
                         const registroActualizadoActualizado = await this._principalService.updateOne(
                             Number(id),
                             datosActualizar,
                         );
-                        return {
-                            data: registroActualizadoActualizado,
-                        };
+                        response.status(HttpStatus.OK).send(registroActualizadoActualizado);
                     } catch (error) {
                         console.error(
                             {
@@ -99,14 +92,14 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar>{
                                 data: {id, datosActualizar},
                             }
                         );
-                        throw new InternalServerErrorException(error);
+                        response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
                     }
                 }
             } else {
-                throw new BadRequestException('invalid id');
+                response.status(HttpStatus.BAD_REQUEST).send({message: 'Invalid Id'});
             }
-        }else {
-            throw new UnauthorizedException('Not access granted');
+        } else {
+            response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
         }
     }
 
@@ -115,18 +108,14 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar>{
         @Param('id') id: number,
         @Request() req: any,
         @Response() response: any,
-    ): Promise<RespuestaPrincipalInterface<Entidad>> {
+    ) {
         const puedeRealizarAccion: boolean = this._authSecurityCrud.deleteOneAuth(req, response, this);
-        if (puedeRealizarAccion){
+        if (puedeRealizarAccion) {
             const idValido = !isNaN(Number(id));
             if (idValido) {
                 try {
                     const registroBorrado = await this._principalService.deleteOne(Number(id));
-                    return {
-                        data: registroBorrado,
-                        error: false,
-                        statusCode: HttpStatus.ACCEPTED,
-                    };
+                    response.status(HttpStatus.OK).send(registroBorrado);
                 } catch (error) {
                     console.error(
                         {
@@ -135,13 +124,13 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar>{
                             data: {id},
                         },
                     );
-                    throw new InternalServerErrorException(error);
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
                 }
             } else {
-                throw new BadRequestException('invalid id');
+                response.status(HttpStatus.BAD_REQUEST).send({message:'Invalid Id'});
             }
         } else {
-            throw new UnauthorizedException('Not access granted');
+            response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
         }
     }
 
@@ -150,16 +139,16 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar>{
         @Param('id') id: number,
         @Request() req: any,
         @Response() response: any,
-    ): Promise<Entidad> {
+    ) {
         const puedeRealizarAccion: boolean = this._authSecurityCrud.findOneByIdAuht(req, response, this);
-        if (puedeRealizarAccion){
+        if (puedeRealizarAccion) {
             const idValido = !isNaN(Number(id));
             if (idValido) {
                 try {
                     const registrosBuscados = await this._principalService.findOneById(
                         Number(id),
                     );
-                    return registrosBuscados as Entidad;
+                    response.status(HttpStatus.OK).send(registrosBuscados);
                 } catch (error) {
                     console.error(
                         {
@@ -168,39 +157,33 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar>{
                             data: {id},
                         },
                     );
-                    throw new InternalServerErrorException(error);
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
                 }
             } else {
-                throw new BadRequestException('invalid id');
+                response.status(HttpStatus.BAD_REQUEST).send({message:'Invalid Id'});
             }
         } else {
-            throw new UnauthorizedException('Not access granted');
+            response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
         }
     }
 
     @Get()
     async findAll(
-        @Query() criteriosBusqueda: any,
+        @Query('query') criteriosBusqueda: any,
         @Request() req: any,
         @Response() response: any,
-    ): Promise<[Entidad[], number]> {
-        const puedeRealizarAccion: boolean = this._authSecurityCrud.findOneByIdAuht(req, response, this);
-        if (puedeRealizarAccion){
-            const mandaParametrosBusqueda = criteriosBusqueda !== undefined;
+    ) {
+        const puedeRealizarAccion: boolean = this._authSecurityCrud.findAllAuth(req, response, this);
+        if (puedeRealizarAccion) {
             try {
-                let registros: [Entidad[], number];
-                if (mandaParametrosBusqueda) {
+                let resultado: [Entidad[], number];
+                if (criteriosBusqueda) {
                     const query = generarQuery(criteriosBusqueda);
-                    registros = await this._principalService.findAll(query);
+                    resultado = await this._principalService.findAll(query);
                 } else {
-                    registros = await this._principalService.findAll({
-                        order: {id: 'DESC'},
-                    });
+                    resultado = await this._principalService.findAll();
                 }
-                return [
-                    registros[0],
-                    registros[1],
-                ];
+                response.status(HttpStatus.OK).send(resultado);
             } catch (error) {
                 console.error(
                     {
@@ -209,10 +192,10 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar>{
                         data: criteriosBusqueda,
                     },
                 );
-                throw new InternalServerErrorException(error);
+                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message:'Server Error'});
             }
         } else {
-            throw new UnauthorizedException('Not access granted');
+            response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
         }
     }
 }

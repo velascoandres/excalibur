@@ -2,7 +2,7 @@ import {IsEmpty, IsNumber} from 'class-validator';
 
 export class DtoPrincipal {
     @IsEmpty()
-    id: number = 0;
+    id: number | undefined;
     @IsEmpty()
     creaatedAt: string = '';
     @IsEmpty()

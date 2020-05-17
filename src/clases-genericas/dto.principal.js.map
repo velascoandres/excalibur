@@ -1,0 +1,1 @@
+{"version":3,"file":"dto.principal.js","sourceRoot":"","sources":["dto.principal.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qDAAkD;AAElD;IAAA,MAAa,YAAY;QAOrB;YALA,OAAE,GAAW,CAAC,CAAC;YAEf,eAAU,GAAW,EAAE,CAAC;YAExB,cAAS,GAAW,EAAE,CAAC;QAEvB,CAAC;KACJ;IAPG;QADC,yBAAO,EAAE;;4CACK;IAEf;QADC,yBAAO,EAAE;;oDACc;IAExB;QADC,yBAAO,EAAE;;mDACa;IAG3B,mBAAC;KAAA;AATY,oCAAY"}

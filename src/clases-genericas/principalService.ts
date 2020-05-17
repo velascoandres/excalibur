@@ -32,7 +32,12 @@ export abstract class PrincipalService<Entidad> {
   async findAll(
     parametros?: FindManyOptions<Entidad | any>,
   ): Promise<[Entidad[], number]> {
-    return await this._filaRepository.findAndCount(parametros);
+    const tieneParametros = parametros && Object.keys(parametros).length > 0;
+    if (!tieneParametros){
+      return  await this._filaRepository.findAndCount({skip: 0 , take: 10});
+    } else {
+      return await this._filaRepository.findAndCount(parametros);
+    }
   }
   async findOne(
     parametros?: FindManyOptions<Entidad>,
