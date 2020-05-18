@@ -5,3 +5,5 @@ export {PrincipalService} from './principal/principal.service';
 export {PrincipalEntity} from './principal/principal.entity';
 export {PrincipalAuthCrudValidation} from './principal/principal.abstract.auth.crud';
 export {PrincipalDto} from './principal/principal.dto';
+export {CrudApiBody} from './decorators/swagger-crud/swagger-crud.decorator'
+export {CrudApiConfig} from './decorators/swagger-crud/interfaces'

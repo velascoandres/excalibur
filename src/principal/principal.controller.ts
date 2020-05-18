@@ -20,6 +20,7 @@ import {AuthCrudGenerico} from './auth.crud.generico';
 import {generarQuery} from '../funciones/busqueda/busqueda-simple/generar-query';
 import {PrincipalDto} from './principal.dto';
 import {PrincipalEntity} from './principal.entity';
+import {ApiBody} from '@nestjs/swagger';
 
 export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEditar = any> {
     protected constructor(
@@ -31,6 +32,7 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     }
 
     @Post()
+    // @ApiBody({ type: [DtoCrear] })
     async createOne(
         @Body() nuevo: DtoCrear,
         @Request() req: any,
