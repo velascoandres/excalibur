@@ -10,22 +10,23 @@ import {
     Request,
     Response,
 } from '@nestjs/common';
-import {PrincipalService} from './principalService';
+import {PrincipalService} from './principal.service';
 import {validate} from 'class-validator';
 import 'reflect-metadata';
 import 'es6-shim';
 import {plainToClass} from 'class-transformer';
-import {PrincipalAuthCrudValidation} from './seguridad.crud.abstracto';
-import {PrincipalAuthCrudGenerico} from './principal.auth.crud.generico';
+import {PrincipalAuthCrudValidation} from './principal.abstract.auth.crud';
+import {AuthCrudGenerico} from './auth.crud.generico';
 import {generarQuery} from '../funciones/busqueda/busqueda-simple/generar-query';
-import {DtoPrincipal} from './dto.principal';
+import {PrincipalDto} from './principal.dto';
+import {PrincipalEntity} from './principal.entity';
 
-export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
+export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEditar = any> {
     protected constructor(
         private readonly _principalService: PrincipalService<Entidad>,
-        private readonly nombreClaseDtoEditar: typeof DtoPrincipal,
-        private readonly nombreClaseDtoCrear: typeof DtoPrincipal,
-        private readonly _authSecurityCrud: PrincipalAuthCrudValidation<Entidad> = new PrincipalAuthCrudGenerico(),
+        private readonly nombreClaseDtoEditar: typeof PrincipalDto,
+        private readonly nombreClaseDtoCrear: typeof PrincipalDto,
+        private readonly _authSecurityCrud: PrincipalAuthCrudValidation = new AuthCrudGenerico(),
     ) {
     }
 
@@ -37,7 +38,7 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
     ) {
         const puedeRealizarAccion: boolean = this._authSecurityCrud.createOneAuht(req, response, this);
         if (puedeRealizarAccion) {
-            const entidadoDto = plainToClass(this.nombreClaseDtoCrear as typeof DtoPrincipal, nuevo) as object;
+            const entidadoDto = plainToClass(this.nombreClaseDtoCrear as typeof PrincipalDto, nuevo) as object;
             const erroresValidacion = await validate(entidadoDto);
             if (erroresValidacion.length > 0) {
                 response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
@@ -73,7 +74,7 @@ export abstract class ControladorPrincipal<Entidad, DtoCrear, DtoEditar> {
         if (puedeRealizarAccion) {
             const idValido = !isNaN(Number(id));
             if (idValido) {
-                const entidadoDto = plainToClass(this.nombreClaseDtoEditar as typeof DtoPrincipal, datosActualizar) as object;
+                const entidadoDto = plainToClass(this.nombreClaseDtoEditar as typeof PrincipalDto, datosActualizar) as object;
                 const erroresValidacion = await validate(entidadoDto);
                 if (erroresValidacion.length > 0) {
                     response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});

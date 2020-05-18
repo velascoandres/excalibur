@@ -2391,7 +2391,7 @@
         "signature": "26d590f7fc94dc8bd476aab67a6047b39a72b0dcbdb7c5ce1dbd369762d63e4f",
         "affectsGlobalScope": false
       },
-      "./src/clases-genericas/principalService.ts": {
+      "./src/clases-genericas/principal.service.ts": {
         "version": "6636d32ae6ae03ba77f675e01f7df55eb181d5f7962acb22a077b3e45d73b3ce",
         "signature": "e8757e4f8fea82cdedd0ac379592e4d0b1bcb97a89f4acbe0bb90eeabf433901",
         "affectsGlobalScope": false
@@ -3051,12 +3051,12 @@
         "signature": "097d4bf3331df1e138ffdcf92e1117f6841bc8337170d927fd955d5ee8a1674b",
         "affectsGlobalScope": false
       },
-      "./src/clases-genericas/seguridad.crud.abstracto.ts": {
+      "./src/clases-genericas/principal.abstract.auth.crud.ts": {
         "version": "a779714951b8a524faecb7cdf180116010b1cb5544e39fe7672e75ba5b51a598",
         "signature": "b8c390cf798de6c8cd658bdc76f2346abccc0e0fff168bb58621ad53719ca156",
         "affectsGlobalScope": false
       },
-      "./src/clases-genericas/principal.auth.crud.generico.ts": {
+      "./src/clases-genericas/auth.crud.generico.ts": {
         "version": "98df08f623a5b35950205059ac078642db129b6bc802109778ac38e13f5ffc96",
         "signature": "40f4d0bd01d11316f8d8ea8ca3f56e2c0f6a07c512f4d20ef3c8f7318625b5f1",
         "affectsGlobalScope": false
@@ -3071,17 +3071,17 @@
         "signature": "e173b66e7462c24496e3a3ca0dcfde0b60492f8a75c0228ea96b1312d97550c8",
         "affectsGlobalScope": false
       },
-      "./src/clases-genericas/controlador.principal.ts": {
+      "./src/clases-genericas/principal.controller.ts": {
         "version": "6267933981cda8b1bb0fcc8bbc6115ad8f85ada92b03bd320846cd8d7f632666",
         "signature": "08f89015bc17a9ff6234490f5d1c6dc966a805f91ac649bcdb211e1760c560a1",
         "affectsGlobalScope": false
       },
-      "./src/clases-genericas/entidad.principal.ts": {
+      "./src/clases-genericas/principal.entity.ts": {
         "version": "94f9266e487d26277cbd853864106cf9f74c33a382e75fa20ba47c1fc66885c8",
         "signature": "acf64caf4085092644f1df70dc6e354569770deb4ab7da4cccafaa5f7fe827a9",
         "affectsGlobalScope": false
       },
-      "./src/clases-genericas/dto.principal.ts": {
+      "./src/clases-genericas/principal.dto.ts": {
         "version": "db61104ab5643c5ba26828df7a8e5c7afc6ada4b394558056eb793239c2b4a72",
         "signature": "77a08511c35cb1580245b813c98dfaf62c6f9c62e9576a67ce710628a2e95bc7",
         "affectsGlobalScope": false
@@ -8833,7 +8833,7 @@
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts"
       ],
-      "./src/clases-genericas/controlador.principal.ts": [
+      "./src/clases-genericas/principal.controller.ts": [
         "./node_modules/@nestjs/common/index.d.ts",
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/ts3.2/fs.d.ts",
@@ -8844,35 +8844,35 @@
         "./node_modules/class-validator/types/index.d.ts",
         "./node_modules/reflect-metadata/index.d.ts",
         "./node_modules/typeorm/index.d.ts",
-        "./src/clases-genericas/principal.auth.crud.generico.ts",
-        "./src/clases-genericas/principalService.ts",
-        "./src/clases-genericas/seguridad.crud.abstracto.ts",
+        "./src/clases-genericas/auth.crud.generico.ts",
+        "./src/clases-genericas/principal.service.ts",
+        "./src/clases-genericas/principal.abstract.auth.crud.ts",
         "./src/funciones/busqueda/busqueda-simple/generar-query.ts",
         "./src/interfaces/respuesta.principal.interface.ts"
       ],
-      "./src/clases-genericas/dto.principal.ts": [
+      "./src/clases-genericas/principal.dto.ts": [
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/class-validator/types/index.d.ts"
       ],
-      "./src/clases-genericas/entidad.principal.ts": [
+      "./src/clases-genericas/principal.entity.ts": [
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/typeorm/index.d.ts"
       ],
-      "./src/clases-genericas/principal.auth.crud.generico.ts": [
+      "./src/clases-genericas/auth.crud.generico.ts": [
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
-        "./src/clases-genericas/controlador.principal.ts",
-        "./src/clases-genericas/seguridad.crud.abstracto.ts"
+        "./src/clases-genericas/principal.controller.ts",
+        "./src/clases-genericas/principal.abstract.auth.crud.ts"
       ],
-      "./src/clases-genericas/principalService.ts": [
+      "./src/clases-genericas/principal.service.ts": [
         "./node_modules/@nestjs/common/index.d.ts",
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/ts3.2/fs.d.ts",
@@ -8880,12 +8880,12 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/typeorm/index.d.ts"
       ],
-      "./src/clases-genericas/seguridad.crud.abstracto.ts": [
+      "./src/clases-genericas/principal.abstract.auth.crud.ts": [
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
-        "./src/clases-genericas/controlador.principal.ts"
+        "./src/clases-genericas/principal.controller.ts"
       ],
       "./src/funciones/archivos/borrar-archivos.ts": [
         "./node_modules/@types/node/fs.d.ts",
@@ -8919,11 +8919,11 @@
         "./node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
-        "./src/clases-genericas/controlador.principal.ts",
-        "./src/clases-genericas/dto.principal.ts",
-        "./src/clases-genericas/entidad.principal.ts",
-        "./src/clases-genericas/principalService.ts",
-        "./src/clases-genericas/seguridad.crud.abstracto.ts",
+        "./src/clases-genericas/principal.controller.ts",
+        "./src/clases-genericas/principal.dto.ts",
+        "./src/clases-genericas/principal.entity.ts",
+        "./src/clases-genericas/principal.service.ts",
+        "./src/clases-genericas/principal.abstract.auth.crud.ts",
         "./src/funciones/archivos/borrar-archivos.ts",
         "./src/funciones/archivos/cargar-datos-prueba.ts"
       ],
@@ -14404,22 +14404,22 @@
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts"
       ],
-      "./src/clases-genericas/controlador.principal.ts": [
+      "./src/clases-genericas/principal.controller.ts": [
         "./node_modules/reflect-metadata/index.d.ts",
         "./node_modules/typeorm/index.d.ts",
-        "./src/clases-genericas/principalService.ts",
-        "./src/clases-genericas/seguridad.crud.abstracto.ts",
+        "./src/clases-genericas/principal.service.ts",
+        "./src/clases-genericas/principal.abstract.auth.crud.ts",
         "./src/interfaces/respuesta.principal.interface.ts"
       ],
-      "./src/clases-genericas/principal.auth.crud.generico.ts": [
-        "./src/clases-genericas/controlador.principal.ts",
-        "./src/clases-genericas/seguridad.crud.abstracto.ts"
+      "./src/clases-genericas/auth.crud.generico.ts": [
+        "./src/clases-genericas/principal.controller.ts",
+        "./src/clases-genericas/principal.abstract.auth.crud.ts"
       ],
-      "./src/clases-genericas/principalService.ts": [
+      "./src/clases-genericas/principal.service.ts": [
         "./node_modules/typeorm/index.d.ts"
       ],
-      "./src/clases-genericas/seguridad.crud.abstracto.ts": [
-        "./src/clases-genericas/controlador.principal.ts"
+      "./src/clases-genericas/principal.abstract.auth.crud.ts": [
+        "./src/clases-genericas/principal.controller.ts"
       ],
       "./src/funciones/archivos/cargar-datos-prueba.ts": [
         "./src/index.ts"
@@ -14428,11 +14428,11 @@
         "./node_modules/typeorm/index.d.ts"
       ],
       "./src/index.ts": [
-        "./src/clases-genericas/controlador.principal.ts",
-        "./src/clases-genericas/dto.principal.ts",
-        "./src/clases-genericas/entidad.principal.ts",
-        "./src/clases-genericas/principalService.ts",
-        "./src/clases-genericas/seguridad.crud.abstracto.ts",
+        "./src/clases-genericas/principal.controller.ts",
+        "./src/clases-genericas/principal.dto.ts",
+        "./src/clases-genericas/principal.entity.ts",
+        "./src/clases-genericas/principal.service.ts",
+        "./src/clases-genericas/principal.abstract.auth.crud.ts",
         "./src/funciones/archivos/borrar-archivos.ts",
         "./src/funciones/archivos/cargar-datos-prueba.ts"
       ]
@@ -15095,12 +15095,12 @@
       "./node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "./node_modules/typescript/lib/lib.scripthost.d.ts",
       "./node_modules/typescript/lib/lib.webworker.importscripts.d.ts",
-      "./src/clases-genericas/controlador.principal.ts",
-      "./src/clases-genericas/dto.principal.ts",
-      "./src/clases-genericas/entidad.principal.ts",
-      "./src/clases-genericas/principal.auth.crud.generico.ts",
-      "./src/clases-genericas/principalService.ts",
-      "./src/clases-genericas/seguridad.crud.abstracto.ts",
+      "./src/clases-genericas/principal.controller.ts",
+      "./src/clases-genericas/principal.dto.ts",
+      "./src/clases-genericas/principal.entity.ts",
+      "./src/clases-genericas/auth.crud.generico.ts",
+      "./src/clases-genericas/principal.service.ts",
+      "./src/clases-genericas/principal.abstract.auth.crud.ts",
       "./src/funciones/archivos/borrar-archivos.ts",
       "./src/funciones/archivos/cargar-datos-prueba.ts",
       "./src/funciones/busqueda/busqueda-simple/generar-query.ts",

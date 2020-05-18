@@ -1,6 +1,6 @@
 import { PrimaryGeneratedColumn } from 'typeorm';
 
-export class EntidadPrincipal {
+export class PrincipalEntity {
   @PrimaryGeneratedColumn()
   id: number | undefined;
 }
