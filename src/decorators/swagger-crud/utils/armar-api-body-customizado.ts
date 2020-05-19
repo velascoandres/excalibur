@@ -1,12 +1,11 @@
-import {ApiBodyOptions} from '@nestjs/swagger';
+import {ApiBodyOptions, ApiQueryOptions} from '@nestjs/swagger';
 import {getTypeIsArrayTuple} from '@nestjs/swagger/dist/decorators/helpers';
-import {omit} from 'lodash';
+import {omit, isNil} from 'lodash';
 import {addEnumArraySchema, addEnumSchema, isEnumArray, isEnumDefined} from '@nestjs/swagger/dist/utils/enum.utils';
-import {crearDecoradorParametro} from './crear-decorador-parametro';
-import {ApiBodyMetadata} from '../interfaces';
-import {BODY_METADATA_POR_DEFECTO} from '../constantes';
+import {ApiBodyMetadata, ApiQueryMetadata} from '../interfaces';
+import {OPCIONES_QUERY_POR_DEFECTO} from '../constantes';
 
-export function armarApiBodyCustomizado(options: ApiBodyOptions, nombreMetodo: string): MethodDecorator {
+export function armarApiBodyCustomizado(options: ApiBodyOptions) {
     const [type, isArray] = getTypeIsArrayTuple(
         (options as ApiBodyMetadata).type,
         (options as ApiBodyMetadata).isArray as boolean
@@ -23,5 +22,29 @@ export function armarApiBodyCustomizado(options: ApiBodyOptions, nombreMetodo: s
     } else if (isEnumDefined(options)) {
         addEnumSchema(param, options);
     }
-    return crearDecoradorParametro(param, BODY_METADATA_POR_DEFECTO, nombreMetodo);
+    return  param;
+}
+
+export function armarApiQueryCustomizado(options: ApiQueryOptions) {
+    const apiQueryMetadata = options as ApiQueryMetadata;
+    const [type, isArray] = getTypeIsArrayTuple(
+        apiQueryMetadata.type,
+        apiQueryMetadata.isArray as boolean
+    );
+    const nombre = OPCIONES_QUERY_POR_DEFECTO.name;
+    const param: ApiQueryMetadata & Record<string, any> = {
+        // @ts-ignore
+        name: isNil(options.name) ? nombre : options.name,
+        in: 'query',
+        ...omit(options, 'enum'),
+        type,
+        isArray
+    };
+
+    if (isEnumArray(options)) {
+        addEnumArraySchema(param, options);
+    } else if (isEnumDefined(options)) {
+        addEnumSchema(param, options);
+    }
+    return param;
 }

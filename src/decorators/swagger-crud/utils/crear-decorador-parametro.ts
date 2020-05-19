@@ -5,14 +5,16 @@ export function crearDecoradorParametro<T extends Record<string, any> = any>(
     metadata: T,
     initial: Partial<T>,
     nombreMetodo: string,
-): MethodDecorator {
+): ClassDecorator {
+    console.log('metadata',metadata);
+    console.log('initial', initial);
     return (
-        target: object,
-        key: string | symbol,
-        descriptor: PropertyDescriptor
+        target: any,
     ) => {
+        console.log(target.prototype[nombreMetodo]);
         const parametros =
-            Reflect.getMetadata(DECORATORS.API_PARAMETERS, descriptor.value, nombreMetodo) || [];
+            Reflect.getMetadata(DECORATORS.API_PARAMETERS, target.prototype[nombreMetodo]) || [];
+        console.log('parametros', parametros);
         Reflect.defineMetadata(
             DECORATORS.API_PARAMETERS,
             [
@@ -22,8 +24,8 @@ export function crearDecoradorParametro<T extends Record<string, any> = any>(
                     ...pickBy(metadata, negate(isUndefined))
                 }
             ],
-            descriptor.value
+            target.prototype[nombreMetodo]
         );
-        return descriptor;
+        return target;
     };
 }

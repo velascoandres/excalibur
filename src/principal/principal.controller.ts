@@ -19,8 +19,13 @@ import {PrincipalAuthCrudValidation} from './principal.abstract.auth.crud';
 import {AuthCrudGenerico} from './auth.crud.generico';
 import {generarQuery} from '../funciones/busqueda/busqueda-simple/generar-query';
 import {PrincipalDto} from './principal.dto';
-import {PrincipalEntity} from './principal.entity';
-import {ApiBody} from '@nestjs/swagger';
+import {
+    ApiBadRequestResponse,
+    ApiCreatedResponse,
+    ApiInternalServerErrorResponse, ApiOkResponse,
+    ApiResponse,
+    ApiUnauthorizedResponse
+} from '@nestjs/swagger';
 
 export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEditar = any> {
     protected constructor(
@@ -32,7 +37,10 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     }
 
     @Post()
-    // @ApiBody({ type: [DtoCrear] })
+    @ApiCreatedResponse({ status: HttpStatus.OK, description: 'The record has been successfully created.'})
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async createOne(
         @Body() nuevo: DtoCrear,
         @Request() req: any,
@@ -66,6 +74,10 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     }
 
     @Put(':id')
+    @ApiOkResponse({ status: HttpStatus.OK, description: 'The record has been successfully updated.'})
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async updateOne(
         @Body() datosActualizar: DtoEditar,
         @Param('id') id: number,
@@ -107,6 +119,10 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     }
 
     @Delete(':id')
+    @ApiOkResponse({ status: HttpStatus.OK, description: 'The record has been deleted.'})
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async deleteOne(
         @Param('id') id: number,
         @Request() req: any,
@@ -138,6 +154,10 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     }
 
     @Get(':id')
+    @ApiOkResponse({ status: HttpStatus.OK, description: 'The record has been fetched.'})
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async findOneById(
         @Param('id') id: number,
         @Request() req: any,
@@ -171,6 +191,10 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     }
 
     @Get()
+    @ApiOkResponse({ status: HttpStatus.OK, description: 'The records has been fetched.'})
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async findAll(
         @Query('query') criteriosBusqueda: any,
         @Request() req: any,
