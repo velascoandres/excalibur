@@ -31,10 +31,10 @@ export interface CrudApiConfig {
     findAll?: BaseConfig;
 }
 export interface BaseConfig {
-    response?: ApiResponseOptions;
+    responses?: ApiResponseOptions[];
     apiQuery?: ApiQueryOptions;
 }
 
-export interface CreateUpdateOneConfig {
+export interface CreateUpdateOneConfig extends BaseConfig{
     apiBody: ApiBodyOptions;
 }

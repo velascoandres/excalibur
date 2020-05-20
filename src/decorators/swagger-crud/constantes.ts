@@ -10,3 +10,11 @@ export const OPCIONES_QUERY_POR_DEFECTO: ApiQueryOptions = {
     name: '',
     required: true
 };
+
+export const NOMBRES_METODOS_API = {
+    createOne: 'createOne',
+    updateOne: 'updateOne',
+    deleteOne: 'deleteOne',
+    findOneById: 'findOneById',
+    findAll: 'findAll'
+}

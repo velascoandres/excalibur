@@ -5,7 +5,9 @@ import {OPCIONES_QUERY_POR_DEFECTO} from '../constantes';
 import {isNil, omit} from 'lodash';
 import {addEnumArraySchema, addEnumSchema, isEnumArray, isEnumDefined} from '@nestjs/swagger/dist/utils/enum.utils';
 
-export function armarApiQueryCustomizado(options: ApiQueryOptions) {
+export function armarApiQueryCustomizado(
+    options: ApiQueryOptions,
+): ApiQueryMetadata & Record<string, any> {
     const apiQueryMetadata = options as ApiQueryMetadata;
     const [type, isArray] = getTypeIsArrayTuple(
         apiQueryMetadata.type,
