@@ -25,6 +25,7 @@ import {
     ApiInternalServerErrorResponse, ApiOkResponse,
     ApiUnauthorizedResponse
 } from '@nestjs/swagger';
+import {ConsultaFindFullInterface} from '../funciones/busqueda/find-full/interfaces/consulta.findFull.interface';
 
 export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEditar = any> {
     protected constructor(
@@ -204,10 +205,10 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
             try {
                 let resultado: [Entidad[], number];
                 if (criteriosBusqueda) {
-                    const query = generarQuery(criteriosBusqueda);
+                    const query = JSON.parse(criteriosBusqueda);
                     resultado = await this._principalService.findAll(query);
                 } else {
-                    resultado = await this._principalService.findAll();
+                    resultado = await this._principalService.findAll({} as ConsultaFindFullInterface);
                 }
                 response.status(HttpStatus.OK).send(resultado);
             } catch (error) {

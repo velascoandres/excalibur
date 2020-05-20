@@ -1,8 +1,13 @@
-import {FindManyOptions, Repository} from 'typeorm';
+import {FindManyOptions, getConnection, Repository} from 'typeorm';
 import {NotFoundException} from '@nestjs/common';
+import {buscarRegistros} from '../funciones/busqueda/find-full/funciones-busqueda/buscar-registros.funcion';
+import {findFull} from '..';
+import {ConsultaFindFullInterface} from '../funciones/busqueda/find-full/interfaces/consulta.findFull.interface';
 
 export abstract class PrincipalService<Entidad> {
-  protected constructor(private readonly _filaRepository: Repository<Entidad>) {}
+  private _entidad: Entidad  = {} as Entidad;
+  protected constructor(private readonly _filaRepository: Repository<Entidad>) {
+  }
 
   async createOne(fila: Entidad | any): Promise<Entidad> {
     const filaInstanciado: any = await this._filaRepository.create(fila);
@@ -30,13 +35,14 @@ export abstract class PrincipalService<Entidad> {
   }
 
   async findAll(
-    parametros?: FindManyOptions<Entidad | any>,
+    parametros?: ConsultaFindFullInterface,
   ): Promise<[Entidad[], number]> {
     const tieneParametros = parametros && Object.keys(parametros).length > 0;
     if (!tieneParametros){
+      const entidad = getConnection()
       return  await this._filaRepository.findAndCount({skip: 0 , take: 10});
     } else {
-      return await this._filaRepository.findAndCount(parametros);
+      return await findFull<Entidad>(this._entidad, parametros as ConsultaFindFullInterface);
     }
   }
   async findOne(
