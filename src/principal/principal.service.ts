@@ -1,8 +1,7 @@
 import {FindManyOptions, getConnection, Repository} from 'typeorm';
 import {NotFoundException} from '@nestjs/common';
-import {buscarRegistros} from '../funciones/busqueda/find-full/funciones-busqueda/buscar-registros.funcion';
 import {findFull} from '..';
-import {ConsultaFindFullInterface} from '../funciones/busqueda/find-full/interfaces/consulta.findFull.interface';
+import {ConsultaFindFullInterface} from '..';
 
 export abstract class PrincipalService<Entidad> {
   private _entidad: Entidad  = {} as Entidad;

@@ -7,5 +7,10 @@ export {PrincipalAuthCrudValidation} from './principal/principal.abstract.auth.c
 export {PrincipalDto} from './principal/principal.dto';
 export {ApiDoc} from './decorators/swagger-crud/swagger-crud.decorator';
 export {CrudApiConfig} from './decorators/swagger-crud/interfaces';
-export {findFull} from './funciones/busqueda/find-full/find-full.funcion';
-export {findFullTransaccion} from './funciones/busqueda/find-full/find-full.transaccion.funcion';
+export {findFull} from './funciones/busqueda/busqueda-compuesta/find-full.funcion';
+export {findFullTransaccion} from './funciones/busqueda/busqueda-compuesta/find-full.transaccion.funcion';
+export {ConsultaFindFullInterface} from './funciones/busqueda/busqueda-compuesta/interfaces/consulta.findFull.interface';
+export {CuerpoConsultaFindFull} from './funciones/busqueda/busqueda-compuesta/interfaces/cuerpo.consulta.findFull';
+export {OrderByInterface} from './funciones/busqueda/busqueda-compuesta/interfaces/orderBy.interface';
+export {OperadorConsultaInterface} from './funciones/busqueda/busqueda-compuesta/interfaces/operador.consulta.interface';
+export {OperadorConsultaSimpleInterface} from './funciones/busqueda/busqueda-compuesta/interfaces/operador.consulta.simple.interface';

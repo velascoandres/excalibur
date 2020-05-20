@@ -17,7 +17,6 @@ import 'es6-shim';
 import {plainToClass} from 'class-transformer';
 import {PrincipalAuthCrudValidation} from './principal.abstract.auth.crud';
 import {AuthCrudGenerico} from './auth.crud.generico';
-import {generarQuery} from '../funciones/busqueda/busqueda-simple/generar-query';
 import {PrincipalDto} from './principal.dto';
 import {
     ApiBadRequestResponse,
@@ -25,7 +24,7 @@ import {
     ApiInternalServerErrorResponse, ApiOkResponse,
     ApiUnauthorizedResponse
 } from '@nestjs/swagger';
-import {ConsultaFindFullInterface} from '../funciones/busqueda/find-full/interfaces/consulta.findFull.interface';
+import {ConsultaFindFullInterface} from '..';
 
 export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEditar = any> {
     protected constructor(
