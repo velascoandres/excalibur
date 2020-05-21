@@ -1,7 +1,7 @@
 import {FindManyOptions, Repository} from 'typeorm';
 import {NotFoundException} from '@nestjs/common';
-import {findFull} from '..';
-import {ConsultaFindFullInterface} from '..';
+import {findFull} from '../../index';
+import {ConsultaFindFullInterface} from '../../index';
 
 export abstract class PrincipalService<Entidad> {
     protected constructor(

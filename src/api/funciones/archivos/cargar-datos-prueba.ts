@@ -1,4 +1,4 @@
-import {PrincipalService} from '../..';
+import {PrincipalService} from '../../../index';
 
 declare var require: any;
 // tslint:disable-next-line:no-var-requires

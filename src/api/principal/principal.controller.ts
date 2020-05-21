@@ -24,7 +24,7 @@ import {
     ApiInternalServerErrorResponse, ApiOkResponse,
     ApiUnauthorizedResponse
 } from '@nestjs/swagger';
-import {ConsultaFindFullInterface} from '..';
+import {ConsultaFindFullInterface} from '../../index';
 
 export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEditar = any> {
     protected constructor(
