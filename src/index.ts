@@ -1,3 +1,4 @@
+// API *********************************************************************
 export {crearDatos} from './api/funciones/archivos/cargar-datos-prueba';
 export {borrarArhicvo} from './api/funciones/archivos/borrar-archivos';
 export {PrincipalController} from './api/principal/principal.controller';
@@ -14,3 +15,5 @@ export {CuerpoConsultaFindFull} from './api/funciones/busqueda/busqueda-compuest
 export {OrderByInterface} from './api/funciones/busqueda/busqueda-compuesta/interfaces/orderBy.interface';
 export {OperadorConsultaInterface} from './api/funciones/busqueda/busqueda-compuesta/interfaces/operador.consulta.interface';
 export {OperadorConsultaSimpleInterface} from './api/funciones/busqueda/busqueda-compuesta/interfaces/operador.consulta.simple.interface';
+
+// MODULOS ************************************************************
