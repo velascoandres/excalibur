@@ -1,2 +1,2 @@
 # excalibur
-API of funtcions and classes for Nestjs
+API of functions and classes for Nestjs
