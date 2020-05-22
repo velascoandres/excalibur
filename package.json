@@ -5,6 +5,7 @@
   "description": "API of functions and classes for NestJS",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npm run build",

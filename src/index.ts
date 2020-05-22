@@ -17,3 +17,5 @@ export {OperadorConsultaInterface} from './api/funciones/busqueda/busqueda-compu
 export {OperadorConsultaSimpleInterface} from './api/funciones/busqueda/busqueda-compuesta/interfaces/operador.consulta.simple.interface';
 
 // MODULOS ************************************************************
+export * from './modules/libs/google-cloud-storage/src/index';
+export * from './modules/libs/firebase/src/index';

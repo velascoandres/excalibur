@@ -41,9 +41,7 @@
     "max-classes-per-file": [
       false
     ],
-    "variable-name": [
-      false
-    ],
+    "variable-name": false,
     "one-line": [
       false
     ],

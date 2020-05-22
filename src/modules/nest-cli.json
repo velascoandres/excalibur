@@ -1,0 +1,25 @@
+{
+  "projects": {
+    "google-cloud-storage": {
+      "type": "library",
+      "root": "libs/google-cloud-storage",
+      "entryFile": "index",
+      "sourceRoot": "libs/google-cloud-storage/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/google-cloud-storage/tsconfig.lib.json"
+      }
+    },
+    "firebase": {
+      "type": "library",
+      "root": "libs/firebase",
+      "entryFile": "index",
+      "sourceRoot": "libs/firebase/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/firebase/tsconfig.lib.json"
+      }
+    }
+  },
+  "compilerOptions": {
+    "webpack": true
+  }
+}
