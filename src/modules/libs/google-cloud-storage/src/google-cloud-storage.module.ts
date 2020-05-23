@@ -1,8 +1,23 @@
-import { Module } from '@nestjs/common';
-import { GoogleCloudStorageService } from './google-cloud-storage.service';
+import {DynamicModule, Module} from '@nestjs/common';
+import {GoogleCloudStorageModuleHelper} from './google-cloud-storage-module.helper';
+import {GoogleCloudStorageAsyncOptions, GoogleCloudStorageOptions} from './interfaces';
+import {PROVIDERS} from './constantes';
 
-@Module({
-  providers: [GoogleCloudStorageService],
-  exports: [GoogleCloudStorageService],
-})
-export class GoogleCloudStorageModule {}
+@Module({})
+export class GoogleCloudStorageModule {
+    static register(options: GoogleCloudStorageOptions): DynamicModule {
+        return {
+            module: GoogleCloudStorageModule,
+            providers: GoogleCloudStorageModuleHelper.buildProviders(options),
+            exports: [...PROVIDERS],
+        }
+    }
+
+    static registerAsync(options: GoogleCloudStorageAsyncOptions): DynamicModule {
+        return {
+            module: GoogleCloudStorageModule,
+            providers: GoogleCloudStorageModuleHelper.buildProvidersAsync(options),
+            exports: [...PROVIDERS],
+        }
+    }
+}
