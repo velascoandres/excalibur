@@ -1,6 +1,6 @@
 {
   "name": "@pimba/excalibur",
-  "version": "0.0.1",
+  "version": "0.0.1-test",
   "autor": "gordon_freeman",
   "description": "API of functions and classes for NestJS",
   "main": "lib/index.js",
@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npm run build",
-    "build": "tsc"
+    "build": "tsc",
+    "build-gcs": "nest build google-cloud-storage --path src/modules/libs/google-cloud-storage/tsconfig.lib.json"
   },
   "files": [
     "lib"
@@ -54,5 +55,6 @@
     "swagger-ui-express": "^4.1.4",
     "typeorm": "^0.2.24",
     "uuid": "^8.1.0"
-  }
+  },
+  "private": false
 }

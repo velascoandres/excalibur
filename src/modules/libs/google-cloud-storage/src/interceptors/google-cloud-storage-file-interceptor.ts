@@ -1,6 +1,16 @@
 import {MulterOptions} from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
-import {GoogleCloudStorageOptions} from '../interfaces';
-import {CallHandler, ExecutionContext, Injectable, Logger, mixin, NestInterceptor, Type} from '@nestjs/common';
+import {GoogleCloudStoragePerRequestOptions} from '../interfaces';
+import {
+    BadGatewayException,
+    BadRequestException,
+    CallHandler,
+    ExecutionContext,
+    Injectable,
+    Logger,
+    mixin,
+    NestInterceptor,
+    Type
+} from '@nestjs/common';
 import {GoogleCloudStorageService} from '../google-cloud-storage.service';
 import {Observable, of} from 'rxjs';
 import {FileInterceptor} from '@nestjs/platform-express';
@@ -9,7 +19,7 @@ import {FileInterceptor} from '@nestjs/platform-express';
 export function GoogleCloudStorageFileInterceptor(
     fieldName: string,
     localOptions?: MulterOptions,
-    googleClodudStorageOptions?: Partial<GoogleCloudStorageOptions>,
+    googleClodudStorageOptions?: Partial<GoogleCloudStoragePerRequestOptions>,
 ): Type<NestInterceptor> {
 
     @Injectable()
@@ -26,14 +36,19 @@ export function GoogleCloudStorageFileInterceptor(
         async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
             const interceptorlocal = (await this.interceptor.intercept(context, next)) as Observable<any>;
             const request = context.switchToHttp().getRequest();
-            const file = request[fieldName];
+            // console.log('request', request.file);
+            const file = request.file;
 
-            if (!file) {
-                Logger.error(
-                    'Error on intercept file: ',
-                    `File with fieldName: "${fieldName}" not found`,
-                );
-                return of(undefined);
+            if (!file || (file && file.fieldname !== fieldName)) {
+                // Logger.error(
+                //     'Error on intercept file: ',
+                //     `File with fieldName: "${fieldName}" not found`,
+                // );
+                throw new BadGatewayException({
+                    message: `Error on intercept file:
+                    File with fieldName: "${fieldName}" not found`
+                });
+                // return of(undefined);
             }
             file.storageUrl = await this._googleCloudStorageService.upload(file, googleClodudStorageOptions);
             return next.handle();

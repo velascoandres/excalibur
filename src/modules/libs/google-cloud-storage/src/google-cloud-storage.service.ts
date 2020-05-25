@@ -1,7 +1,7 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {GOOGLE_CLOUD_STORAGE_MODULE_OPTIONS, GOOGLE_CLOUD_STORAGE_URI} from './constantes';
 import {GoogleCloudStorageOptions, GoogleCloudStoragePerRequestOptions, UploadedFileMetadata} from './interfaces';
-import {Bucket, CreateWriteStreamOptions} from '@google-cloud/storage';
+import {Bucket, CreateWriteStreamOptions, Storage} from '@google-cloud/storage';
 import {join} from 'path';
 import {v4 as uuidV4} from 'uuid';
 import {File} from '@google-cloud/storage/build/src/file';
