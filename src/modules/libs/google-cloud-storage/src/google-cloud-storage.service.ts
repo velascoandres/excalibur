@@ -12,7 +12,7 @@ export class GoogleCloudStorageService {
 
     constructor(
         @Inject(GOOGLE_CLOUD_STORAGE_MODULE_OPTIONS)
-        private readonly options: GoogleCloudStorageOptions) {
+        private  options: GoogleCloudStorageOptions) {
         console.log('GCloudStorageService.options', options);
     }
 

@@ -14,14 +14,14 @@ export class GoogleCloudStorageModuleHelper {
         };
     }
 
-    static buildProviders(opciones: GoogleCloudStorageOptions): Provider[] {
-        const gcsModuleOptions = {
+    static buildProviders(options: GoogleCloudStorageOptions): Provider[] {
+        const googleCloudStorageModuleOptionsProvider = {
             provide: GOOGLE_CLOUD_STORAGE_MODULE_OPTIONS,
-            useValue: opciones,
+            useValue: options,
         };
 
         return [
-            gcsModuleOptions,
+            googleCloudStorageModuleOptionsProvider,
             this.buidlFactoryprovider,
         ];
     }
