@@ -1,5 +1,5 @@
 import {MongoIndexConfigInterface, MongoServiceCrudMethodsInterface} from '../interfaces/service.crud.methods.interfaces';
-import {FindManyOptions, InsertWriteOpResult, MongoRepository} from 'typeorm';
+import {DeepPartial, FindManyOptions, InsertWriteOpResult, MongoRepository} from 'typeorm';
 import {BadRequestException, InternalServerErrorException} from '@nestjs/common';
 
 export abstract class PrincipalMongoService<Entity> implements MongoServiceCrudMethodsInterface<Entity> {
@@ -16,7 +16,7 @@ export abstract class PrincipalMongoService<Entity> implements MongoServiceCrudM
         }
     }
 
-    async createOne(row: Entity): Promise<Entity> {
+    async createOne(row: DeepPartial<Entity>): Promise<Entity> {
         try {
             return this.service.create(row);
         } catch (error) {
@@ -61,7 +61,7 @@ export abstract class PrincipalMongoService<Entity> implements MongoServiceCrudM
         }
     }
 
-    async updateOne(id: number, row: Entity): Promise<Entity> {
+    async updateOne(id: string | number, row: DeepPartial<Entity>): Promise<Entity> {
         try {
             const ObjectId = require('mongodb').ObjectID;
             await this.service.findOneAndUpdate(ObjectId(id), row);

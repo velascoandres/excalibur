@@ -12,6 +12,7 @@ export interface ServiceCrudMethodsInterface<T> {
 
 export interface MongoServiceCrudMethodsInterface<T> extends ServiceCrudMethodsInterface<T> {
     findAll: (optionsOrConditions?: FindManyOptions<T> | Partial<T>) => Promise<[T[], number]>;
+    updateOne: (id: string | number, row: T) => Promise<T>;
 }
 
 export interface MongoIndexConfigInterface {
