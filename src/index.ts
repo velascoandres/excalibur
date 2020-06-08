@@ -15,7 +15,10 @@ export {CuerpoConsultaFindFull} from './api/funciones/busqueda/busqueda-compuest
 export {OrderByInterface} from './api/funciones/busqueda/busqueda-compuesta/interfaces/orderBy.interface';
 export {OperadorConsultaInterface} from './api/funciones/busqueda/busqueda-compuesta/interfaces/operador.consulta.interface';
 export {OperadorConsultaSimpleInterface} from './api/funciones/busqueda/busqueda-compuesta/interfaces/operador.consulta.simple.interface';
-
+export {PrincipalMongoService} from './api/principal/principal.mongo.service';
+export {ServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods.interfaces'
+export {MongoServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods.interfaces'
+export {MongoIndexConfigInterface} from './api/interfaces/service.crud.methods.interfaces'
 // MODULOS ************************************************************
 export * from './modules/libs/google-cloud-storage/src/index';
 export * from './modules/libs/firebase/src/index';

@@ -1,15 +1,16 @@
-import {FindManyOptions, Repository} from 'typeorm';
+import {DeepPartial, FindManyOptions, Repository} from 'typeorm';
 import {NotFoundException} from '@nestjs/common';
 import {findFull} from '../../index';
 import {ConsultaFindFullInterface} from '../../index';
+import {ServiceCrudMethodsInterface} from '../interfaces/service.crud.methods.interfaces';
 
-export abstract class PrincipalService<Entidad> {
+export abstract class PrincipalService<Entidad> implements ServiceCrudMethodsInterface<Entidad>{
     protected constructor(
         private readonly _filaRepository: Repository<Entidad>,
     ) {
     }
 
-    async createOne(fila: Entidad | any): Promise<Entidad> {
+    async createOne(fila: DeepPartial<Entidad>): Promise<Entidad> {
         const filaInstanciado: any = await this._filaRepository.create(fila);
         // Conectarse a la db
         const filaCreado = await this._filaRepository.save(filaInstanciado);
@@ -18,7 +19,7 @@ export abstract class PrincipalService<Entidad> {
 
     async updateOne(
         id: number,
-        fila: Entidad | any,
+        fila: DeepPartial<Entidad>,
     ): Promise<Entidad> {
         const registroActualizado = await this._filaRepository.update(id, fila);
         return await this._filaRepository.findOne(id) as Entidad;
