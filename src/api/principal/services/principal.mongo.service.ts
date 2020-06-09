@@ -1,12 +1,17 @@
-import {MongoIndexConfigInterface, MongoServiceCrudMethodsInterface} from '../..';
+
 import {DeepPartial, FindManyOptions, InsertWriteOpResult, MongoRepository} from 'typeorm';
 import {BadRequestException, InternalServerErrorException} from '@nestjs/common';
+import {PrincipalService} from './principal.service';
+import {MongoIndexConfigInterface} from '../../..';
 
-export abstract class PrincipalMongoService<Entity> implements MongoServiceCrudMethodsInterface<Entity> {
+export abstract class PrincipalMongoService<Entity> extends PrincipalService<Entity>{
     protected constructor(
         private service: MongoRepository<Entity>,
         private indexConfig?: MongoIndexConfigInterface,
     ) {
+        super(
+            service,
+        );
         if (indexConfig) {
             this.createIndex(indexConfig).then(
                 indx => console.info('Index created: ', indx),

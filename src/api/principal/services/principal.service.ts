@@ -1,8 +1,8 @@
 import {DeepPartial, FindManyOptions, Repository} from 'typeorm';
 import {NotFoundException} from '@nestjs/common';
-import {findFull} from '../../index';
-import {ConsultaFindFullInterface} from '../../index';
-import {ServiceCrudMethodsInterface} from '../interfaces/service.crud.methods.interfaces';
+import {findFull} from '../../../index';
+import {ConsultaFindFullInterface} from '../../../index';
+import {ServiceCrudMethodsInterface} from '../../interfaces/service.crud.methods.interfaces';
 
 export abstract class PrincipalService<Entidad> implements ServiceCrudMethodsInterface<Entidad>{
     protected constructor(

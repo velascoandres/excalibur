@@ -1,4 +1,4 @@
-import {PrincipalController} from './principal.controller';
+import {PrincipalController} from '../controllers/principal.controller';
 
 export abstract class PrincipalAuthCrudValidation{
     // For especific controller method implement an auth or security method

@@ -10,28 +10,29 @@ import {
     Request,
     Response,
 } from '@nestjs/common';
-import {PrincipalService} from './principal.service';
+import {PrincipalService} from '../../..';
 import {validate} from 'class-validator';
 import 'reflect-metadata';
 import 'es6-shim';
 import {plainToClass} from 'class-transformer';
-import {PrincipalAuthCrudValidation} from './principal.abstract.auth.crud';
-import {AuthCrudGenerico} from './auth.crud.generico';
-import {PrincipalDto} from './principal.dto';
+import {PrincipalAuthCrudValidation} from '../../..';
+import {AuthCrudGenerico} from '../auth/auth.crud.generico';
+import {PrincipalDto} from '../../..';
 import {
     ApiBadRequestResponse,
     ApiCreatedResponse,
     ApiInternalServerErrorResponse, ApiOkResponse,
     ApiUnauthorizedResponse
 } from '@nestjs/swagger';
-import {ConsultaFindFullInterface} from '../../index';
+import {ConsultaFindFullInterface} from '../../..';
 import {GenericFindResponse} from './generic-find.response';
+import {ControllerCrudMehods, DtoConfigInterface} from '../../interfaces/controllers.interfaces';
+import {DeepPartial} from 'typeorm';
 
-export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEditar = any> {
+export abstract class PrincipalController<Entidad = any> implements ControllerCrudMehods<Entidad>{
     protected constructor(
         private readonly _principalService: PrincipalService<Entidad>,
-        private readonly nombreClaseDtoEditar: typeof PrincipalDto,
-        private readonly nombreClaseDtoCrear: typeof PrincipalDto,
+        private readonly _dtoConfig: DtoConfigInterface = {createDtoType: PrincipalDto, updateDtoType: PrincipalDto},
         private readonly _authSecurityCrud: PrincipalAuthCrudValidation = new AuthCrudGenerico(),
     ) {
     }
@@ -42,26 +43,26 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
     @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async createOne(
-        @Body() nuevo: DtoCrear,
+        @Body() newRecord: DeepPartial<Entidad>,
         @Request() req: any,
         @Response() response: any,
     ) {
         const puedeRealizarAccion: boolean = this._authSecurityCrud.createOneAuht(req, response, this);
         if (puedeRealizarAccion) {
-            const entidadoDto = plainToClass(this.nombreClaseDtoCrear as typeof PrincipalDto, nuevo) as object;
+            const entidadoDto = plainToClass(this._dtoConfig.createDtoType, newRecord) as object;
             const erroresValidacion = await validate(entidadoDto);
             if (erroresValidacion.length > 0) {
                 response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
             } else {
                 try {
-                    const nuevoRegistro = await this._principalService.createOne(nuevo);
+                    const nuevoRegistro = await this._principalService.createOne(newRecord);
                     response.status(HttpStatus.OK).send(nuevoRegistro);
                 } catch (error) {
                     console.error(
                         {
                             error,
                             mensaje: 'Error on create',
-                            data: {registro: nuevo},
+                            data: {record: newRecord},
                         }
                     );
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
@@ -79,7 +80,7 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
     @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async updateOne(
-        @Body() datosActualizar: DtoEditar,
+        @Body() recordToUpdate: DeepPartial<Entidad>,
         @Param('id') id: number,
         @Request() req: any,
         @Response() response: any,
@@ -88,7 +89,7 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
         if (puedeRealizarAccion) {
             const idValido = !isNaN(Number(id));
             if (idValido) {
-                const entidadoDto = plainToClass(this.nombreClaseDtoEditar as typeof PrincipalDto, datosActualizar) as object;
+                const entidadoDto = plainToClass(this._dtoConfig.updateDtoType as typeof PrincipalDto, recordToUpdate) as object;
                 const erroresValidacion = await validate(entidadoDto);
                 if (erroresValidacion.length > 0) {
                     response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
@@ -96,7 +97,7 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
                     try {
                         const registroActualizadoActualizado = await this._principalService.updateOne(
                             Number(id),
-                            datosActualizar,
+                            recordToUpdate,
                         );
                         response.status(HttpStatus.OK).send(registroActualizadoActualizado);
                     } catch (error) {
@@ -104,7 +105,7 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
                             {
                                 error,
                                 mensaje: 'Error al actualizar',
-                                data: {id, datosActualizar},
+                                data: {id, datosActualizar: recordToUpdate},
                             }
                         );
                         response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
@@ -196,7 +197,7 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
     @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async findAll(
-        @Query('query') criteriosBusqueda: any,
+        @Query('query') searchCriteria: any,
         @Request() req: any,
         @Response() response: any,
     ) {
@@ -204,8 +205,8 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
         if (puedeRealizarAccion) {
             try {
                 let resultado: [Entidad[], number];
-                if (criteriosBusqueda) {
-                    const query = JSON.parse(criteriosBusqueda);
+                if (searchCriteria) {
+                    const query = JSON.parse(searchCriteria);
                     resultado = await this._principalService.findAll(query);
                 } else {
                     resultado = await this._principalService.findAll({} as ConsultaFindFullInterface);
@@ -220,7 +221,7 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
                     {
                         error,
                         mensaje: 'Error on fetch results',
-                        data: criteriosBusqueda,
+                        data: searchCriteria,
                     },
                 );
                 response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});

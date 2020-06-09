@@ -1,5 +1,5 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {PrincipalEntity} from './principal.entity';
+import {PrincipalEntity} from '../schemas/principal.entity';
 
 export class GenericFindResponse {
     @ApiProperty({ type: [PrincipalEntity], description: 'data fetched by page' })

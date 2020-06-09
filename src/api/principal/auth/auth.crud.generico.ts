@@ -1,5 +1,5 @@
 import {PrincipalAuthCrudValidation} from './principal.abstract.auth.crud';
-import {PrincipalController} from './principal.controller';
+import {PrincipalController} from '../controllers/principal.controller';
 
 export class AuthCrudGenerico extends PrincipalAuthCrudValidation{
     createOneAuht(req: any, res: any, controller: PrincipalController): boolean {

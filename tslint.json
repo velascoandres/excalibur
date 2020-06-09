@@ -48,7 +48,8 @@
     "one-variable-per-declaration": [
       false
     ],
-    "no-console": [ "error" , { "allow": ["warn", "error", "info"] }]
+    "no-console": [ "error" , { "allow": ["warn", "error", "info"] }],
+    "no-namespace": false
   },
   "rulesDirectory": []
 }
