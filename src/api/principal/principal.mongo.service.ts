@@ -1,4 +1,4 @@
-import {MongoIndexConfigInterface, MongoServiceCrudMethodsInterface} from '../interfaces/service.crud.methods.interfaces';
+import {MongoIndexConfigInterface, MongoServiceCrudMethodsInterface} from '../..';
 import {DeepPartial, FindManyOptions, InsertWriteOpResult, MongoRepository} from 'typeorm';
 import {BadRequestException, InternalServerErrorException} from '@nestjs/common';
 

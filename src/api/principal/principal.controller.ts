@@ -25,6 +25,7 @@ import {
     ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import {ConsultaFindFullInterface} from '../../index';
+import {GenericFindResponse} from './generic-find.response';
 
 export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEditar = any> {
     protected constructor(
@@ -36,10 +37,10 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     }
 
     @Post()
-    @ApiCreatedResponse({ status: HttpStatus.OK, description: 'The record has been successfully created.'})
-    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
-    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
-    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
+    @ApiCreatedResponse({status: HttpStatus.OK, description: 'The record has been successfully created.'})
+    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
+    @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async createOne(
         @Body() nuevo: DtoCrear,
         @Request() req: any,
@@ -73,10 +74,10 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     }
 
     @Put(':id')
-    @ApiOkResponse({ status: HttpStatus.OK, description: 'The record has been successfully updated.'})
-    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
-    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
-    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
+    @ApiOkResponse({status: HttpStatus.OK, description: 'The record has been successfully updated.'})
+    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
+    @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async updateOne(
         @Body() datosActualizar: DtoEditar,
         @Param('id') id: number,
@@ -118,10 +119,10 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     }
 
     @Delete(':id')
-    @ApiOkResponse({ status: HttpStatus.OK, description: 'The record has been deleted.'})
-    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
-    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
-    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
+    @ApiOkResponse({status: HttpStatus.OK, description: 'The record has been deleted.'})
+    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
+    @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async deleteOne(
         @Param('id') id: number,
         @Request() req: any,
@@ -145,7 +146,7 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
                 }
             } else {
-                response.status(HttpStatus.BAD_REQUEST).send({message:'Invalid Id'});
+                response.status(HttpStatus.BAD_REQUEST).send({message: 'Invalid Id'});
             }
         } else {
             response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
@@ -153,10 +154,10 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     }
 
     @Get(':id')
-    @ApiOkResponse({ status: HttpStatus.OK, description: 'The record has been fetched.'})
-    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
-    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
-    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
+    @ApiOkResponse({status: HttpStatus.OK, description: 'The record has been fetched.'})
+    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
+    @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async findOneById(
         @Param('id') id: number,
         @Request() req: any,
@@ -182,7 +183,7 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
                 }
             } else {
-                response.status(HttpStatus.BAD_REQUEST).send({message:'Invalid Id'});
+                response.status(HttpStatus.BAD_REQUEST).send({message: 'Invalid Id'});
             }
         } else {
             response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
@@ -190,10 +191,10 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
     }
 
     @Get()
-    @ApiOkResponse({ status: HttpStatus.OK, description: 'The records has been fetched.'})
-    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
-    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
-    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
+    @ApiOkResponse({status: HttpStatus.OK, description: 'The records has been fetched.', type: GenericFindResponse})
+    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
+    @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async findAll(
         @Query('query') criteriosBusqueda: any,
         @Request() req: any,
@@ -209,7 +210,11 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
                 } else {
                     resultado = await this._principalService.findAll({} as ConsultaFindFullInterface);
                 }
-                response.status(HttpStatus.OK).send(resultado);
+                const queryResponse = {
+                    data: resultado[0],
+                    total: resultado[1],
+                }
+                response.status(HttpStatus.OK).send(queryResponse);
             } catch (error) {
                 console.error(
                     {
@@ -218,7 +223,7 @@ export abstract class PrincipalController<Entidad = any, DtoCrear = any, DtoEdit
                         data: criteriosBusqueda,
                     },
                 );
-                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message:'Server Error'});
+                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
             }
         } else {
             response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
