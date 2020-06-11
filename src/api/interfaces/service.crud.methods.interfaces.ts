@@ -1,5 +1,5 @@
-import {ConsultaFindFullInterface} from '../..';
-import {FindManyOptions} from 'typeorm';
+import {ConsultaFindFullInterface, PrincipalDto} from '../..';
+import {DeepPartial, FindManyOptions} from 'typeorm';
 import {MongodbIndexOptions} from 'typeorm/driver/mongodb/typings';
 
 export interface ServiceCrudMethodsInterface<T> {
@@ -19,3 +19,5 @@ export interface MongoIndexConfigInterface {
     fieldOrSpec: string | any;
     options?: MongodbIndexOptions;
 }
+
+export type PartialEntity<T> = DeepPartial<T> & PrincipalDto;

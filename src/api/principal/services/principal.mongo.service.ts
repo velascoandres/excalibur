@@ -1,9 +1,17 @@
-import {DeepPartial, FindManyOptions, InsertWriteOpResult, MongoRepository, ObjectLiteral} from 'typeorm';
+import {
+    DeepPartial,
+    DeleteWriteOpResultObject,
+    FindManyOptions,
+    InsertWriteOpResult,
+    MongoRepository,
+    ObjectLiteral
+} from 'typeorm';
 import {BadRequestException, InternalServerErrorException} from '@nestjs/common';
 import {PrincipalService} from './principal.service';
 import {MongoIndexConfigInterface, PrincipalDto} from '../../..';
 import {UpdateWriteOpResult} from 'typeorm/driver/mongodb/typings';
 import {PrincipalMongoUpdateDto} from '../schemas/principal.mongo.update.dto';
+import {PartialEntity} from '../../interfaces/service.crud.methods.interfaces';
 
 export abstract class PrincipalMongoService<Entity> extends PrincipalService<Entity> {
     protected constructor(
@@ -67,7 +75,7 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
         }
     }
 
-    async updateOne(id: string | number, row: DeepPartial<Entity> | PrincipalMongoUpdateDto): Promise<Entity> {
+    async updateOne(id: string | number, row: PartialEntity<Entity>): Promise<Entity> {
         try {
             const ObjectId = require('mongodb').ObjectID;
             await this.mongoRepository.findOneAndUpdate(ObjectId(id), row);
@@ -123,6 +131,25 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
         } catch (error) {
             console.error({error,});
             throw new InternalServerErrorException('Error on updated many documents');
+        }
+    }
+
+    async deleteMany(
+        ids: any[]): Promise<number> {
+        const ObjectId = require('mongodb').ObjectID;
+        const formatIds = (ids as any[]).map(id => ObjectId(id));
+        try {
+            const deleteResponse: DeleteWriteOpResultObject = await this.mongoRepository.deleteMany(
+                {
+                    where: {
+                        _id: {$in: [...formatIds]},
+                    },
+                }
+            );
+            return deleteResponse.deletedCount ? deleteResponse.deletedCount : 0;
+        } catch (error) {
+            console.error({error,});
+            throw new InternalServerErrorException('Error on delte many documents');
         }
     }
 
