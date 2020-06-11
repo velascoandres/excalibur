@@ -20,6 +20,8 @@ export {ServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods
 export {MongoServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods.interfaces';
 export {MongoIndexConfigInterface} from './api/interfaces/service.crud.methods.interfaces';
 export {PrincipalMongoController} from  './api/principal/controllers/principal.mongo.controller';
+export {PrincipalMongoUpdateDto} from  './api/principal/schemas/principal.mongo.update.dto';
+export {PrincipalMongoEntity} from  './api/principal/schemas/principal.mongo.entity';
 export  *  from  './api/interfaces/controllers.interfaces';
 // MODULOS ************************************************************
 export * from './modules/libs/google-cloud-storage/src/index';

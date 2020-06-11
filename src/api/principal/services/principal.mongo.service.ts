@@ -1,16 +1,17 @@
-
-import {DeepPartial, FindManyOptions, InsertWriteOpResult, MongoRepository} from 'typeorm';
+import {DeepPartial, FindManyOptions, InsertWriteOpResult, MongoRepository, ObjectLiteral} from 'typeorm';
 import {BadRequestException, InternalServerErrorException} from '@nestjs/common';
 import {PrincipalService} from './principal.service';
-import {MongoIndexConfigInterface} from '../../..';
+import {MongoIndexConfigInterface, PrincipalDto} from '../../..';
+import {UpdateWriteOpResult} from 'typeorm/driver/mongodb/typings';
+import {PrincipalMongoUpdateDto} from '../schemas/principal.mongo.update.dto';
 
-export abstract class PrincipalMongoService<Entity> extends PrincipalService<Entity>{
+export abstract class PrincipalMongoService<Entity> extends PrincipalService<Entity> {
     protected constructor(
-        private service: MongoRepository<Entity>,
+        private mongoRepository: MongoRepository<Entity>,
         private indexConfig?: MongoIndexConfigInterface,
     ) {
         super(
-            service,
+            mongoRepository,
         );
         if (indexConfig) {
             this.createIndex(indexConfig).then(
@@ -21,9 +22,9 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
         }
     }
 
-    async createOne(row: DeepPartial<Entity>): Promise<Entity> {
+    async createOne(row: DeepPartial<Entity> | PrincipalDto): Promise<Entity> {
         try {
-            return this.service.create(row);
+            return this.mongoRepository.create(row as DeepPartial<Entity>);
         } catch (error) {
             throw new InternalServerErrorException('Error on delete document');
         }
@@ -32,7 +33,7 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
     async deleteOne(id: number): Promise<Entity> {
         try {
             const ObjectId = require('mongodb').ObjectID;
-            const deleteResponse = await this.service.delete(
+            const deleteResponse = await this.mongoRepository.delete(
                 ObjectId(id),
             );
             return this.findOneById(id);
@@ -43,7 +44,7 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
 
     async findAll(optionsOrConditions?: FindManyOptions<Entity> | Partial<Entity>): Promise<[Entity[], number]> {
         try {
-            return await this.service.findAndCount(optionsOrConditions);
+            return await this.mongoRepository.findAndCount(optionsOrConditions);
         } catch (error) {
             throw new InternalServerErrorException('Error on fetch document');
         }
@@ -52,7 +53,7 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
     async findOneById(id: number): Promise<Entity> {
         const ObjectId = require('mongodb').ObjectID;
         try {
-            return await this.service.findOne({
+            return await this.mongoRepository.findOne({
                 where: {
                     _id: ObjectId(id),
                 },
@@ -66,11 +67,11 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
         }
     }
 
-    async updateOne(id: string | number, row: DeepPartial<Entity>): Promise<Entity> {
+    async updateOne(id: string | number, row: DeepPartial<Entity> | PrincipalMongoUpdateDto): Promise<Entity> {
         try {
             const ObjectId = require('mongodb').ObjectID;
-            await this.service.findOneAndUpdate(ObjectId(id), row);
-            return await this.service.findOne({
+            await this.mongoRepository.findOneAndUpdate(ObjectId(id), row);
+            return await this.mongoRepository.findOne({
                 where: {
                     _id: ObjectId(id),
                 },
@@ -84,12 +85,12 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
         }
     }
 
-    async createMany(localizaciones: Entity[]): Promise<[Entity[], number]> {
+    async createMany(documents: DeepPartial<Entity>[] | PrincipalDto[] | Entity[]): Promise<[Entity[], number]> {
         let createdDocuments: InsertWriteOpResult;
         let ids = [];
         try {
-            createdDocuments = await this.service.insertMany(
-                localizaciones,
+            createdDocuments = await this.mongoRepository.insertMany(
+                documents,
             );
         } catch (error) {
             console.error({error,});
@@ -111,9 +112,23 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
         }
     }
 
+    async updateMany(
+        documents: DeepPartial<Entity>[] | PrincipalMongoUpdateDto[]): Promise<Entity[]> {
+        const ObjectId = require('mongodb').ObjectID;
+        const ids = (documents as any[]).map(doc => ObjectId(doc.id));
+        try {
+            return await this.mongoRepository.save(
+                documents as DeepPartial<Entity>[],
+            );
+        } catch (error) {
+            console.error({error,});
+            throw new InternalServerErrorException('Error on updated many documents');
+        }
+    }
+
     async createIndex(config: MongoIndexConfigInterface): Promise<string> {
         try {
-            return await this.service
+            return await this.mongoRepository
                 .createCollectionIndex(
                     config.fieldOrSpec,
                     config.options,
