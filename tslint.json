@@ -49,7 +49,9 @@
       false
     ],
     "no-console": [ "error" , { "allow": ["warn", "error", "info"] }],
-    "no-namespace": false
+    "no-namespace": false,
+    "ban-types": true,
+    "semicolon": true
   },
   "rulesDirectory": []
 }

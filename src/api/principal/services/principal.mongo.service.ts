@@ -4,13 +4,11 @@ import {
     FindManyOptions,
     InsertWriteOpResult,
     MongoRepository,
-    ObjectLiteral
 } from 'typeorm';
 import {BadRequestException, InternalServerErrorException} from '@nestjs/common';
 import {PrincipalService} from './principal.service';
 import {MongoIndexConfigInterface, PrincipalDto} from '../../..';
-import {UpdateWriteOpResult} from 'typeorm/driver/mongodb/typings';
-import {PrincipalMongoUpdateDto} from '../schemas/principal.mongo.update.dto';
+import {PrincipalMongoUpdateDto} from '../../..';
 import {PartialEntity} from '../../interfaces/service.crud.methods.interfaces';
 
 export abstract class PrincipalMongoService<Entity> extends PrincipalService<Entity> {
