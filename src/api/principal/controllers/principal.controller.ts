@@ -29,7 +29,7 @@ import {GenericFindResponse} from './generic-find.response';
 import {ControllerCrudMehods, DtoConfigInterface} from '../../interfaces/controllers.interfaces';
 import {DeepPartial} from 'typeorm';
 
-export abstract class PrincipalController<Entidad = any> implements ControllerCrudMehods<Entidad>{
+export abstract class PrincipalController<Entidad = any> implements ControllerCrudMehods<Entidad> {
     protected constructor(
         private readonly _principalService: PrincipalService<Entidad>,
         private readonly _dtoConfig: DtoConfigInterface = {createDtoType: PrincipalDto, updateDtoType: PrincipalDto},
@@ -204,18 +204,40 @@ export abstract class PrincipalController<Entidad = any> implements ControllerCr
         const puedeRealizarAccion: boolean = this._authSecurityCrud.findAllAuth(req, response, this);
         if (puedeRealizarAccion) {
             try {
+                let skip = 0;
+                let take = 10;
                 let resultado: [Entidad[], number];
+                let query: ConsultaFindFullInterface;
                 if (searchCriteria) {
-                    const query = JSON.parse(searchCriteria);
+                    query = JSON.parse(searchCriteria);
                     resultado = await this._principalService.findAll(query);
+                    skip = query.skip ? query.skip : 0;
+                    take = query.take ? query.take : 10;
                 } else {
+                    query = {where: {}, skip: 0, take: 10};
                     resultado = await this._principalService.findAll({} as ConsultaFindFullInterface);
                 }
+                const total = +resultado[1];
+                const rest = total - (skip + take);
+                const isLastPage = rest <= 0;
+                let nextQuery = null;
+                if (!isLastPage){
+                    const isNotLimit = rest >= take;
+                    const nextSkip = skip + take;
+                    const nextTake = isNotLimit ? take : rest;
+                    const partialQuery: Partial<ConsultaFindFullInterface> = {...query};
+                    partialQuery.skip = nextSkip;
+                    partialQuery.take = nextTake;
+                    partialQuery.where = Object.keys(query.where).length > 0 ? partialQuery.where: undefined;
+                    nextQuery = partialQuery;
+                }
                 const queryResponse = {
+                    nextQuery,
                     data: resultado[0],
                     total: resultado[1],
-                }
-                response.status(HttpStatus.OK).send(queryResponse);
+                };
+                response.setHeader('Content-Type', 'application/json');
+                response.status(HttpStatus.OK).json(queryResponse);
             } catch (error) {
                 console.error(
                     {
