@@ -3,7 +3,7 @@ import {PrincipalEntity} from '../schemas/principal.entity';
 
 export class GenericFindResponse {
     @ApiProperty({ type: [PrincipalEntity], description: 'data fetched by page' })
-    data: [PrincipalEntity] | undefined;
+    data: [Partial<PrincipalEntity>] | undefined;
     @ApiProperty({ type: Number, description: 'total of records' })
     total: number | undefined;
 }

@@ -16,22 +16,34 @@ export function ApiDoc(
         const findOneByIdOptions = options.findOneById;
         if (createOneOptions) {
             SwaggerHelper.buildApiBody(createOneOptions, NOMBRES_METODOS_API.createOne, target);
-            establecerApiResponses(createOneOptions.responses, target, NOMBRES_METODOS_API.createOne as MetodoCrud);
+            if (createOneOptions.responses && createOneOptions.responses.length > 0) {
+                establecerApiResponses(createOneOptions.responses, target, NOMBRES_METODOS_API.createOne as MetodoCrud);
+            }
         }
         if (updateOneOptions) {
             SwaggerHelper.buildApiBody(updateOneOptions, NOMBRES_METODOS_API.updateOne, target);
-            establecerApiResponses(updateOneOptions.responses, target, NOMBRES_METODOS_API.updateOne as MetodoCrud);
+            if (updateOneOptions.responses && updateOneOptions.responses.length > 0) {
+                establecerApiResponses(updateOneOptions.responses, target, NOMBRES_METODOS_API.updateOne as MetodoCrud);
+            }
         }
         if (findAllOptions) {
-            SwaggerHelper.buildApiQuery(findAllOptions, NOMBRES_METODOS_API.findAll, target);
-            establecerApiResponses(findAllOptions.responses, target, NOMBRES_METODOS_API.findAll as MetodoCrud);
+            if (findAllOptions.apiQuery) {
+                SwaggerHelper.buildApiQuery(findAllOptions, NOMBRES_METODOS_API.findAll, target);
+            }
+            if (findAllOptions.responses && findAllOptions.responses.length > 0) {
+                establecerApiResponses(findAllOptions.responses, target, NOMBRES_METODOS_API.findAll as MetodoCrud);
+            }
         }
         if (deleteOneOptions) {
-            establecerApiResponses(deleteOneOptions.responses, target, NOMBRES_METODOS_API.deleteOne as MetodoCrud);
+            if (deleteOneOptions.responses && deleteOneOptions.responses.length > 0) {
+                establecerApiResponses(deleteOneOptions.responses, target, NOMBRES_METODOS_API.deleteOne as MetodoCrud);
+            }
         }
         if (findOneByIdOptions) {
-            establecerApiResponses(findOneByIdOptions.responses, target, NOMBRES_METODOS_API.findOneById as MetodoCrud);
+            if (findOneByIdOptions.responses && findOneByIdOptions.responses.length > 0) {
+                establecerApiResponses(findOneByIdOptions.responses, target, NOMBRES_METODOS_API.findOneById as MetodoCrud);
+            }
         }
         return target;
-    }
+    };
 }
