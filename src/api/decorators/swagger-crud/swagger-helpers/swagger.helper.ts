@@ -83,10 +83,6 @@ export class SwaggerHelper {
             target.prototype[nombreMetodo]) || [];
         Reflect.defineMetadata(
             DECORATORS.API_PARAMETERS,
-            // {
-            //     ...responses,
-            //     ...metaData
-            // },
             [
                 ...responses,
                 {
