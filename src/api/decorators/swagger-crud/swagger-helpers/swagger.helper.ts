@@ -1,11 +1,12 @@
 import {armarApiBodyCustomizado} from '../utils/armar-api-body-customizado';
 import {BaseConfig, CreateUpdateOneConfig, Prototipo} from '../interfaces';
 import {DECORATORS} from '@nestjs/swagger/dist/constants';
-import {BODY_METADATA_POR_DEFECTO, OPCIONES_QUERY_POR_DEFECTO} from '../constantes';
+import {BODY_METADATA_POR_DEFECTO, OPCIONES_HEADER_POR_DEFECTO, OPCIONES_QUERY_POR_DEFECTO} from '../constantes';
 import {isUndefined, negate, pickBy} from 'lodash';
-import {ApiQueryOptions, ApiResponseOptions} from '@nestjs/swagger';
+import {ApiHeaderOptions, ApiQueryOptions, ApiResponseOptions} from '@nestjs/swagger';
 import {armarApiQueryCustomizado} from '../utils/armar-api-query-customizado';
 import {armarApiResponse} from '../utils/armar-api-response';
+import {armarApiHeaders} from '../utils/armar-api-headers';
 
 export class SwaggerHelper {
     static buildApiBody(
@@ -68,6 +69,31 @@ export class SwaggerHelper {
                 ...responses,
                 ...params
             },
+            target.prototype[nombreMetodo]
+        );
+    }
+    static buildApiHeaders(
+        configuracion: ApiHeaderOptions,
+        nombreMetodo: string,
+        target: Prototipo,
+    ) {
+        const params = armarApiHeaders(configuracion);
+        const responses = Reflect.getMetadata(
+            DECORATORS.API_PARAMETERS,
+            target.prototype[nombreMetodo]) || [];
+        Reflect.defineMetadata(
+            DECORATORS.API_PARAMETERS,
+            // {
+            //     ...responses,
+            //     ...metaData
+            // },
+            [
+                ...responses,
+                {
+                    ...OPCIONES_HEADER_POR_DEFECTO,
+                    ...pickBy(params, negate(isUndefined))
+                }
+            ],
             target.prototype[nombreMetodo]
         );
     }

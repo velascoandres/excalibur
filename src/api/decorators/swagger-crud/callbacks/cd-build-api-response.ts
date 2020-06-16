@@ -8,5 +8,5 @@ export function delegarApiResponse(
 ): (cg: ApiResponseOptions) => void {
     return (configuracion: ApiResponseOptions) => {
         SwaggerHelper.buildApiResponse(configuracion, nombreMetodo, target);
-    }
+    };
 }
