@@ -29,7 +29,7 @@ import {GenericFindResponse} from './generic-find.response';
 import {ControllerCrudMehods, DtoConfigInterface} from '../../interfaces/controllers.interfaces';
 import {DeepPartial} from 'typeorm';
 
-export abstract class PrincipalController<Entidad = any> implements ControllerCrudMehods<Entidad> {
+export abstract class ApiController<Entidad = any> implements ControllerCrudMehods<Entidad> {
     protected constructor(
         private readonly _principalService: PrincipalService<Entidad>,
         private readonly _dtoConfig: DtoConfigInterface = {createDtoType: PrincipalDto, updateDtoType: PrincipalDto},

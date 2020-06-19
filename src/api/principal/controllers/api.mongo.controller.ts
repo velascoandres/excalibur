@@ -1,9 +1,9 @@
 import {DtoConfigInterface} from '../../interfaces/controllers.interfaces';
-import {PrincipalAuthCrudValidation, PrincipalController, PrincipalDto, PrincipalMongoService} from '../../..';
+import {PrincipalAuthCrudValidation, ApiController, PrincipalDto, PrincipalMongoService} from '../../..';
 import {AuthCrudGenerico} from '../auth/auth.crud.generico';
 
 
-export abstract class PrincipalMongoController<T>  extends  PrincipalController<T>{
+export abstract class ApiMongoController<T>  extends  ApiController<T>{
 
     protected constructor(
         private readonly _mongoService: PrincipalMongoService<T>,

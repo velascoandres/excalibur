@@ -1,28 +1,28 @@
 import {PrincipalAuthCrudValidation} from './principal.abstract.auth.crud';
-import {PrincipalController} from '../controllers/principal.controller';
+import {ApiController} from '../controllers/api.controller';
 
 export class AuthCrudGenerico extends PrincipalAuthCrudValidation{
-    createOneAuht(req: any, res: any, controller: PrincipalController): boolean {
+    createOneAuht(req: any, res: any, controller: ApiController): boolean {
         return true;
     }
 
-    deleteOneAuth(req: any, res: any, controller: PrincipalController): boolean {
+    deleteOneAuth(req: any, res: any, controller: ApiController): boolean {
         return true;
     }
 
-    findAllAuth(req: any, res: any, controller: PrincipalController): boolean {
+    findAllAuth(req: any, res: any, controller: ApiController): boolean {
         return true;
     }
 
-    findOneAuht(req: any, res: any, controller: PrincipalController): boolean {
+    findOneAuht(req: any, res: any, controller: ApiController): boolean {
         return true;
     }
 
-    findOneByIdAuht(req: any, res: any, controller: PrincipalController): boolean {
+    findOneByIdAuht(req: any, res: any, controller: ApiController): boolean {
         return true;
     }
 
-    updateOneAuht(req: any, res: any, controller: PrincipalController): boolean {
+    updateOneAuht(req: any, res: any, controller: ApiController): boolean {
         return true;
     }
 

@@ -1,7 +1,7 @@
 // API *********************************************************************
 export {crearDatos} from './api/funciones/archivos/cargar-datos-prueba';
 export {borrarArhicvo} from './api/funciones/archivos/borrar-archivos';
-export {PrincipalController} from './api/principal/controllers/principal.controller';
+export {ApiController} from './api/principal/controllers/api.controller';
 export {PrincipalService} from './api/principal/services/principal.service';
 export {PrincipalEntity} from './api/principal/schemas/principal.entity';
 export {PrincipalAuthCrudValidation} from './api/principal/auth/principal.abstract.auth.crud';
@@ -25,7 +25,7 @@ export {PrincipalMongoService} from './api/principal/services/principal.mongo.se
 export {ServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods.interfaces';
 export {MongoServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods.interfaces';
 export {MongoIndexConfigInterface} from './api/interfaces/service.crud.methods.interfaces';
-export {PrincipalMongoController} from './api/principal/controllers/principal.mongo.controller';
+export {ApiMongoController} from './api/principal/controllers/api.mongo.controller';
 export {PrincipalMongoUpdateDto} from './api/principal/schemas/principal.mongo.update.dto';
 export {PrincipalMongoEntity} from './api/principal/schemas/principal.mongo.entity';
 export * from './api/interfaces/controllers.interfaces';
