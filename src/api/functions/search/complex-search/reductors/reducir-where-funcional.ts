@@ -1,12 +1,15 @@
 import {WherePuroInterface} from '../interfaces/wherePuro.interface';
-import {esInterfazDeOperadorConsultaCompuesta} from '../funciones-verficadoras/esInterfazDeOperardorConsulta';
-import {armarWherePuroConOperador} from '../funciones-generadoras/armarWherePuroConOperador';
+import {
+    isComplexOperatorObject
+} from '../verificators-functions/esInterfazDeOperardorConsulta';
+import {armarWherePuroConOperador} from '../generators/armarWherePuroConOperador';
 import {ObjectLiteral} from 'typeorm';
 
 export function reducirWhereFuncional(entidad: string, atributo: string): (ac: WherePuroInterface, val: any, index: number) => WherePuroInterface {
     return (acumulador: WherePuroInterface, valorArreglo, indiceLocal: number) => {
         let wherePuroLocal: WherePuroInterface;
-        const esOperadorConsulta = esInterfazDeOperadorConsultaCompuesta(valorArreglo);
+        // const esOperadorConsulta = esInterfazDeOperadorConsultaCompuesta(valorArreglo);
+        const esOperadorConsulta = isComplexOperatorObject(valorArreglo);
         const strLlaveParametroLocal = `valorAtributo${indiceLocal}${entidad}${atributo}`;
         if (esOperadorConsulta) {
             wherePuroLocal = armarWherePuroConOperador(

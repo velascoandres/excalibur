@@ -1,5 +1,5 @@
 import {OperadorConsultaSimpleInterface} from '../interfaces/operador.consulta.simple.interface';
-import {esInterfazDeOperadorConsultaSimple} from '../funciones-verficadoras/esInterfazDeOperadorConsultaSimple';
+import {esInterfazDeOperadorConsultaSimple} from '../verificators-functions/esInterfazDeOperadorConsultaSimple';
 import {WherePuroInterface} from '../interfaces/wherePuro.interface';
 import {ObjectLiteral} from 'typeorm';
 

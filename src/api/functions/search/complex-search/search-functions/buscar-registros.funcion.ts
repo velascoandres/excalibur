@@ -1,6 +1,6 @@
 import {SelectQueryBuilder} from 'typeorm';
 import {ConsultaFindFullInterface} from '../interfaces/consulta.findFull.interface';
-import {generarQuery} from '../funciones-generadoras/generarQuery';
+import {generarQuery} from '../generators/generarQuery';
 import {OrderByInterface} from '../interfaces/orderBy.interface';
 
 export async function buscarRegistros(

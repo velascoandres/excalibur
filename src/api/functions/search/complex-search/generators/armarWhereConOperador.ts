@@ -1,5 +1,5 @@
 import {SelectQueryBuilder} from 'typeorm';
-import {OperadorConsultaInterface} from '../interfaces/operador.consulta.interface';
+import {OperadorConsultaInterface} from '../../../../..';
 import {generarWhere} from './generarWhere';
 import {armarWherePuroConOperador} from './armarWherePuroConOperador';
 import {WherePuroInterface} from '../interfaces/wherePuro.interface';
@@ -12,10 +12,10 @@ export function armarWhereConOperador(
     entidad: string,
     indice: number = 1,
 ): SelectQueryBuilder<{}> {
-    let conjuncion = 'and';
-    if (valorConOperador.conjuncion) {
-        conjuncion = valorConOperador.conjuncion;
-    }
+    const conjuncion = 'and';
+    // if (valorConOperador.conjuncion) {
+    //     conjuncion = valorConOperador.conjuncion;
+    // }
     const wherePuro = armarWherePuroConOperador(atributo, valorConOperador, entidad, indice) as WherePuroInterface;
     return generarWhere(consulta, wherePuro, conjuncion);
 }

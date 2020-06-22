@@ -1,12 +1,14 @@
 import {SelectQueryBuilder} from 'typeorm';
-import {verificarSiEsObjeto} from '../funciones-verficadoras/verificarSiEsObjeto';
+import {verificarSiEsObjeto} from '../verificators-functions/verificarSiEsObjeto';
 import {generarWhereRelacion} from './armarWhereConRelacion';
-import {encontrarTipoRelacion} from '../funciones-separadoras/encontrarTipoRelacion';
-import {esInterfazDeOperadorConsultaCompuesta} from '../funciones-verficadoras/esInterfazDeOperardorConsulta';
-import {armarWhere} from './armarWhere';
+import {encontrarTipoRelacion} from '../splitters/encontrarTipoRelacion';
+import {
+    isComplexOperatorObject
+} from '../verificators-functions/esInterfazDeOperardorConsulta';
+import {generateWhere} from './generate-where';
 import {armarWhereConOperador} from './armarWhereConOperador';
 
-// Esta es la funcion principal en donde primero se itera a la raiz
+// Esta es la funcion api-principal en donde primero se itera a la raiz
 export async function generarQuery(
     consulta: SelectQueryBuilder<{}>,
     query: { [x: string]: any; },
@@ -19,14 +21,15 @@ export async function generarQuery(
             // Si el valor del atributo es un objeto
             const esObjeto = verificarSiEsObjeto(valorAtributo);
             // Si el valor del atributo es un objeto del tipo consulta compuesta
-            const tieneOperadorConsultaCompuesta = esInterfazDeOperadorConsultaCompuesta(valorAtributo);
+            // const tieneOperadorConsultaCompuesta = esInterfazDeOperadorConsultaCompuesta(valorAtributo);
+            const tieneOperadorConsultaCompuesta = isComplexOperatorObject(valorAtributo);
             // Si es un objeto y no tiene consultaCompuesta entonces debe ser una relacion join.
             const esRelacionJoin = esObjeto && !tieneOperadorConsultaCompuesta;
             if (tieneOperadorConsultaCompuesta) {
                 consulta = armarWhereConOperador(consulta, nombreAtributo, valorAtributo, padre);
             }
             if (!tieneOperadorConsultaCompuesta && !esObjeto) {
-                consulta = armarWhere(consulta, nombreAtributo, valorAtributo, padre);
+                consulta = generateWhere(consulta, nombreAtributo, valorAtributo, padre);
             }
             if (esRelacionJoin) {
                 const tipoRelacion: 'inner' | 'left' = encontrarTipoRelacion(query[nombreAtributo]);

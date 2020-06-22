@@ -1,5 +1,5 @@
 import {FindManyOptions, Like} from 'typeorm';
-import {convertirStringArreglo} from '../../utilitarias/convertir-string-arreglo';
+import {convertirStringArreglo} from '../../utils/convertir-string-arreglo';
 
 export function generarQuery(parametro: any) {
     const llaves = Object.keys(parametro);

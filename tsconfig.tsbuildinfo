@@ -161,12 +161,12 @@
         "signature": "32b8443be144970b813b9dd72dcdba2059fbdfdae4d3a50c4d8a158ed6057bbe",
         "affectsGlobalScope": false
       },
-      "./src/funciones/archivos/cargar-datos-prueba.ts": {
+      "./src/funciones/archivos/load-test-data.ts": {
         "version": "6945969442c9ee046e7a5ae23d9461613b1c5aaca58611468fdc9de8fcfc0648",
         "signature": "4f2358d0d873f528a317e47a0ff4e3f044b3f5bd4d812fdbf92b7bc8701a07ad",
         "affectsGlobalScope": false
       },
-      "./src/funciones/archivos/borrar-archivos.ts": {
+      "./src/funciones/archivos/delete-files.ts": {
         "version": "111f660129798384fa9233fc031f06f150821b77b6a9d0cf492d99a6203c5ccc",
         "signature": "821089c0253d704681ddaf576e35052d6829c6706609e9a154d3d20d1f0a159d",
         "affectsGlobalScope": false
@@ -8887,13 +8887,13 @@
         "./node_modules/@types/node/util.d.ts",
         "./src/clases-genericas/api.controller.ts"
       ],
-      "./src/funciones/archivos/borrar-archivos.ts": [
+      "./src/funciones/archivos/delete-files.ts": [
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts"
       ],
-      "./src/funciones/archivos/cargar-datos-prueba.ts": [
+      "./src/funciones/archivos/load-test-data.ts": [
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
@@ -8924,8 +8924,8 @@
         "./src/clases-genericas/principal.entity.ts",
         "./src/clases-genericas/principal.service.ts",
         "./src/clases-genericas/principal.abstract.auth.crud.ts",
-        "./src/funciones/archivos/borrar-archivos.ts",
-        "./src/funciones/archivos/cargar-datos-prueba.ts"
+        "./src/funciones/archivos/delete-files.ts",
+        "./src/funciones/archivos/load-test-data.ts"
       ],
       "./src/interfaces/respuesta.principal.interface.ts": [
         "./node_modules/@types/node/fs.d.ts",
@@ -14421,7 +14421,7 @@
       "./src/clases-genericas/principal.abstract.auth.crud.ts": [
         "./src/clases-genericas/api.controller.ts"
       ],
-      "./src/funciones/archivos/cargar-datos-prueba.ts": [
+      "./src/funciones/archivos/load-test-data.ts": [
         "./src/index.ts"
       ],
       "./src/funciones/busqueda/busqueda-simple/generar-query.ts": [
@@ -14433,8 +14433,8 @@
         "./src/clases-genericas/principal.entity.ts",
         "./src/clases-genericas/principal.service.ts",
         "./src/clases-genericas/principal.abstract.auth.crud.ts",
-        "./src/funciones/archivos/borrar-archivos.ts",
-        "./src/funciones/archivos/cargar-datos-prueba.ts"
+        "./src/funciones/archivos/delete-files.ts",
+        "./src/funciones/archivos/load-test-data.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -15101,8 +15101,8 @@
       "./src/clases-genericas/auth.crud.generico.ts",
       "./src/clases-genericas/principal.service.ts",
       "./src/clases-genericas/principal.abstract.auth.crud.ts",
-      "./src/funciones/archivos/borrar-archivos.ts",
-      "./src/funciones/archivos/cargar-datos-prueba.ts",
+      "./src/funciones/archivos/delete-files.ts",
+      "./src/funciones/archivos/load-test-data.ts",
       "./src/funciones/busqueda/busqueda-simple/generar-query.ts",
       "./src/funciones/utilitarias/convertir-string-arreglo.ts",
       "./src/index.ts",

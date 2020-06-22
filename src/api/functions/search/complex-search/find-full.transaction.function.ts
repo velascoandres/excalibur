@@ -1,7 +1,7 @@
 import {EntityManager, ObjectType} from 'typeorm';
 import {ConsultaFindFullInterface} from './interfaces/consulta.findFull.interface';
 import {InternalServerErrorException} from '@nestjs/common';
-import {buscarRegistros} from './funciones-busqueda/buscar-registros.funcion';
+import {buscarRegistros} from './search-functions/buscar-registros.funcion';
 import {RespuestaTransaccionInterface} from './interfaces/respuesta.transaccion.interface';
 
 export async function findFullTransaccion(

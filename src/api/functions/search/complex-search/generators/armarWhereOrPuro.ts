@@ -1,5 +1,5 @@
-import {reducirWhereFuncional} from '../funciones-reductoras/reducir-where-funcional';
-import {OperadorConsultaSimpleInterface} from '../interfaces/operador.consulta.simple.interface';
+import {reducirWhereFuncional} from '../reductors/reducir-where-funcional';
+import {OperadorConsultaSimpleInterface} from '../../../../..';
 import {WherePuroInterface} from '../interfaces/wherePuro.interface';
 
 export function armarWhereOrPuro(

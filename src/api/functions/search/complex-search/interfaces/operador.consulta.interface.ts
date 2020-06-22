@@ -6,3 +6,7 @@ type OperadoresCompuestos = 'In' | 'NotIn' | 'Between' | 'Like' | 'Not' | 'NotEq
 export interface OperadorConsultaInterface extends OperadorConsultaSimpleInterface {
     operacion: OperadoresCompuestos;
 }
+
+export type ComplexOperator = '$in' | '$nin' | '$btw' | '$nbtw'| '$like' | '$ne' |
+    '$lt' | '$gt' | '$ilike' | '$lte' | '$gte';
+// {"$in":[]}

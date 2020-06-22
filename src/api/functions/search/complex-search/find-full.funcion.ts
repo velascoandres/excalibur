@@ -1,7 +1,7 @@
 import {getConnection, ObjectType} from 'typeorm';
 import {ConsultaFindFullInterface} from './interfaces/consulta.findFull.interface';
 import {InternalServerErrorException} from '@nestjs/common';
-import {buscarRegistros} from './funciones-busqueda/buscar-registros.funcion';
+import {buscarRegistros} from './search-functions/buscar-registros.funcion';
 
 export async function findFull<T = any>(
     entidad: ObjectType<{}> | string,
