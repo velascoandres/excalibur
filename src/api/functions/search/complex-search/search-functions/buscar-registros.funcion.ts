@@ -1,13 +1,13 @@
 import {SelectQueryBuilder} from 'typeorm';
 import {ConsultaFindFullInterface} from '../interfaces/consulta.findFull.interface';
-import {generarQuery} from '../generators/generarQuery';
+import {generateQuery} from '../generators/generate-query';
 import {OrderByInterface} from '../interfaces/orderBy.interface';
 
 export async function buscarRegistros(
     consulta: SelectQueryBuilder<{}>,
     query: ConsultaFindFullInterface,
 ): Promise<[{}[], number]> {
-    const sqlQuery = await generarQuery(consulta, query.where);
+    const sqlQuery = await generateQuery(consulta, query.where);
     const tieneSkip = !!query.skip;
     const tieneTake = !!query.take;
     const tieneOrderBy = !!query.orderBy;

@@ -3056,7 +3056,7 @@
         "signature": "b8c390cf798de6c8cd658bdc76f2346abccc0e0fff168bb58621ad53719ca156",
         "affectsGlobalScope": false
       },
-      "./src/clases-genericas/auth.crud.generico.ts": {
+      "./src/clases-genericas/auth.crud.generic.ts": {
         "version": "98df08f623a5b35950205059ac078642db129b6bc802109778ac38e13f5ffc96",
         "signature": "40f4d0bd01d11316f8d8ea8ca3f56e2c0f6a07c512f4d20ef3c8f7318625b5f1",
         "affectsGlobalScope": false
@@ -8844,7 +8844,7 @@
         "./node_modules/class-validator/types/index.d.ts",
         "./node_modules/reflect-metadata/index.d.ts",
         "./node_modules/typeorm/index.d.ts",
-        "./src/clases-genericas/auth.crud.generico.ts",
+        "./src/clases-genericas/auth.crud.generic.ts",
         "./src/clases-genericas/principal.service.ts",
         "./src/clases-genericas/principal.abstract.auth.crud.ts",
         "./src/funciones/busqueda/busqueda-simple/generar-query.ts",
@@ -8864,7 +8864,7 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/typeorm/index.d.ts"
       ],
-      "./src/clases-genericas/auth.crud.generico.ts": [
+      "./src/clases-genericas/auth.crud.generic.ts": [
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
@@ -14411,7 +14411,7 @@
         "./src/clases-genericas/principal.abstract.auth.crud.ts",
         "./src/interfaces/respuesta.principal.interface.ts"
       ],
-      "./src/clases-genericas/auth.crud.generico.ts": [
+      "./src/clases-genericas/auth.crud.generic.ts": [
         "./src/clases-genericas/api.controller.ts",
         "./src/clases-genericas/principal.abstract.auth.crud.ts"
       ],
@@ -15098,7 +15098,7 @@
       "./src/clases-genericas/api.controller.ts",
       "./src/clases-genericas/principal.dto.ts",
       "./src/clases-genericas/principal.entity.ts",
-      "./src/clases-genericas/auth.crud.generico.ts",
+      "./src/clases-genericas/auth.crud.generic.ts",
       "./src/clases-genericas/principal.service.ts",
       "./src/clases-genericas/principal.abstract.auth.crud.ts",
       "./src/funciones/archivos/delete-files.ts",

@@ -1,4 +1,4 @@
-import {ApiController} from '../controllers/api.controller';
+import {ApiController} from '../../..';
 
 export abstract class PrincipalAuthCrudValidation{
     // For especific controller method implement an auth or security method

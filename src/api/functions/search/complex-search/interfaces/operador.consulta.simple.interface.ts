@@ -1,4 +1,4 @@
 export interface OperadorConsultaSimpleInterface {
-    conjuncion?: 'and' | 'or';
-    valores?: string | number | [number]  | [string];
+    conjunction?: 'and' | 'or';
+    values?: string | number | [number]  | [string];
 }

@@ -1,7 +1,7 @@
 import {PrincipalAuthCrudValidation} from './principal.abstract.auth.crud';
-import {ApiController} from '../controllers/api.controller';
+import {ApiController} from '../../..';
 
-export class AuthCrudGenerico extends PrincipalAuthCrudValidation{
+export class AuthCrudGeneric extends PrincipalAuthCrudValidation{
     createOneAuht(req: any, res: any, controller: ApiController): boolean {
         return true;
     }

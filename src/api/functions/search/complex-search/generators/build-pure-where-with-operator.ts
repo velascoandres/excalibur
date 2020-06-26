@@ -2,7 +2,7 @@ import {ComplexOperator, OperadorConsultaInterface} from '../interfaces/operador
 import {WherePuroInterface} from '../interfaces/wherePuro.interface';
 import {ObjectLiteral} from 'typeorm';
 
-// export function armarWherePuroConOperador(
+// export function buildPureWhereOperador(
 //     atributo: string,
 //     valorConOperador: OperadorConsultaInterface,
 //     entidad: string,
@@ -89,7 +89,7 @@ import {ObjectLiteral} from 'typeorm';
 //             return undefined;
 //     }
 // }
-export function armarWherePuroConOperador(
+export function buildPureWhereWithOperator(
     atributo: string,
     valorConOperador: ObjectLiteral,
     entidad: string,

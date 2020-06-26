@@ -16,7 +16,7 @@ import 'reflect-metadata';
 import 'es6-shim';
 import {plainToClass} from 'class-transformer';
 import {PrincipalAuthCrudValidation} from '../../..';
-import {AuthCrudGenerico} from '../auth/auth.crud.generico';
+import {AuthCrudGeneric} from '../auth/auth.crud.generic';
 import {PrincipalDto} from '../../..';
 import {
     ApiBadRequestResponse,
@@ -33,7 +33,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
     protected constructor(
         private readonly _principalService: PrincipalService<Entidad>,
         private readonly _dtoConfig: DtoConfigInterface = {createDtoType: PrincipalDto, updateDtoType: PrincipalDto},
-        private readonly _authSecurityCrud: PrincipalAuthCrudValidation = new AuthCrudGenerico(),
+        private readonly _authSecurityCrud: PrincipalAuthCrudValidation = new AuthCrudGeneric(),
     ) {
     }
 

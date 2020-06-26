@@ -1,7 +1,7 @@
-import {OperadorConsultaSimpleInterface} from '../interfaces/operador.consulta.simple.interface';
-import {esInterfazDeOperadorConsultaSimple} from '../verificators-functions/esInterfazDeOperadorConsultaSimple';
+import {OperadorConsultaSimpleInterface} from '../../../../..';
 import {WherePuroInterface} from '../interfaces/wherePuro.interface';
 import {ObjectLiteral} from 'typeorm';
+import {VerificatorHelper} from '../verificators-functions/verificator-helper';
 
 export function armarWherePuro(
     atributo: string,
@@ -12,11 +12,11 @@ export function armarWherePuro(
     const strLlaveParametro = `valorAtributo${indice}${entidad}${atributo}`;
     const parametros: ObjectLiteral = {};
     if (atributo !== 'pjoin') {
-        const tieneOperadorSimple = esInterfazDeOperadorConsultaSimple(valor);
+        const tieneOperadorSimple = VerificatorHelper.IsSimpleOperatorQueryInterface(valor);
         if (tieneOperadorSimple) {
             valor = valor as OperadorConsultaSimpleInterface;
-            const conjuncion = valor.conjuncion ? valor.conjuncion : 'and';
-            const valores = valor.valores instanceof Array ? [...valor.valores] : [valor.valores];
+            const conjuncion = valor.conjunction ? valor.conjunction : 'and';
+            const valores = valor.values instanceof Array ? [...valor.values] : [valor.values];
             parametros[strLlaveParametro] = valores.join(',');
             return {
                 where: `${entidad}.${atributo}=:${strLlaveParametro}`,

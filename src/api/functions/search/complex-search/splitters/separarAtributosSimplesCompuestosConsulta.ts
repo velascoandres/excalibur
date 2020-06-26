@@ -1,8 +1,5 @@
-import {verificarSiEsObjeto} from '../verificators-functions/verificarSiEsObjeto';
-import {
-    isComplexOperatorObject
-} from '../verificators-functions/esInterfazDeOperardorConsulta';
 import {ObjectLiteral} from 'typeorm';
+import {VerificatorHelper} from '../verificators-functions/verificator-helper';
 
 export function separarAtributosSimplesCompuestosConsulta(
     query: ObjectLiteral,
@@ -11,10 +8,10 @@ export function separarAtributosSimplesCompuestosConsulta(
     return listaAtributos.reduce(
         (acumulador: { simples: string[], compuestos: any[], compuestoConsulta: any[], arregloOr: any[] }, atributo: any) => {
             const valor = query[atributo];
-            const esObjeto = verificarSiEsObjeto(valor);
+            const esObjeto = VerificatorHelper.verifyIsObject(valor);
             const esArreglo = valor instanceof Array;
             // const esObjetoConsulta = esInterfazDeOperadorConsultaCompuesta(valor);
-            const esObjetoConsulta = isComplexOperatorObject(valor);
+            const esObjetoConsulta = VerificatorHelper.isComplexOperatorObject(valor);
             if (esObjeto && !esObjetoConsulta) {
                 acumulador.compuestos.push(atributo);
             }
