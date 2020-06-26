@@ -1,181 +1,94 @@
 import {ComplexOperator, OperadorConsultaInterface} from '../interfaces/operador.consulta.interface';
-import {WherePuroInterface} from '../interfaces/wherePuro.interface';
+import {PureWhereInterface} from '../interfaces/pureWhereInterface';
 import {ObjectLiteral} from 'typeorm';
 
-// export function buildPureWhereOperador(
-//     atributo: string,
-//     valorConOperador: OperadorConsultaInterface,
-//     entidad: string,
-//     indice: number = 1,
-// ): WherePuroInterface | undefined {
-//     const operador = valorConOperador.operacion;
-//     const strLlaveParametro = `valorAtributo${indice}${entidad}${atributo}`;
-//     const parametros: ObjectLiteral = {};
-//     let conjuncion = 'and';
-//     if (valorConOperador.conjuncion) {
-//         conjuncion = valorConOperador.conjuncion;
-//     }
-//     const valorEsArreglo = valorConOperador.valores instanceof Array;
-//     let valoresAComparar: any = valorConOperador.valores;
-//     if (!valorEsArreglo) {
-//         valoresAComparar = [valorConOperador.valores];
-//     }
-//     const wherePuro: WherePuroInterface = {where: '', parametros: {}, conjuncion};
-//     switch (operador) {
-//         case 'In':
-//             wherePuro.where = `${entidad}.${atributo} In(${valoresAComparar.join()})`;
-//             return wherePuro;
-//         case 'NotIn':
-//             wherePuro.where = `${entidad}.${atributo} Not In(${valoresAComparar.join(',')})`;
-//             return wherePuro;
-//
-//         case 'Between':
-//             wherePuro.where = `${entidad}.${atributo} Between(${valoresAComparar.join(',')})`;
-//             return wherePuro;
-//
-//         case 'Like':
-//             parametros[strLlaveParametro] = valoresAComparar[0];
-//             // El valor a comparar ya debe venir con las respectivas wildcards
-//             // wildcards: %, _, [], ^, -
-//             wherePuro.where = `${entidad}.${atributo} like :${strLlaveParametro}`;
-//             wherePuro.parametros = parametros;
-//             return wherePuro;
-//
-//         case 'ILike':
-//             parametros[strLlaveParametro] = valoresAComparar[0];
-//             // El valor a comparar ya debe venir con las respectivas wildcards
-//             // wildcards: %, _, [], ^, -
-//             wherePuro.where = `${entidad}.${atributo} ilike :${strLlaveParametro}`;
-//             wherePuro.parametros = parametros;
-//             return wherePuro;
-//
-//         case 'Not':
-//             parametros[strLlaveParametro] = valoresAComparar[0];
-//             wherePuro.where = `${entidad}.${atributo} Not :${strLlaveParametro}`;
-//             wherePuro.parametros = parametros;
-//             return wherePuro;
-//
-//         case 'NotEqual':
-//             parametros[strLlaveParametro] = valoresAComparar[0];
-//             wherePuro.where = `${entidad}.${atributo} != :${strLlaveParametro}`;
-//             wherePuro.parametros = parametros;
-//             return wherePuro;
-//
-//         case 'LessThan':
-//             parametros[strLlaveParametro] = valoresAComparar[0];
-//             wherePuro.where = `${entidad}.${atributo} < :${strLlaveParametro}`;
-//             wherePuro.parametros = parametros;
-//             return wherePuro;
-//
-//         case 'MoreThan':
-//             parametros[strLlaveParametro] = valoresAComparar[0];
-//             wherePuro.where = `${entidad}.${atributo} > :${strLlaveParametro}`;
-//             wherePuro.parametros = parametros;
-//             return wherePuro;
-//
-//         case 'LessThanEq':
-//             parametros[strLlaveParametro] = valoresAComparar[0];
-//             wherePuro.where = `${entidad}.${atributo} <= :${strLlaveParametro}`;
-//             wherePuro.parametros = parametros;
-//             return wherePuro;
-//
-//         case 'MoreThanEq':
-//             parametros[strLlaveParametro] = valoresAComparar[0];
-//             wherePuro.where = `${entidad}.${atributo} >= :${strLlaveParametro}`;
-//             wherePuro.parametros = parametros;
-//             return wherePuro;
-//
-//         default:
-//             return undefined;
-//     }
-// }
 export function buildPureWhereWithOperator(
-    atributo: string,
-    valorConOperador: ObjectLiteral,
-    entidad: string,
-    indice: number = 1,
-): WherePuroInterface | undefined {
-    const operador: ComplexOperator = Object.keys(valorConOperador)[0] as ComplexOperator;
-    const strLlaveParametro = `valorAtributo${indice}${entidad}${atributo}`;
-    const parametros: ObjectLiteral = {};
+    attribute: string,
+    valueWithOperator: ObjectLiteral,
+    entityName: string,
+    index: number = 1,
+): PureWhereInterface | undefined {
+    const operator: ComplexOperator = Object.keys(valueWithOperator)[0] as ComplexOperator;
+    const strParameterKey = `attributeValue${index}${entityName}${attribute}`;
+    const initialParameters: ObjectLiteral = {};
     // let conjuncion = 'and';
     // if (valorConOperador.conjuncion) {
     //     conjuncion = valorConOperador.conjuncion;
     // }
-    const value = valorConOperador[operador];
-    const valorEsArreglo = valorConOperador[operador] instanceof Array;
-    let valoresAComparar: any = value;
-    if (!valorEsArreglo) {
-        valoresAComparar = [value];
+    const value = valueWithOperator[operator];
+    const valueIsArray = valueWithOperator[operator] instanceof Array;
+    let valuesToCompare: any = value;
+    if (!valueIsArray) {
+        valuesToCompare = [value];
     }
-    const wherePuro: WherePuroInterface = {where: '', parametros: {}};
-    switch (operador) {
+    const pureWhere: PureWhereInterface = {where: '', parameters: {}};
+    switch (operator) {
         case '$in':
-            wherePuro.where = `${entidad}.${atributo} In(${valoresAComparar.join()})`;
-            return wherePuro;
+            pureWhere.where = `${entityName}.${attribute} In(${valuesToCompare.join()})`;
+            return pureWhere;
         case '$nin':
-            wherePuro.where = `${entidad}.${atributo} Not In(${valoresAComparar.join(',')})`;
-            return wherePuro;
+            pureWhere.where = `${entityName}.${attribute} Not In(${valuesToCompare.join(',')})`;
+            return pureWhere;
 
         case '$btw':
-            if (valoresAComparar.length === 2) {
-                wherePuro.where = `${entidad}.${atributo} Between ${valoresAComparar[0]} and ${valoresAComparar[1]}`;
-                return wherePuro;
+            if (valuesToCompare.length === 2) {
+                pureWhere.where = `${entityName}.${attribute} Between ${valuesToCompare[0]} and ${valuesToCompare[1]}`;
+                return pureWhere;
             }
             return undefined;
 
         case '$nbtw':
-            if (valoresAComparar.length === 2) {
-                wherePuro.where = `${entidad}.${atributo} Not Between ${valoresAComparar[0]} and ${valoresAComparar[1]}`;
-                return wherePuro;
+            if (valuesToCompare.length === 2) {
+                pureWhere.where = `${entityName}.${attribute} Not Between ${valuesToCompare[0]} and ${valuesToCompare[1]}`;
+                return pureWhere;
             }
             return undefined;
 
         case '$like':
-            parametros[strLlaveParametro] = valoresAComparar[0];
+            initialParameters[strParameterKey] = valuesToCompare[0];
             // El valor a comparar ya debe venir con las respectivas wildcards
             // wildcards: %, _, [], ^, -
-            wherePuro.where = `${entidad}.${atributo} like :${strLlaveParametro}`;
-            wherePuro.parametros = parametros;
-            return wherePuro;
+            pureWhere.where = `${entityName}.${attribute} like :${strParameterKey}`;
+            pureWhere.parameters = initialParameters;
+            return pureWhere;
 
         case '$ilike':
-            parametros[strLlaveParametro] = valoresAComparar[0];
+            initialParameters[strParameterKey] = valuesToCompare[0];
             // El valor a comparar ya debe venir con las respectivas wildcards
             // wildcards: %, _, [], ^, -
-            wherePuro.where = `${entidad}.${atributo} ilike :${strLlaveParametro}`;
-            wherePuro.parametros = parametros;
-            return wherePuro;
+            pureWhere.where = `${entityName}.${attribute} ilike :${strParameterKey}`;
+            pureWhere.parameters = initialParameters;
+            return pureWhere;
 
         case '$ne':
-            parametros[strLlaveParametro] = valoresAComparar[0];
-            wherePuro.where = `${entidad}.${atributo} != :${strLlaveParametro}`;
-            wherePuro.parametros = parametros;
-            return wherePuro;
+            initialParameters[strParameterKey] = valuesToCompare[0];
+            pureWhere.where = `${entityName}.${attribute} != :${strParameterKey}`;
+            pureWhere.parameters = initialParameters;
+            return pureWhere;
 
         case '$lt':
-            parametros[strLlaveParametro] = valoresAComparar[0];
-            wherePuro.where = `${entidad}.${atributo} < :${strLlaveParametro}`;
-            wherePuro.parametros = parametros;
-            return wherePuro;
+            initialParameters[strParameterKey] = valuesToCompare[0];
+            pureWhere.where = `${entityName}.${attribute} < :${strParameterKey}`;
+            pureWhere.parameters = initialParameters;
+            return pureWhere;
 
         case '$gt':
-            parametros[strLlaveParametro] = valoresAComparar[0];
-            wherePuro.where = `${entidad}.${atributo} > :${strLlaveParametro}`;
-            wherePuro.parametros = parametros;
-            return wherePuro;
+            initialParameters[strParameterKey] = valuesToCompare[0];
+            pureWhere.where = `${entityName}.${attribute} > :${strParameterKey}`;
+            pureWhere.parameters = initialParameters;
+            return pureWhere;
 
         case '$lte':
-            parametros[strLlaveParametro] = valoresAComparar[0];
-            wherePuro.where = `${entidad}.${atributo} <= :${strLlaveParametro}`;
-            wherePuro.parametros = parametros;
-            return wherePuro;
+            initialParameters[strParameterKey] = valuesToCompare[0];
+            pureWhere.where = `${entityName}.${attribute} <= :${strParameterKey}`;
+            pureWhere.parameters = initialParameters;
+            return pureWhere;
 
         case '$gte':
-            parametros[strLlaveParametro] = valoresAComparar[0];
-            wherePuro.where = `${entidad}.${atributo} >= :${strLlaveParametro}`;
-            wherePuro.parametros = parametros;
-            return wherePuro;
+            initialParameters[strParameterKey] = valuesToCompare[0];
+            pureWhere.where = `${entityName}.${attribute} >= :${strParameterKey}`;
+            pureWhere.parameters = initialParameters;
+            return pureWhere;
 
         default:
             return undefined;

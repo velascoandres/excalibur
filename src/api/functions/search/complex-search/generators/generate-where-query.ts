@@ -1,17 +1,17 @@
 import {SelectQueryBuilder} from 'typeorm';
-import {WherePuroInterface} from '../interfaces/wherePuro.interface';
+import {PureWhereInterface} from '../interfaces/pureWhereInterface';
 
 export function generateWhereQuery(
     currentQuery: SelectQueryBuilder<{}>,
-    pureWhere: WherePuroInterface,
+    pureWhere: PureWhereInterface,
     conjuntion: string,
 ) {
     switch (conjuntion) {
         case 'and':
-            return currentQuery.andWhere(pureWhere.where, pureWhere.parametros);
+            return currentQuery.andWhere(pureWhere.where, pureWhere.parameters);
         case 'or':
-            return currentQuery.orWhere(pureWhere.where, pureWhere.parametros);
+            return currentQuery.orWhere(pureWhere.where, pureWhere.parameters);
         default:
-            return currentQuery.andWhere(pureWhere.where, pureWhere.parametros);
+            return currentQuery.andWhere(pureWhere.where, pureWhere.parameters);
     }
 }

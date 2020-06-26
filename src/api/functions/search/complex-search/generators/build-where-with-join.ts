@@ -1,10 +1,10 @@
 import {SelectQueryBuilder} from 'typeorm';
 import {separarAtributosSimplesCompuestosConsulta} from '../splitters/separarAtributosSimplesCompuestosConsulta';
 import {findJoinRelationType} from '../splitters/findJoinRelationType';
-import {WherePuroInterface} from '../interfaces/wherePuro.interface';
-import {armarWherePuro} from './armarWherePuroSimple';
+import {PureWhereInterface} from '../interfaces/pureWhereInterface';
+import {buildSimplePureWhere} from './build-simple-pure-where';
 import {buildPureWhereWithOperator} from './build-pure-where-with-operator';
-import {armarWhereOrPuro} from './armarWhereOrPuro';
+import {buildPureOrWhere} from './build-pure-or-where';
 import {PureRelationInterface} from '../interfaces/pureRelationInterface';
 import {VerificatorHelper} from '../verificators-functions/verificator-helper';
 
@@ -26,8 +26,8 @@ export function buildWhereWithjoin(
         const subQueryObject = attributeValue;
         // Armamos las condiciones
         const simpleQueryConditions = attributesSimplesAndComplexObject.simples.reduce(
-            (acumulator: WherePuroInterface[], subAttribute: string) => {
-                const generatedPureWhere = armarWherePuro(
+            (acumulator: PureWhereInterface[], subAttribute: string) => {
+                const generatedPureWhere = buildSimplePureWhere(
                     subAttribute,
                     subQueryObject[subAttribute],
                     attributeName, // Nombre de la entidad hija
@@ -39,7 +39,7 @@ export function buildWhereWithjoin(
             }, [],
         );
         const complexQueryConditions = attributesSimplesAndComplexObject.compuestoConsulta.reduce(
-            (acumulator: WherePuroInterface[], subAttribute: string) => {
+            (acumulator: PureWhereInterface[], subAttribute: string) => {
                 const generatedPureWhereWithOperator = buildPureWhereWithOperator(
                     subAttribute,
                     subQueryObject[subAttribute],
@@ -52,8 +52,8 @@ export function buildWhereWithjoin(
             }, [],
         );
         const whereOrConditions = attributesSimplesAndComplexObject.arregloOr.reduce(
-            (acumulator: WherePuroInterface[], subAatributo: string) => {
-                const pureWhereOrGenerated: WherePuroInterface = armarWhereOrPuro(
+            (acumulator: PureWhereInterface[], subAatributo: string) => {
+                const pureWhereOrGenerated: PureWhereInterface = buildPureOrWhere(
                     subAatributo,
                     subQueryObject[subAatributo],
                     attributeName,
@@ -75,15 +75,15 @@ export function buildWhereWithjoin(
         };
         // generaremos un nuevo objeto de tipo relacion pura en base al acumlador inicial
         const pureJoinRelation: PureRelationInterface = conditions.reduce(
-            (acumulator: PureRelationInterface, condition: WherePuroInterface, index: number) => {
+            (acumulator: PureRelationInterface, condition: PureWhereInterface, index: number) => {
                 // juntar los where con las conjunciones
                 if (index > 0) {
-                    acumulator.condition = acumulator.condition + ' ' + condition.conjuncion + ' ' + condition.where;
+                    acumulator.condition = acumulator.condition + ' ' + condition.conjunction + ' ' + condition.where;
                 } else {
                     acumulator.condition = acumulator.condition + ' ' + condition.where;
                 }
                 // juntar los parametros
-                acumulator.parameters = {...acumulator.parameters, ...condition.parametros};
+                acumulator.parameters = {...acumulator.parameters, ...condition.parameters};
                 return acumulator;
             }, basePureRelation,
         );

@@ -1,8 +1,8 @@
 import {SelectQueryBuilder} from 'typeorm';
 import {OperadorConsultaSimpleInterface} from '../../../../..';
-import {WherePuroInterface} from '../interfaces/wherePuro.interface';
+import {PureWhereInterface} from '../interfaces/pureWhereInterface';
 import {generateWhereQuery} from './generate-where-query';
-import {armarWherePuro} from './armarWherePuroSimple';
+import {buildSimplePureWhere} from './build-simple-pure-where';
 import {buildPureWhereWithOperator} from './build-pure-where-with-operator';
 import {OperadorConsultaInterface} from '../../../../..';
 import {VerificatorHelper} from '../verificators-functions/verificator-helper';
@@ -24,7 +24,7 @@ export function generateWhere(
                 // const hasComplexQueryOperator = esInterfazDeOperadorConsultaCompuesta(orValue);
                 const hasComplexQueryOperator = VerificatorHelper.isComplexOperatorObject(orValue);
                 // Define a pure-where object
-                let generatedPureWhere: WherePuroInterface | undefined;
+                let generatedPureWhere: PureWhereInterface | undefined;
                 if (hasComplexQueryOperator) {
                     orValue = orValue as OperadorConsultaInterface;
                     orValue.conjunction = 'or';
@@ -35,7 +35,7 @@ export function generateWhere(
                         index,
                     );
                 } else {
-                    generatedPureWhere = armarWherePuro(
+                    generatedPureWhere = buildSimplePureWhere(
                         atribute,
                         orValue,
                         entityName,
@@ -54,11 +54,11 @@ export function generateWhere(
         );
         return query;
     }
-    const pureWhereGenerated: WherePuroInterface | undefined = armarWherePuro(
+    const pureWhereGenerated: PureWhereInterface | undefined = buildSimplePureWhere(
         atribute,
         value,
         entityName,
         atributeIndex,
     );
-    return generateWhereQuery(query, pureWhereGenerated as WherePuroInterface, pureWhereGenerated?.conjuncion as string);
+    return generateWhereQuery(query, pureWhereGenerated as PureWhereInterface, pureWhereGenerated?.conjunction as string);
 }

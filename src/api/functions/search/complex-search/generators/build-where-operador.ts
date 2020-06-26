@@ -2,7 +2,7 @@ import {SelectQueryBuilder} from 'typeorm';
 import {OperadorConsultaInterface} from '../../../../..';
 import {generateWhereQuery} from './generate-where-query';
 import {buildPureWhereWithOperator} from './build-pure-where-with-operator';
-import {WherePuroInterface} from '../interfaces/wherePuro.interface';
+import {PureWhereInterface} from '../interfaces/pureWhereInterface';
 
 // Arma el where con operador en base al conexto de la consulta y retorna un SelectQueryBuilder
 export function buildWhereOperador(
@@ -16,6 +16,6 @@ export function buildWhereOperador(
     // if (valorConOperador.conjuncion) {
     //     conjuncion = valorConOperador.conjuncion;
     // }
-    const pureWhere = buildPureWhereWithOperator(atribute, valueWithOperator, entityName, index) as WherePuroInterface;
+    const pureWhere = buildPureWhereWithOperator(atribute, valueWithOperator, entityName, index) as PureWhereInterface;
     return generateWhereQuery(currentQuery, pureWhere, conjuncion);
 }
