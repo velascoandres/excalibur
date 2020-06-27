@@ -1,16 +1,17 @@
 import {SelectQueryBuilder} from 'typeorm';
 import {buildWhereWithjoin} from './build-where-with-join';
-import {findJoinRelationType} from '../splitters/findJoinRelationType';
+import {findJoinRelationType} from '../splitters/find-join-relation-type';
 
 import {generateWhere} from './generate-where';
 import {buildWhereOperador} from './build-where-operador';
 import {VerificatorHelper} from '../verificators-functions/verificator-helper';
+import {BASE_ENTITY_NAME} from '../constants/query-operators';
 
 // Esta es la funcion api-principal en donde primero se itera a la raiz
 export async function generateQuery(
     baseQueryBuilder: SelectQueryBuilder<{}>,
     query: { [x: string]: any; },
-    parentEntity: string = 'entidadBase',
+    parentEntity: string = BASE_ENTITY_NAME,
 ): Promise<SelectQueryBuilder<{}>> {
     const atributes = Object.keys(query);
     await atributes.forEach(

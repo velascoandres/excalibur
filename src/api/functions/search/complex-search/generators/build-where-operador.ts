@@ -1,5 +1,4 @@
-import {SelectQueryBuilder} from 'typeorm';
-import {OperadorConsultaInterface} from '../../../../..';
+import {ObjectLiteral, SelectQueryBuilder} from 'typeorm';
 import {generateWhereQuery} from './generate-where-query';
 import {buildPureWhereWithOperator} from './build-pure-where-with-operator';
 import {PureWhereInterface} from '../interfaces/pureWhereInterface';
@@ -8,7 +7,7 @@ import {PureWhereInterface} from '../interfaces/pureWhereInterface';
 export function buildWhereOperador(
     currentQuery: SelectQueryBuilder<{}>,
     atribute: string,
-    valueWithOperator: OperadorConsultaInterface,
+    valueWithOperator: ObjectLiteral,
     entityName: string,
     index: number = 1,
 ): SelectQueryBuilder<{}> {

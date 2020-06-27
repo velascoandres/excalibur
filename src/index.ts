@@ -11,16 +11,13 @@ export {CrudApiConfig} from './api/decorators/swagger-crud/interfaces';
 export {findFull} from './api/functions/search/complex-search/find-full.funcion';
 export {findFullTransaccion} from './api/functions/search/complex-search/find-full.transaction.function';
 export {
-    ConsultaFindFullInterface
-} from './api/functions/search/complex-search/interfaces/consulta.findFull.interface';
-export {CuerpoConsultaFindFull} from './api/functions/search/complex-search/interfaces/cuerpo.consulta.findFull';
+    FindFullQuery
+} from './api/functions/search/complex-search/interfaces/find-full-query';
+export {FindFullQueryBody} from './api/functions/search/complex-search/interfaces/find-full-query-body';
 export {OrderByInterface} from './api/functions/search/complex-search/interfaces/orderBy.interface';
 export {
-    OperadorConsultaInterface
-} from './api/functions/search/complex-search/interfaces/operador.consulta.interface';
-export {
-    OperadorConsultaSimpleInterface
-} from './api/functions/search/complex-search/interfaces/operador.consulta.simple.interface';
+    SimpleQueyOperator
+} from './api/functions/search/complex-search/interfaces/simple-quey-operator';
 export {PrincipalMongoService} from './api/api-principal/services/principal.mongo.service';
 export {ServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods.interfaces';
 export {MongoServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods.interfaces';

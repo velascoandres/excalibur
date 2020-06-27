@@ -1,11 +1,11 @@
-import {ConsultaFindFullInterface, PrincipalDto} from '../..';
+import {FindFullQuery, PrincipalDto} from '../..';
 import {DeepPartial, FindManyOptions} from 'typeorm';
 import {MongodbIndexOptions} from 'typeorm/driver/mongodb/typings';
 
 export interface ServiceCrudMethodsInterface<T> {
     createOne: (row: T) => Promise<T>;
     updateOne: (id: number, row: T) => Promise<T>
-    findAll: (params?: ConsultaFindFullInterface) => Promise<[T[], number]>;
+    findAll: (params?: FindFullQuery) => Promise<[T[], number]>;
     deleteOne: (id: number) => Promise<T>;
     findOneById: (id: number) => Promise<T>;
 }

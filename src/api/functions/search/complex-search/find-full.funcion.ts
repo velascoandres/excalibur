@@ -1,16 +1,17 @@
 import {getConnection, ObjectType} from 'typeorm';
-import {ConsultaFindFullInterface} from './interfaces/consulta.findFull.interface';
+import {FindFullQuery} from './interfaces/find-full-query';
 import {InternalServerErrorException} from '@nestjs/common';
-import {buscarRegistros} from './search-functions/buscar-registros.funcion';
+import {searchRecords} from './search-functions/search-records';
+import {BASE_ENTITY_NAME} from './constants/query-operators';
 
 export async function findFull<T = any>(
     entidad: ObjectType<{}> | string,
-    query: ConsultaFindFullInterface,
+    query: FindFullQuery,
     conexion: string = 'default',
 ) {
-    const consulta = getConnection(conexion).createQueryBuilder(entidad, 'entidadBase');
+    const consulta = getConnection(conexion).createQueryBuilder(entidad, BASE_ENTITY_NAME);
     try {
-        return await buscarRegistros(consulta, query) as [any[], number];
+        return await searchRecords(consulta, query) as [any[], number];
     } catch (error) {
         console.error(
             {

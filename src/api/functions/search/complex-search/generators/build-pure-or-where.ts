@@ -1,16 +1,15 @@
-import {reduceFuntionalWhere} from '../reductors/reduce-funtional-where';
-import {OperadorConsultaSimpleInterface} from '../../../../..';
+import {reduceFunctionalWhereOr} from '../reductors/reduce-functional-where-or';
 import {PureWhereInterface} from '../interfaces/pureWhereInterface';
 
 export function buildPureOrWhere(
     attribute: string,
-    value: string | OperadorConsultaSimpleInterface | Array<any>,
+    value: string | Array<any>,
     entityName: string,
     index: number = 1,
 ): PureWhereInterface {
     const values = value as Array<any>;
     return values.reduce(
-        reduceFuntionalWhere(entityName, attribute),
+        reduceFunctionalWhereOr(entityName, attribute),
         {parameters: {}, where: ''},
     );
 }

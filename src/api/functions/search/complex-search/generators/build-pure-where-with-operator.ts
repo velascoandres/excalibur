@@ -1,4 +1,4 @@
-import {ComplexOperator, OperadorConsultaInterface} from '../interfaces/operador.consulta.interface';
+import {ComplexOperator} from '../interfaces/complex-operator-type';
 import {PureWhereInterface} from '../interfaces/pureWhereInterface';
 import {ObjectLiteral} from 'typeorm';
 

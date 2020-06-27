@@ -3,7 +3,7 @@ import {buildPureWhereWithOperator} from '../generators/build-pure-where-with-op
 import {ObjectLiteral} from 'typeorm';
 import {VerificatorHelper} from '../verificators-functions/verificator-helper';
 
-export function reduceFuntionalWhere(
+export function reduceFunctionalWhereOr(
     entityName: string,
     attributeName: string,
 ): (ac: PureWhereInterface, val: any, index: number) => PureWhereInterface {

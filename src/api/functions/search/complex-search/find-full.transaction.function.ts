@@ -1,20 +1,21 @@
 import {EntityManager, ObjectType} from 'typeorm';
-import {ConsultaFindFullInterface} from './interfaces/consulta.findFull.interface';
+import {FindFullQuery} from './interfaces/find-full-query';
 import {InternalServerErrorException} from '@nestjs/common';
-import {buscarRegistros} from './search-functions/buscar-registros.funcion';
-import {RespuestaTransaccionInterface} from './interfaces/respuesta.transaccion.interface';
+import {searchRecords} from './search-functions/search-records';
+import {TransactionResponse} from './interfaces/transaction-response';
+import {BASE_ENTITY_NAME} from './constants/query-operators';
 
 export async function findFullTransaccion(
     transactionManager: EntityManager,
     entidad: ObjectType<{}>,
-    query: ConsultaFindFullInterface,
-): Promise<RespuestaTransaccionInterface<[{}[], number]>> {
-    const consulta = transactionManager.createQueryBuilder(entidad, 'entidadBase');
+    query: FindFullQuery,
+): Promise<TransactionResponse<[{}[], number]>> {
+    const consulta = transactionManager.createQueryBuilder(entidad, BASE_ENTITY_NAME);
     try {
-        const respuesta =  await buscarRegistros(consulta, query);
+        const respuesta =  await searchRecords(consulta, query);
         return {
-            respuesta,
-            transaccionManager: transactionManager,
+            response: respuesta,
+            entityManager: transactionManager,
         };
     } catch (error) {
         console.error(

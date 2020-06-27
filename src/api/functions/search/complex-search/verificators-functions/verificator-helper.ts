@@ -1,4 +1,4 @@
-import {QUERY_OPERATORS} from '../../constants/query-operators';
+import {QUERY_OPERATORS} from '../constants/query-operators';
 
 export class VerificatorHelper {
 

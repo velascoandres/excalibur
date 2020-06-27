@@ -24,7 +24,7 @@ import {
     ApiInternalServerErrorResponse, ApiOkResponse,
     ApiUnauthorizedResponse
 } from '@nestjs/swagger';
-import {ConsultaFindFullInterface} from '../../..';
+import {FindFullQuery} from '../../..';
 import {GenericFindResponse} from './generic-find.response';
 import {ControllerCrudMehods, DtoConfigInterface} from '../../interfaces/controllers.interfaces';
 import {DeepPartial} from 'typeorm';
@@ -207,7 +207,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                 let skip = 0;
                 let take = 10;
                 let resultado: [Entidad[], number];
-                let query: ConsultaFindFullInterface;
+                let query: FindFullQuery;
                 if (searchCriteria) {
                     query = JSON.parse(searchCriteria);
                     resultado = await this._principalService.findAll(query);
@@ -215,7 +215,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                     take = query.take ? query.take : 10;
                 } else {
                     query = {where: {}, skip: 0, take: 10};
-                    resultado = await this._principalService.findAll({} as ConsultaFindFullInterface);
+                    resultado = await this._principalService.findAll({} as FindFullQuery);
                 }
                 const total = +resultado[1];
                 const rest = total - (skip + take);
@@ -225,7 +225,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                     const isNotLimit = rest >= take;
                     const nextSkip = skip + take;
                     const nextTake = isNotLimit ? take : rest;
-                    const partialQuery: Partial<ConsultaFindFullInterface> = {...query};
+                    const partialQuery: Partial<FindFullQuery> = {...query};
                     partialQuery.skip = nextSkip;
                     partialQuery.take = nextTake;
                     partialQuery.where = Object.keys(query.where).length > 0 ? partialQuery.where: undefined;

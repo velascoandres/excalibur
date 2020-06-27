@@ -1,7 +1,7 @@
 import {DeepPartial, FindManyOptions, Repository} from 'typeorm';
 import {NotFoundException} from '@nestjs/common';
 import {findFull} from '../../../index';
-import {ConsultaFindFullInterface} from '../../../index';
+import {FindFullQuery} from '../../../index';
 import {ServiceCrudMethodsInterface} from '../../interfaces/service.crud.methods.interfaces';
 
 export abstract class PrincipalService<Entidad> implements ServiceCrudMethodsInterface<Entidad>{
@@ -36,7 +36,7 @@ export abstract class PrincipalService<Entidad> implements ServiceCrudMethodsInt
     }
 
     async findAll(
-        parametros?: ConsultaFindFullInterface,
+        parametros?: FindFullQuery,
     ): Promise<[Entidad[], number]> {
         const tieneParametros = parametros && Object.keys(parametros).length > 0;
         if (!tieneParametros) {
@@ -44,7 +44,7 @@ export abstract class PrincipalService<Entidad> implements ServiceCrudMethodsInt
         } else {
             const nombreTabla: string = this._filaRepository.metadata.tableName;
             const conexion: string = this._filaRepository.metadata.connection.name;
-            return await findFull<Entidad>(nombreTabla, parametros as ConsultaFindFullInterface, conexion);
+            return await findFull<Entidad>(nombreTabla, parametros as FindFullQuery, conexion);
         }
     }
 
