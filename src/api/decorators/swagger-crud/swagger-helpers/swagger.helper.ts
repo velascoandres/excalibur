@@ -1,96 +1,93 @@
-import {armarApiBodyCustomizado} from '../utils/armar-api-body-customizado';
-import {BaseConfig, CreateUpdateOneConfig, Prototipo} from '../interfaces';
+import {BaseConfig, CreateUpdateOneConfig, Prototype} from '../interfaces';
 import {DECORATORS} from '@nestjs/swagger/dist/constants';
-import {BODY_METADATA_POR_DEFECTO, OPCIONES_HEADER_POR_DEFECTO, OPCIONES_QUERY_POR_DEFECTO} from '../constantes';
+import {DEFAULT_BODY_METADATA, DEFAULT_HEADER_OPTIONS, DEFAULT_QUERY_OPTIONS} from '../constants';
 import {isUndefined, negate, pickBy} from 'lodash';
 import {ApiHeaderOptions, ApiQueryOptions, ApiResponseOptions} from '@nestjs/swagger';
-import {armarApiQueryCustomizado} from '../utils/armar-api-query-customizado';
-import {armarApiResponse} from '../utils/armar-api-response';
-import {armarApiHeaders} from '../utils/armar-api-headers';
+import {SwaggerMakers} from '../makers/swagger.makers';
 
 export class SwaggerHelper {
     static buildApiBody(
-        configuracion: CreateUpdateOneConfig,
-        nombreMetodo: string,
-        target: Prototipo,
+        configObject: CreateUpdateOneConfig,
+        methodName: string,
+        target: Prototype,
     ): void {
-        const params = armarApiBodyCustomizado(configuracion.apiBody);
-        const parametros = Reflect.getMetadata(
+        const params = SwaggerMakers.makeCustomApiBody(configObject.apiBody);
+        const metadataValue = Reflect.getMetadata(
             DECORATORS.API_PARAMETERS,
-            target.prototype[nombreMetodo]
+            target.prototype[methodName],
         ) || [];
         Reflect.defineMetadata(
             DECORATORS.API_PARAMETERS,
             [
-                ...parametros,
+                ...metadataValue,
                 {
-                    ...BODY_METADATA_POR_DEFECTO,
+                    ...DEFAULT_BODY_METADATA,
                     ...pickBy(params, negate(isUndefined))
                 }
             ],
-            target.prototype[nombreMetodo]
+            target.prototype[methodName],
         );
     }
 
     static buildApiQuery(
-        configuracion: BaseConfig,
-        nombreMetodo: string,
-        target: Prototipo,
+        configObject: BaseConfig,
+        methodName: string,
+        target: Prototype,
     ): void {
-        const params = armarApiQueryCustomizado(configuracion.apiQuery as ApiQueryOptions);
-        const parametros = Reflect.getMetadata(
+        const params = SwaggerMakers.makeCustomApiQuery(configObject.apiQuery as ApiQueryOptions);
+        const metadataValue = Reflect.getMetadata(
             DECORATORS.API_PARAMETERS,
-            target.prototype[nombreMetodo]) || [];
+            target.prototype[methodName]) || [];
         Reflect.defineMetadata(
             DECORATORS.API_PARAMETERS,
             [
-                ...parametros,
+                ...metadataValue,
                 {
-                    ...OPCIONES_QUERY_POR_DEFECTO,
+                    ...DEFAULT_QUERY_OPTIONS,
                     ...pickBy(params, negate(isUndefined))
                 }
             ],
-            target.prototype[nombreMetodo]
+            target.prototype[methodName],
         );
     }
 
     static buildApiResponse(
-        configuracion: ApiResponseOptions,
-        nombreMetodo: string,
-        target: Prototipo,
+        configObject: ApiResponseOptions,
+        methodName: string,
+        target: Prototype,
     ) {
-        const params = armarApiResponse(configuracion);
-        const responses = Reflect.getMetadata(
+        const params = SwaggerMakers.makeApiResponse(configObject);
+        const metadataValue = Reflect.getMetadata(
             DECORATORS.API_RESPONSE,
-            target.prototype[nombreMetodo]) || {};
+            target.prototype[methodName]) || {};
         Reflect.defineMetadata(
             DECORATORS.API_RESPONSE,
             {
-                ...responses,
+                ...metadataValue,
                 ...params
             },
-            target.prototype[nombreMetodo]
+            target.prototype[methodName],
         );
     }
     static buildApiHeaders(
-        configuracion: ApiHeaderOptions,
-        nombreMetodo: string,
-        target: Prototipo,
+        configObject: ApiHeaderOptions,
+        methodName: string,
+        target: Prototype,
     ) {
-        const params = armarApiHeaders(configuracion);
-        const responses = Reflect.getMetadata(
+        const params = SwaggerMakers.makeApiHeaders(configObject);
+        const metadataValue = Reflect.getMetadata(
             DECORATORS.API_PARAMETERS,
-            target.prototype[nombreMetodo]) || [];
+            target.prototype[methodName]) || [];
         Reflect.defineMetadata(
             DECORATORS.API_PARAMETERS,
             [
-                ...responses,
+                ...metadataValue,
                 {
-                    ...OPCIONES_HEADER_POR_DEFECTO,
+                    ...DEFAULT_HEADER_OPTIONS,
                     ...pickBy(params, negate(isUndefined))
                 }
             ],
-            target.prototype[nombreMetodo]
+            target.prototype[methodName],
         );
     }
 }

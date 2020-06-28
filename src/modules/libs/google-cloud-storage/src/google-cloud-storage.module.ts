@@ -8,13 +8,13 @@ export class GoogleCloudStorageModule {
         return {
             module: GoogleCloudStorageModule,
             imports: [GoogleCloudStoragePrincipalModule.register(options)],
-        }
+        };
     }
 
     static registerAsync(options: GoogleCloudStorageAsyncOptions): DynamicModule {
         return {
             module: GoogleCloudStorageModule,
             imports: [GoogleCloudStoragePrincipalModule.registerAsync(options)],
-        }
+        };
     }
 }

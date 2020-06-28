@@ -11,27 +11,28 @@ export function IsTypeDirect<Types = TypesCollectionInterface>(
     const keys = Object.keys(typesCollectionStrategies);
     return (object: Object, propertyName: string) => {
         registerDecorator({
-            name: 'incorrectType',
-            target: object.constructor,
-            propertyName,
-            options: validationOptions,
-            validator: {
-                validate(value: any, args: ValidationArguments) {
-                    return validationStrategies.some(
-                        (strategy: string) => {
-                            const params = hasArgsDict ?  (argsDic as any)[strategy] : undefined;
-                            const cb: ValidationFunction = typesCollectionStrategies[strategy];
-                            return cb(value, params);
-                        }
-                    );
-                },
-                defaultMessage(validationArguments?: ValidationArguments) {
-                    const lastType = keys.pop();
-                    if (keys.length === 0)
-                        return `Has to be ${lastType}`;
-                    return `Can only be ${keys.join(', ')} or ${lastType}.`;
+                name: 'incorrectType',
+                target: object.constructor,
+                propertyName,
+                options: validationOptions,
+                validator: {
+                    validate(value: any, args: ValidationArguments) {
+                        return validationStrategies.some(
+                            (strategy: string) => {
+                                const params = hasArgsDict ? (argsDic as any)[strategy] : undefined;
+                                const cb: ValidationFunction = typesCollectionStrategies[strategy];
+                                return cb(value, params);
+                            }
+                        );
+                    },
+                    defaultMessage(validationArguments?: ValidationArguments) {
+                        const lastType = keys.pop();
+                        if (keys.length === 0)
+                            return `Has to be ${lastType}`;
+                        return `Can only be ${keys.join(', ')} or ${lastType}.`;
+                    }
                 }
-            }
-        });
+            },
+        );
     };
 }
