@@ -17,7 +17,6 @@ import {
     CallHandler,
     ExecutionContext,
     Injectable,
-    Logger,
     mixin,
     NestInterceptor,
     Type
@@ -45,7 +44,7 @@ export function GoogleCloudStorageFileInterceptor(
         }
 
         async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
-            const interceptorlocal = (await this.interceptor.intercept(context, next)) as Observable<any>;
+            const localInterceptor = (await this.interceptor.intercept(context, next)) as Observable<any>;
             const request = context.switchToHttp().getRequest();
             // console.log('request', request.file);
             const file = request.file;

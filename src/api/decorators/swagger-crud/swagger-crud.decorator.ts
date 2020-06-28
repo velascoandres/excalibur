@@ -1,7 +1,7 @@
 import {CrudApiConfig} from './interfaces';
 import {SwaggerHelper} from './swagger-helpers/swagger.helper';
-import {NOMBRES_METODOS_API} from './constantes';
-import {setHeadersAndResponses} from './utils/setHeadersAndResponses';
+import {API_METHODS_NAMES_OBJECT} from './constants';
+import {SwaggerMakers} from './makers/swagger.makers';
 
 // Implementacion del decorador ApiDoc
 // Este decorador sirve para generar la documentacion de la API para los metodos -> Crud
@@ -15,24 +15,24 @@ export function ApiDoc(
         const deleteOneOptions = options.deleteOne;
         const findOneByIdOptions = options.findOneById;
         if (createOneOptions) {
-            SwaggerHelper.buildApiBody(createOneOptions, NOMBRES_METODOS_API.createOne, target);
-            setHeadersAndResponses(createOneOptions, NOMBRES_METODOS_API.createOne, target);
+            SwaggerHelper.buildApiBody(createOneOptions, API_METHODS_NAMES_OBJECT.createOne, target);
+            SwaggerMakers.setHeadersResponses(createOneOptions, API_METHODS_NAMES_OBJECT.createOne, target);
         }
         if (updateOneOptions) {
-            SwaggerHelper.buildApiBody(updateOneOptions, NOMBRES_METODOS_API.updateOne, target);
-            setHeadersAndResponses(updateOneOptions, NOMBRES_METODOS_API.updateOne, target);
+            SwaggerHelper.buildApiBody(updateOneOptions, API_METHODS_NAMES_OBJECT.updateOne, target);
+            SwaggerMakers.setHeadersResponses(updateOneOptions, API_METHODS_NAMES_OBJECT.updateOne, target);
         }
         if (findAllOptions) {
             if (findAllOptions.apiQuery) {
-                SwaggerHelper.buildApiQuery(findAllOptions, NOMBRES_METODOS_API.findAll, target);
+                SwaggerHelper.buildApiQuery(findAllOptions, API_METHODS_NAMES_OBJECT.findAll, target);
             }
-            setHeadersAndResponses(findAllOptions, NOMBRES_METODOS_API.findAll, target);
+            SwaggerMakers.setHeadersResponses(findAllOptions, API_METHODS_NAMES_OBJECT.findAll, target);
         }
         if (deleteOneOptions) {
-            setHeadersAndResponses(deleteOneOptions, NOMBRES_METODOS_API.deleteOne, target);
+            SwaggerMakers.setHeadersResponses(deleteOneOptions, API_METHODS_NAMES_OBJECT.deleteOne, target);
         }
         if (findOneByIdOptions) {
-            setHeadersAndResponses(findOneByIdOptions, NOMBRES_METODOS_API.findOneById, target);
+            SwaggerMakers.setHeadersResponses(findOneByIdOptions, API_METHODS_NAMES_OBJECT.findOneById, target);
         }
         return target;
     };

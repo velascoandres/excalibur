@@ -1,5 +1,5 @@
 import {Provider} from '@nestjs/common';
-import {GOOGLE_CLOUD_STORAGE_MODULE_OPTIONS} from './constantes';
+import {GOOGLE_CLOUD_STORAGE_MODULE_OPTIONS} from './constants';
 import {AsyncFactory, GoogleCloudStorageAsyncOptions, GoogleCloudStorageOptions} from './interfaces';
 import {GoogleCloudStorageService} from './google-cloud-storage.service';
 

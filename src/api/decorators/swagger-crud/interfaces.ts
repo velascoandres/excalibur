@@ -7,25 +7,23 @@ import {SwaggerEnumType} from '@nestjs/swagger/dist/types/swagger-enum.type';
 import {ApiBodyOptions, ApiHeaderOptions, ApiQueryOptions, ApiResponseOptions} from '@nestjs/swagger';
 
 export type RequestBodyOptions = Omit<RequestBodyObject, 'content'>;
-export type Prototipo = { [x: string]: object; prototype: { [x: string]: object; }; };
+export type Prototype = { [x: string]: object; prototype: { [x: string]: object; }; };
 export  type ParameterOptions = Omit<ParameterObject, 'in' | 'schema'>;
 
 export interface ApiQueryMetadata extends ParameterOptions {
-    // tslint:disable-next-line:ban-types
     type?: Type<unknown> | Function | [Function] | string;
     isArray?: boolean;
     enum?: SwaggerEnumType;
     enumName?: string;
 }
 
-export type MetodoCrud = 'createOne' | 'updateOne' | 'findAll' | 'findOneById' | 'deleteOne';
+export type CrudMethod = 'createOne' | 'updateOne' | 'findAll' | 'findOneById' | 'deleteOne';
 
 export type MetodosApi = {
-    [k in MetodoCrud]: MetodoCrud;
+    [k in CrudMethod]: CrudMethod;
 };
 
 export interface ApiBodyMetadata extends RequestBodyOptions {
-    // tslint:disable-next-line:ban-types
     type?: Type<unknown> | Function | [Function] | string;
     isArray?: boolean;
     enum?: SwaggerEnumType;

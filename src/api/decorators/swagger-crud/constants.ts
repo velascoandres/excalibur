@@ -1,21 +1,21 @@
 import {ApiBodyMetadata, MetodosApi} from './interfaces';
 import {ApiHeaderOptions, ApiQueryOptions} from '@nestjs/swagger';
 
-export const BODY_METADATA_POR_DEFECTO: ApiBodyMetadata = {
+export const DEFAULT_BODY_METADATA: ApiBodyMetadata = {
     type: String,
     required: true,
 };
 
-export const OPCIONES_QUERY_POR_DEFECTO: ApiQueryOptions = {
+export const DEFAULT_QUERY_OPTIONS: ApiQueryOptions = {
     name: '',
     required: true
 };
 
-export const OPCIONES_HEADER_POR_DEFECTO: Partial<ApiHeaderOptions> = {
+export const DEFAULT_HEADER_OPTIONS: Partial<ApiHeaderOptions> = {
     name: '',
 };
 
-export const NOMBRES_METODOS_API: MetodosApi = {
+export const API_METHODS_NAMES_OBJECT: MetodosApi = {
     createOne: 'createOne',
     updateOne: 'updateOne',
     deleteOne: 'deleteOne',

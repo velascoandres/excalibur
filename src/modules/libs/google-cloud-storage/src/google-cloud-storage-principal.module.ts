@@ -1,5 +1,5 @@
 import {DynamicModule, Global, Module} from '@nestjs/common';
-import {PROVIDERS} from './constantes';
+import {PROVIDERS} from './constants';
 import {GoogleCloudStorageAsyncOptions, GoogleCloudStorageOptions} from './interfaces';
 import {GoogleCloudStorageModuleHelper} from './google-cloud-storage-module.helper';
 
@@ -14,7 +14,7 @@ export class GoogleCloudStoragePrincipalModule {
             module: GoogleCloudStoragePrincipalModule,
             providers: GoogleCloudStorageModuleHelper.buildProviders(options),
             exports: [...PROVIDERS],
-        }
+        };
     }
 
     static registerAsync(options: GoogleCloudStorageAsyncOptions): DynamicModule {
@@ -22,6 +22,6 @@ export class GoogleCloudStoragePrincipalModule {
             module: GoogleCloudStoragePrincipalModule,
             providers: GoogleCloudStorageModuleHelper.buildProvidersAsync(options),
             exports: [...PROVIDERS],
-        }
+        };
     }
 }

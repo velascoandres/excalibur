@@ -11,7 +11,7 @@ notice is included.
  */
 
 import {Inject, Injectable} from '@nestjs/common';
-import {GOOGLE_CLOUD_STORAGE_MODULE_OPTIONS, GOOGLE_CLOUD_STORAGE_URI} from './constantes';
+import {GOOGLE_CLOUD_STORAGE_MODULE_OPTIONS, GOOGLE_CLOUD_STORAGE_URI} from './constants';
 import {GoogleCloudStorageOptions, GoogleCloudStoragePerRequestOptions, UploadedFileMetadata} from './interfaces';
 import {Bucket, CreateWriteStreamOptions, Storage} from '@google-cloud/storage';
 import {join} from 'path';
@@ -20,7 +20,7 @@ import {File} from '@google-cloud/storage/build/src/file';
 
 @Injectable()
 export class GoogleCloudStorageService {
-    public almacenamiento: Storage = new Storage();
+    public storage: Storage = new Storage();
 
     constructor(
         @Inject(GOOGLE_CLOUD_STORAGE_MODULE_OPTIONS)
@@ -28,51 +28,51 @@ export class GoogleCloudStorageService {
         // console.log('GCloudStorageService.options', options);
     }
 
-    get obtenerBucket(): Bucket {
-        const nombreBucket = this.options.bucketDefaultName;
-        return this.almacenamiento.bucket(nombreBucket);
+    get getbucket(): Bucket {
+        const bucketName = this.options.bucketDefaultName;
+        return this.storage.bucket(bucketName);
     }
 
-    generarNombreArchivoGC(perRequestOptions?: Partial<GoogleCloudStoragePerRequestOptions>): string {
-        const nombreArchivoUnico = uuidV4();
+    generateFileNameGC(perRequestOptions?: Partial<GoogleCloudStoragePerRequestOptions>): string {
+        const fileUniqueName = uuidV4();
         if (perRequestOptions && perRequestOptions.prefix) {
-            const prefijo = perRequestOptions.prefix;
-            return join(prefijo, nombreArchivoUnico);
+            const prefix = perRequestOptions.prefix;
+            return join(prefix, fileUniqueName);
         }
-        return nombreArchivoUnico;
+        return fileUniqueName;
     }
 
     async upload(
         metadataArchivo: UploadedFileMetadata,
         perRequestOptions?: Partial<GoogleCloudStoragePerRequestOptions>,
     ): Promise<string> {
-        const nombreArchivoGoogleCloud: string = this.generarNombreArchivoGC(perRequestOptions);
-        const archivoParaSubirFormateado: File = this.obtenerBucket.file(nombreArchivoGoogleCloud);
+        const googleCloudFileName: string = this.generateFileNameGC(perRequestOptions);
+        const formatedFileToUpload: File = this.getbucket.file(googleCloudFileName);
         // sobrescribir las opciones globales con las opciones de la peticion
         perRequestOptions = {
             ...this.options,
             ...perRequestOptions,
         };
 
-        const opcionesEscribirStream = perRequestOptions && perRequestOptions.writeStreamOptions;
+        const writeStreamOptions = perRequestOptions && perRequestOptions.writeStreamOptions;
 
-        const opcionesStream: CreateWriteStreamOptions = {
+        const streamOptions: CreateWriteStreamOptions = {
             predefinedAcl: 'publicRead',
-            ...opcionesEscribirStream,
+            ...writeStreamOptions,
         };
 
-        const tipoContenido = metadataArchivo.mimetype;
+        const contentType = metadataArchivo.mimetype;
 
-        if (tipoContenido) {
-            opcionesStream.metadata = {contentType: tipoContenido};
+        if (contentType) {
+            streamOptions.metadata = {contentType};
         }
         return new Promise((resolve, reject) => {
-            archivoParaSubirFormateado
-                .createWriteStream(opcionesStream)
+            formatedFileToUpload
+                .createWriteStream(streamOptions)
                 .on('error', error => reject(error))
                 .on('finish', () => resolve(
                     // Cuando este OK se retornara la uri del archivo subido
-                    this.obtenerUrlAlmacenamiento(nombreArchivoGoogleCloud, perRequestOptions),
+                    this.getStorageUrl(googleCloudFileName, perRequestOptions),
                     ),
                 )
                 .end(metadataArchivo.buffer);
@@ -80,14 +80,14 @@ export class GoogleCloudStorageService {
     }
 
     // obtener la uri del almacenamiento
-    obtenerUrlAlmacenamiento(
-        nombreArchivo: string,
+    getStorageUrl(
+        fileName: string,
         perRequestOptions?: Partial<GoogleCloudStoragePerRequestOptions>,
     ) {
         if (perRequestOptions && perRequestOptions.storageBaseUri) {
-            return join(perRequestOptions.storageBaseUri, nombreArchivo);
+            return join(perRequestOptions.storageBaseUri, fileName);
         }
-        const nombreBucket = perRequestOptions && perRequestOptions.bucketDefaultName ? perRequestOptions.bucketDefaultName : '';
-        return GOOGLE_CLOUD_STORAGE_URI + join(nombreBucket, nombreArchivo);
+        const bucketName = perRequestOptions && perRequestOptions.bucketDefaultName ? perRequestOptions.bucketDefaultName : '';
+        return GOOGLE_CLOUD_STORAGE_URI + join(bucketName, fileName);
     }
 }
