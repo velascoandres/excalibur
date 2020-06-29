@@ -5,18 +5,18 @@ import {searchRecords} from './search-functions/search-records';
 import {BASE_ENTITY_NAME} from './constants/query-operators';
 
 export async function findFull<T = any>(
-    entidad: ObjectType<{}> | string,
+    entity: ObjectType<{}> | string,
     query: FindFullQuery,
     conexion: string = 'default',
 ) {
-    const consulta = getConnection(conexion).createQueryBuilder(entidad, BASE_ENTITY_NAME);
+    const currentQuery = getConnection(conexion).createQueryBuilder(entity, BASE_ENTITY_NAME);
     try {
-        return await searchRecords(consulta, query) as [any[], number];
+        return await searchRecords(currentQuery, query) as [any[], number];
     } catch (error) {
         console.error(
             {
                 error,
-                mensaje: 'Error en generar la consulta',
+                message: 'Error on generate query',
                 data: {
                     query,
                 },
@@ -24,7 +24,7 @@ export async function findFull<T = any>(
         );
         throw new InternalServerErrorException(
             {
-                mensaje: 'Error en generar la consulta',
+                message: 'Error on generate query',
             },
         );
     }

@@ -6,30 +6,30 @@ import {TransactionResponse} from './interfaces/transaction-response';
 import {BASE_ENTITY_NAME} from './constants/query-operators';
 
 export async function findFullTransaccion(
-    transactionManager: EntityManager,
-    entidad: ObjectType<{}>,
-    query: FindFullQuery,
+    entityManager: EntityManager,
+    entity: ObjectType<{}>,
+    findFullQuery: FindFullQuery,
 ): Promise<TransactionResponse<[{}[], number]>> {
-    const consulta = transactionManager.createQueryBuilder(entidad, BASE_ENTITY_NAME);
+    const currentQuery = entityManager.createQueryBuilder(entity, BASE_ENTITY_NAME);
     try {
-        const respuesta =  await searchRecords(consulta, query);
+        const data =  await searchRecords(currentQuery, findFullQuery);
         return {
-            response: respuesta,
-            entityManager: transactionManager,
+            response: data,
+            entityManager,
         };
     } catch (error) {
         console.error(
             {
                 error,
-                mensaje: 'Error en generar la consulta con transaccion',
+                message: 'Error on generate query',
                 data: {
-                    query,
+                    query: findFullQuery,
                 },
             },
         );
         throw new InternalServerErrorException(
             {
-                mensaje: 'Error en generar la consulta con transaccion',
+                message: 'Error on generate query',
             },
         );
     }

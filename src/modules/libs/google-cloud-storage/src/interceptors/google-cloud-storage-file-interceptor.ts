@@ -1,15 +1,3 @@
-/*
-This file is part of Aginix: https://github.com/Aginix
-Full project source: https://github.com/Aginix/nestjs-gcloud-storage
-License: https://github.com/Aginix/nestjs-gcloud-storage/blob/master/LICENSE
-
-Copyright 2020 by Sam Aginix (https://github.com/Aginix).
-All rights reserved.
-Permission is granted for use, copying, modification, and
-distribution of modified versions of this work as long as this
-notice is included.
- */
-
 import {MulterOptions} from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import {GoogleCloudStoragePerRequestOptions} from '../interfaces';
 import {
@@ -67,3 +55,10 @@ export function GoogleCloudStorageFileInterceptor(
 
     return mixin(GoogleCloudStorageFileInterceptorMixin);
 }
+
+/*
+This file is a partial modification of the following project:
+Full project source: https://github.com/Aginix/nestjs-gcloud-storage
+Copyright 2020 by Sam Aginix (https://github.com/Aginix).
+All rights reserved.
+ */
