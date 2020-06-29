@@ -6,8 +6,8 @@ export {PrincipalService} from './api/api-principal/services/principal.service';
 export {PrincipalEntity} from './api/api-principal/schemas/principal.entity';
 export {PrincipalAuthCrudValidation} from './api/api-principal/auth/principal.abstract.auth.crud';
 export {PrincipalDto} from './api/api-principal/schemas/principal.dto';
-export {ApiDoc} from './api/decorators/swagger-crud/swagger-crud.decorator';
-export {CrudApiConfig} from './api/decorators/swagger-crud/interfaces';
+export {CrudDoc} from './api/decorators/crud-doc/crud-doc';
+export {CrudApiConfig} from './api/decorators/crud-doc/interfaces';
 export {findFull} from './api/functions/search/complex-search/find-full.funcion';
 export {findFullTransaccion} from './api/functions/search/complex-search/find-full.transaction.function';
 export {

@@ -3,9 +3,9 @@ import {SwaggerHelper} from './swagger-helpers/swagger.helper';
 import {API_METHODS_NAMES_OBJECT} from './constants';
 import {SwaggerMakers} from './makers/swagger.makers';
 
-// Implementacion del decorador ApiDoc
+// Implementacion del decorador CrudDoc
 // Este decorador sirve para generar la documentacion de la API para los metodos -> Crud
-export function ApiDoc(
+export function CrudDoc(
     options: CrudApiConfig,
 ) {
     return (target: any) => {
