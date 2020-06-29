@@ -26,7 +26,7 @@ import {
 } from '@nestjs/swagger';
 import {FindFullQuery} from '../../..';
 import {GenericFindResponse} from './generic-find.response';
-import {ControllerCrudMehods, DtoConfigInterface} from '../../interfaces/controllers.interfaces';
+import {ControllerCrudMehods, DtoConfigInterface} from '../../..';
 import {DeepPartial} from 'typeorm';
 
 export abstract class ApiController<Entidad = any> implements ControllerCrudMehods<Entidad> {
@@ -39,7 +39,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
 
     @Post()
     @ApiCreatedResponse({status: HttpStatus.OK, description: 'The record has been successfully created.'})
-    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'Not authorized'})
     @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
     @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async createOne(
@@ -47,21 +47,21 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
         @Request() req: any,
         @Response() response: any,
     ) {
-        const puedeRealizarAccion: boolean = this._authSecurityCrud.createOneAuht(req, response, this);
-        if (puedeRealizarAccion) {
-            const entidadoDto = plainToClass(this._dtoConfig.createDtoType, newRecord) as object;
-            const erroresValidacion = await validate(entidadoDto);
-            if (erroresValidacion.length > 0) {
+        const canDoAction: boolean = this._authSecurityCrud.createOneAuht(req, response, this);
+        if (canDoAction) {
+            const entityDto = plainToClass(this._dtoConfig.createDtoType, newRecord) as object;
+            const validationErrors = await validate(entityDto);
+            if (validationErrors.length > 0) {
                 response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
             } else {
                 try {
-                    const nuevoRegistro = await this._principalService.createOne(newRecord);
-                    response.status(HttpStatus.OK).send(nuevoRegistro);
+                    const recordCreated = await this._principalService.createOne(newRecord);
+                    response.status(HttpStatus.OK).send(recordCreated);
                 } catch (error) {
                     console.error(
                         {
                             error,
-                            mensaje: 'Error on create',
+                            message: 'Error on create',
                             data: {record: newRecord},
                         }
                     );
@@ -69,14 +69,14 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                 }
             }
         } else {
-            response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
+            response.status(HttpStatus.UNAUTHORIZED).send({message: 'Not authorized'});
         }
 
     }
 
     @Put(':id')
     @ApiOkResponse({status: HttpStatus.OK, description: 'The record has been successfully updated.'})
-    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'Not authorized'})
     @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
     @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async updateOne(
@@ -85,26 +85,26 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
         @Request() req: any,
         @Response() response: any,
     ) {
-        const puedeRealizarAccion: boolean = this._authSecurityCrud.updateOneAuht(req, response, this);
-        if (puedeRealizarAccion) {
-            const idValido = !isNaN(Number(id));
-            if (idValido) {
-                const entidadoDto = plainToClass(this._dtoConfig.updateDtoType as typeof PrincipalDto, recordToUpdate) as object;
-                const erroresValidacion = await validate(entidadoDto);
-                if (erroresValidacion.length > 0) {
+        const canDoAction: boolean = this._authSecurityCrud.updateOneAuht(req, response, this);
+        if (canDoAction) {
+            const isValidId = !isNaN(Number(id));
+            if (isValidId) {
+                const dtoEntity = plainToClass(this._dtoConfig.updateDtoType as typeof PrincipalDto, recordToUpdate) as object;
+                const validationErrors = await validate(dtoEntity);
+                if (validationErrors.length > 0) {
                     response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
                 } else {
                     try {
-                        const registroActualizadoActualizado = await this._principalService.updateOne(
+                        const recordUpdated = await this._principalService.updateOne(
                             Number(id),
                             recordToUpdate,
                         );
-                        response.status(HttpStatus.OK).send(registroActualizadoActualizado);
+                        response.status(HttpStatus.OK).send(recordUpdated);
                     } catch (error) {
                         console.error(
                             {
                                 error,
-                                mensaje: 'Error al actualizar',
+                                message: 'Error al actualizar',
                                 data: {id, datosActualizar: recordToUpdate},
                             }
                         );
@@ -115,13 +115,13 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                 response.status(HttpStatus.BAD_REQUEST).send({message: 'Invalid Id'});
             }
         } else {
-            response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
+            response.status(HttpStatus.UNAUTHORIZED).send({message: 'Not authorized'});
         }
     }
 
     @Delete(':id')
     @ApiOkResponse({status: HttpStatus.OK, description: 'The record has been deleted.'})
-    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'Not authorized'})
     @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
     @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async deleteOne(
@@ -129,18 +129,18 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
         @Request() req: any,
         @Response() response: any,
     ) {
-        const puedeRealizarAccion: boolean = this._authSecurityCrud.deleteOneAuth(req, response, this);
-        if (puedeRealizarAccion) {
-            const idValido = !isNaN(Number(id));
-            if (idValido) {
+        const canDoAction: boolean = this._authSecurityCrud.deleteOneAuth(req, response, this);
+        if (canDoAction) {
+            const isIdValid = !isNaN(Number(id));
+            if (isIdValid) {
                 try {
-                    const registroBorrado = await this._principalService.deleteOne(Number(id));
-                    response.status(HttpStatus.OK).send(registroBorrado);
+                    const recordDeleted = await this._principalService.deleteOne(Number(id));
+                    response.status(HttpStatus.OK).send(recordDeleted);
                 } catch (error) {
                     console.error(
                         {
                             error,
-                            mensaje: 'Error on delete',
+                            message: 'Error on delete',
                             data: {id},
                         },
                     );
@@ -150,13 +150,13 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                 response.status(HttpStatus.BAD_REQUEST).send({message: 'Invalid Id'});
             }
         } else {
-            response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
+            response.status(HttpStatus.UNAUTHORIZED).send({message: 'Not authorized'});
         }
     }
 
     @Get(':id')
     @ApiOkResponse({status: HttpStatus.OK, description: 'The record has been fetched.'})
-    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'Not authorized'})
     @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
     @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async findOneById(
@@ -164,15 +164,15 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
         @Request() req: any,
         @Response() response: any,
     ) {
-        const puedeRealizarAccion: boolean = this._authSecurityCrud.findOneByIdAuht(req, response, this);
-        if (puedeRealizarAccion) {
-            const idValido = !isNaN(Number(id));
-            if (idValido) {
+        const canDoAction: boolean = this._authSecurityCrud.findOneByIdAuht(req, response, this);
+        if (canDoAction) {
+            const isIdValid = !isNaN(Number(id));
+            if (isIdValid) {
                 try {
-                    const registrosBuscados = await this._principalService.findOneById(
+                    const fetchedRecord = await this._principalService.findOneById(
                         Number(id),
                     );
-                    response.status(HttpStatus.OK).send(registrosBuscados);
+                    response.status(HttpStatus.OK).send(fetchedRecord);
                 } catch (error) {
                     console.error(
                         {
@@ -187,13 +187,13 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                 response.status(HttpStatus.BAD_REQUEST).send({message: 'Invalid Id'});
             }
         } else {
-            response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
+            response.status(HttpStatus.UNAUTHORIZED).send({message: 'Not authorized'});
         }
     }
 
     @Get()
     @ApiOkResponse({status: HttpStatus.OK, description: 'The records has been fetched.', type: GenericFindResponse})
-    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'UNAUTHORIZED'})
+    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'Not authorized'})
     @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
     @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
     async findAll(
@@ -201,23 +201,23 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
         @Request() req: any,
         @Response() response: any,
     ) {
-        const puedeRealizarAccion: boolean = this._authSecurityCrud.findAllAuth(req, response, this);
-        if (puedeRealizarAccion) {
+        const canDoAction: boolean = this._authSecurityCrud.findAllAuth(req, response, this);
+        if (canDoAction) {
             try {
                 let skip = 0;
                 let take = 10;
-                let resultado: [Entidad[], number];
+                let result: [Entidad[], number];
                 let query: FindFullQuery;
                 if (searchCriteria) {
                     query = JSON.parse(searchCriteria);
-                    resultado = await this._principalService.findAll(query);
+                    result = await this._principalService.findAll(query);
                     skip = query.skip ? query.skip : 0;
                     take = query.take ? query.take : 10;
                 } else {
                     query = {where: {}, skip: 0, take: 10};
-                    resultado = await this._principalService.findAll({} as FindFullQuery);
+                    result = await this._principalService.findAll({} as FindFullQuery);
                 }
-                const total = +resultado[1];
+                const total = +result[1];
                 const rest = total - (skip + take);
                 const isLastPage = rest <= 0;
                 let nextQuery = null;
@@ -233,8 +233,8 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                 }
                 const queryResponse = {
                     nextQuery,
-                    data: resultado[0],
-                    total: resultado[1],
+                    data: result[0],
+                    total: result[1],
                 };
                 response.setHeader('Content-Type', 'application/json');
                 response.status(HttpStatus.OK).json(queryResponse);
@@ -249,7 +249,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                 response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
             }
         } else {
-            response.status(HttpStatus.UNAUTHORIZED).send({message: 'UNAUTHORIZED'});
+            response.status(HttpStatus.UNAUTHORIZED).send({message: 'Not authorized'});
         }
     }
 }

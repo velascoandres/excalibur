@@ -69,7 +69,7 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
                 {
                     message: 'Error on fecth document by id'
                 }
-            )
+            );
         }
     }
 
@@ -87,7 +87,7 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
                 {
                     messague: 'Error on update'
                 }
-            )
+            );
         }
     }
 
