@@ -1,8 +1,9 @@
 import {FindFullQuery, PrincipalDto} from '../..';
 import {DeepPartial, FindManyOptions} from 'typeorm';
 import {MongodbIndexOptions} from 'typeorm/driver/mongodb/typings';
+import {CrudMethodsInterface} from './crud-methods.interface';
 
-export interface ServiceCrudMethodsInterface<T> {
+export interface ServiceCrudMethodsInterface<T> extends CrudMethodsInterface{
     createOne: (row: T) => Promise<T>;
     updateOne: (id: number, row: T) => Promise<T>;
     findAll: (params?: FindFullQuery) => Promise<[T[], number]>;

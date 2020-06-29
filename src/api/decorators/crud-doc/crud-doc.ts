@@ -7,7 +7,7 @@ import {SwaggerMakers} from './makers/swagger.makers';
 // Este decorador sirve para generar la documentacion de la API para los metodos -> Crud
 export function CrudDoc(
     options: CrudApiConfig,
-) {
+): ClassDecorator {
     return (target: any) => {
         const createOneOptions = options.createOne;
         const updateOneOptions = options.updateOne;

@@ -7,7 +7,7 @@ export interface DtoConfigInterface {
     updateDtoType: typeof PrincipalDto;
 }
 
-export interface ControllerCrudMehods<T>  {
+export interface ControllerCrudMehods<T>   {
 
      createOne(newRecord: DeepPartial<T>, req: any, response: any): any;
 

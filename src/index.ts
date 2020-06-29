@@ -29,6 +29,7 @@ export * from './api/interfaces/controllers.interfaces';
 export {GENERIC_TYPE_VALIDATOR} from './api/decorators/cutom-validator/constants';
 export {IsType} from './api/decorators/cutom-validator/isType';
 export {IsTypeDirect} from './api/decorators/cutom-validator/isTypeDirect';
+export {CrudGuards} from './api/decorators/crud-guards/crud-guards';
 // MODULOS ************************************************************
 export * from './modules/libs/google-cloud-storage/src/index';
 export * from './modules/libs/firebase/src/index';
