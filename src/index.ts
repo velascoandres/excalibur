@@ -7,7 +7,7 @@ export {PrincipalEntity} from './api/api-principal/schemas/principal.entity';
 export {PrincipalAuthCrudValidation} from './api/api-principal/auth/principal.abstract.auth.crud';
 export {PrincipalDto} from './api/api-principal/schemas/principal.dto';
 export {CrudDoc} from './api/decorators/crud-doc/crud-doc';
-export {CrudApiConfig} from './api/decorators/crud-doc/interfaces';
+export {CrudApiDocConfig} from './api/decorators/crud-doc/interfaces';
 export {findFull} from './api/functions/search/complex-search/find-full.funcion';
 export {findFullTransaccion} from './api/functions/search/complex-search/find-full.transaction.function';
 export {
@@ -30,6 +30,8 @@ export {GENERIC_TYPE_VALIDATOR} from './api/decorators/cutom-validator/constants
 export {IsType} from './api/decorators/cutom-validator/isType';
 export {IsTypeDirect} from './api/decorators/cutom-validator/isTypeDirect';
 export {CrudGuards} from './api/decorators/crud-guards/crud-guards';
+export {CrudApi} from './api/decorators/crud-api/crud-api';
+export {DecoratorHelper} from './api/shared-utils/decorator-helper';
 // MODULOS ************************************************************
 export * from './modules/libs/google-cloud-storage/src/index';
 export * from './modules/libs/firebase/src/index';

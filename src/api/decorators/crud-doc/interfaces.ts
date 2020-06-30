@@ -29,7 +29,7 @@ export interface ApiBodyMetadata extends RequestBodyOptions {
     enum?: SwaggerEnumType;
 }
 
-export interface CrudApiConfig {
+export interface CrudApiDocConfig {
     createOne?: CreateUpdateOneConfig;
     updateOne?: CreateUpdateOneConfig;
     findAll?: BaseConfig;
