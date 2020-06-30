@@ -6,7 +6,7 @@ import {SwaggerMakers} from '../decorators/crud-doc/makers/swagger.makers';
 import {CrudApiDocConfig} from '../..';
 
 export class DecoratorHelper {
-    static setCrudGuards(
+    static makeCrudGuards(
         options: CrudGuardConfigOptions,
         target: any,
     ){
@@ -32,7 +32,7 @@ export class DecoratorHelper {
         }
         return target;
     }
-    static setCrudDoc(
+    static makeCrudDoc(
         options: CrudApiDocConfig,
         target: any,
     ){

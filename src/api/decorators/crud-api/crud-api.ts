@@ -1,27 +1,11 @@
-import {CrudApiDocConfig, CrudGuards} from '../../..';
-import {CrudConfig, CrudMethodOptionsKeys} from './interfaces/interfaces-types';
+import {CrudApiDocConfig} from '../../..';
+import {CrudConfig} from './interfaces/interfaces-types';
 import {CrudGuardConfigOptions} from '../crud-guards/interfaces/crud-guards-interfaces-types';
-import {DecoratorHelper} from '../../shared-utils/decorator-helper';
+import {DecoratorHelper} from '../../..';
+import {transformDict} from '../../shared-utils/transform-dict';
 
 
-export function transformDict<T = Object>(dict: {[s: string]: any}, key: CrudMethodOptionsKeys): T {
-    const keys = Object.keys(dict);
-    return keys.reduce(
-        (accumulator: T | any, objectKey: string) => {
-            const value: any = dict[objectKey];
-            if (value) {
-                const subValue = value[key];
-                if (subValue) {
-                    accumulator[objectKey] = subValue;
-                }
-            }
-            return accumulator;
-        },
-        {} as any,
-    );
-}
-
-
+// General Decorator, can define guards, documentation, interceptors and headers for the crud methods
 export function CrudApi(
     options: CrudConfig,
 ): ClassDecorator {
@@ -29,11 +13,9 @@ export function CrudApi(
         const guardsConfig = transformDict<CrudGuardConfigOptions>(options, 'guards');
         const crudApiConfig = transformDict<CrudApiDocConfig>(options, 'documentation');
         // Build Guards
-        // CrudGuards(guardsConfig)(target);
-        target = DecoratorHelper.setCrudDoc(crudApiConfig, target);
+        target = DecoratorHelper.makeCrudDoc(crudApiConfig, target);
         // Build ApiDoc
-        // CrudApi(crudApiConfig)(target);
-        target = DecoratorHelper.setCrudGuards(guardsConfig, target);
+        target = DecoratorHelper.makeCrudGuards(guardsConfig, target);
         // Build Interceptors
         // Build Headers
         return target;
