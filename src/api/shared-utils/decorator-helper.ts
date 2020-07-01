@@ -4,38 +4,41 @@ import {CrudGuardConfigOptions} from '../decorators/crud-guards/interfaces/crud-
 import {SwaggerHelper} from '../decorators/crud-doc/swagger-helpers/swagger.helper';
 import {SwaggerMakers} from '../decorators/crud-doc/makers/swagger.makers';
 import {CrudApiDocConfig} from '../..';
+import {CrudInterceptorsConfig} from '../decorators/crud-interceptors/interfaces/crud-interceptors';
+import {makeInterceptors} from '../decorators/crud-interceptors/make-interceptors/make-interceptors';
 
 export class DecoratorHelper {
     static makeCrudGuards(
         options: CrudGuardConfigOptions,
         target: any,
-    ){
+    ) {
         const createOneOptions = options.createOne;
         const updateOneOptions = options.updateOne;
         const findAllOptions = options.findAll;
         const deleteOneOptions = options.deleteOne;
         const findOneByIdOptions = options.findOneById;
-        if (createOneOptions && options.createOne) {
-            makeGuards(API_METHODS_NAMES_OBJECT.createOne, target, options.createOne);
+        if (createOneOptions) {
+            makeGuards(API_METHODS_NAMES_OBJECT.createOne, target, createOneOptions);
         }
-        if (updateOneOptions && options.updateOne) {
-            makeGuards(API_METHODS_NAMES_OBJECT.updateOne, target, options.updateOne);
+        if (updateOneOptions) {
+            makeGuards(API_METHODS_NAMES_OBJECT.updateOne, target, updateOneOptions);
         }
-        if (findAllOptions && options.findAll) {
-            makeGuards(API_METHODS_NAMES_OBJECT.findAll, target, options.findAll);
+        if (findAllOptions) {
+            makeGuards(API_METHODS_NAMES_OBJECT.findAll, target, findAllOptions);
         }
-        if (deleteOneOptions && options.deleteOne) {
-            makeGuards(API_METHODS_NAMES_OBJECT.deleteOne, target, options.deleteOne);
+        if (deleteOneOptions) {
+            makeGuards(API_METHODS_NAMES_OBJECT.deleteOne, target, deleteOneOptions);
         }
-        if (findOneByIdOptions && options.findOneById) {
-            makeGuards(API_METHODS_NAMES_OBJECT.findOneById, target, options.findOneById);
+        if (findOneByIdOptions) {
+            makeGuards(API_METHODS_NAMES_OBJECT.findOneById, target, findOneByIdOptions);
         }
         return target;
     }
+
     static makeCrudDoc(
         options: CrudApiDocConfig,
         target: any,
-    ){
+    ) {
         const createOneOptions = options.createOne;
         const updateOneOptions = options.updateOne;
         const findAllOptions = options.findAll;
@@ -60,6 +63,33 @@ export class DecoratorHelper {
         }
         if (findOneByIdOptions) {
             SwaggerMakers.setHeadersResponses(findOneByIdOptions, API_METHODS_NAMES_OBJECT.findOneById, target);
+        }
+        return target;
+    }
+
+    static makeCrudInterceptors(
+        options: CrudInterceptorsConfig,
+        target: any,
+    ) {
+        const createOneOptions = options.createOne;
+        const updateOneOptions = options.updateOne;
+        const findAllOptions = options.findAll;
+        const deleteOneOptions = options.deleteOne;
+        const findOneByIdOptions = options.findOneById;
+        if (createOneOptions) {
+            makeInterceptors(API_METHODS_NAMES_OBJECT.createOne, target, createOneOptions);
+        }
+        if (updateOneOptions) {
+            makeInterceptors(API_METHODS_NAMES_OBJECT.updateOne, target, updateOneOptions);
+        }
+        if (findAllOptions) {
+            makeInterceptors(API_METHODS_NAMES_OBJECT.findAll, target, findAllOptions);
+        }
+        if (deleteOneOptions) {
+            makeInterceptors(API_METHODS_NAMES_OBJECT.deleteOne, target, deleteOneOptions);
+        }
+        if (findOneByIdOptions) {
+            makeInterceptors(API_METHODS_NAMES_OBJECT.findOneById, target, findOneByIdOptions);
         }
         return target;
     }

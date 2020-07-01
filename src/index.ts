@@ -32,6 +32,7 @@ export {IsTypeDirect} from './api/decorators/cutom-validator/isTypeDirect';
 export {CrudGuards} from './api/decorators/crud-guards/crud-guards';
 export {CrudApi} from './api/decorators/crud-api/crud-api';
 export {DecoratorHelper} from './api/shared-utils/decorator-helper';
+export {CrudInterceptors} from './api/decorators/crud-interceptors/crud-interceptors';
 // MODULOS ************************************************************
 export * from './modules/libs/google-cloud-storage/src/index';
 export * from './modules/libs/firebase/src/index';
