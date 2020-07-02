@@ -1,38 +1,22 @@
 import {makeGuards} from '../decorators/crud-guards/make-guards/make-guards';
 import {API_METHODS_NAMES_OBJECT} from '../decorators/crud-doc/constants';
-import {CrudGuardConfigOptions} from '../decorators/crud-guards/interfaces/crud-guards-interfaces-types';
+import {CrudGuardConfigOptions, CrudGuards} from '../decorators/crud-guards/interfaces/crud-guards-interfaces-types';
 import {SwaggerHelper} from '../decorators/crud-doc/swagger-helpers/swagger.helper';
 import {SwaggerMakers} from '../decorators/crud-doc/makers/swagger.makers';
 import {CrudApiDocConfig} from '../..';
-import {CrudInterceptorsConfig} from '../decorators/crud-interceptors/interfaces/crud-interceptors';
+import {CrudInterceptors, CrudInterceptorsConfig} from '../decorators/crud-interceptors/interfaces/crud-interceptors';
 import {makeInterceptors} from '../decorators/crud-interceptors/make-interceptors/make-interceptors';
+import {CrudHeadersConfig, HeaderInterface} from '../decorators/crud-headers/interfaces/header.interface';
+import {CrudMethod} from '../decorators/crud-doc/interfaces';
+import {makeHeaders} from '../decorators/crud-headers/make-headers/make-headers';
+import {CrudMethodsInterface} from '../interfaces/crud-methods.interface';
 
 export class DecoratorHelper {
     static makeCrudGuards(
         options: CrudGuardConfigOptions,
         target: any,
     ) {
-        const createOneOptions = options.createOne;
-        const updateOneOptions = options.updateOne;
-        const findAllOptions = options.findAll;
-        const deleteOneOptions = options.deleteOne;
-        const findOneByIdOptions = options.findOneById;
-        if (createOneOptions) {
-            makeGuards(API_METHODS_NAMES_OBJECT.createOne, target, createOneOptions);
-        }
-        if (updateOneOptions) {
-            makeGuards(API_METHODS_NAMES_OBJECT.updateOne, target, updateOneOptions);
-        }
-        if (findAllOptions) {
-            makeGuards(API_METHODS_NAMES_OBJECT.findAll, target, findAllOptions);
-        }
-        if (deleteOneOptions) {
-            makeGuards(API_METHODS_NAMES_OBJECT.deleteOne, target, deleteOneOptions);
-        }
-        if (findOneByIdOptions) {
-            makeGuards(API_METHODS_NAMES_OBJECT.findOneById, target, findOneByIdOptions);
-        }
-        return target;
+        return this.make<CrudGuards>(target, options, makeGuards);
     }
 
     static makeCrudDoc(
@@ -71,25 +55,27 @@ export class DecoratorHelper {
         options: CrudInterceptorsConfig,
         target: any,
     ) {
-        const createOneOptions = options.createOne;
-        const updateOneOptions = options.updateOne;
-        const findAllOptions = options.findAll;
-        const deleteOneOptions = options.deleteOne;
-        const findOneByIdOptions = options.findOneById;
-        if (createOneOptions) {
-            makeInterceptors(API_METHODS_NAMES_OBJECT.createOne, target, createOneOptions);
-        }
-        if (updateOneOptions) {
-            makeInterceptors(API_METHODS_NAMES_OBJECT.updateOne, target, updateOneOptions);
-        }
-        if (findAllOptions) {
-            makeInterceptors(API_METHODS_NAMES_OBJECT.findAll, target, findAllOptions);
-        }
-        if (deleteOneOptions) {
-            makeInterceptors(API_METHODS_NAMES_OBJECT.deleteOne, target, deleteOneOptions);
-        }
-        if (findOneByIdOptions) {
-            makeInterceptors(API_METHODS_NAMES_OBJECT.findOneById, target, findOneByIdOptions);
+        return this.make<CrudInterceptors>(target, options, makeInterceptors);
+    }
+
+    static makeCrudHeaders(
+        options: CrudHeadersConfig,
+        target: any,
+    ) {
+        return this.make<HeaderInterface>(target, options, makeHeaders);
+    }
+
+    private static make<T>(
+        target: any,
+        options: CrudMethodsInterface,
+        predicate: (methN: CrudMethod, targ: any, opts: T) => any | void
+    ) {
+        const methodsNames = Object.keys(options) as (keyof CrudMethodsInterface)[];
+        for (const method of methodsNames) {
+            const methodOptions = options[method];
+            if (methodOptions) {
+                predicate(API_METHODS_NAMES_OBJECT[method], target, methodOptions);
+            }
         }
         return target;
     }

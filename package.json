@@ -1,6 +1,6 @@
 {
   "name": "@pimba/excalibur",
-  "version": "0.0.7-test",
+  "version": "0.0.8-test",
   "autor": "gordon_freeman",
   "description": "API of functions and classes for NestJS",
   "main": "lib/index.js",

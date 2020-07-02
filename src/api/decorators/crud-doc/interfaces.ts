@@ -5,6 +5,7 @@ import {
 import {Type} from '@nestjs/common';
 import {SwaggerEnumType} from '@nestjs/swagger/dist/types/swagger-enum.type';
 import {ApiBodyOptions, ApiHeaderOptions, ApiQueryOptions, ApiResponseOptions} from '@nestjs/swagger';
+import {CrudMethodsInterface} from '../../interfaces/crud-methods.interface';
 
 export type RequestBodyOptions = Omit<RequestBodyObject, 'content'>;
 export type Prototype = { [x: string]: object; prototype: { [x: string]: object; }; };
@@ -29,7 +30,7 @@ export interface ApiBodyMetadata extends RequestBodyOptions {
     enum?: SwaggerEnumType;
 }
 
-export interface CrudApiDocConfig {
+export interface CrudApiDocConfig extends  CrudMethodsInterface{
     createOne?: CreateUpdateOneConfig;
     updateOne?: CreateUpdateOneConfig;
     findAll?: BaseConfig;
