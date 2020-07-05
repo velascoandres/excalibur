@@ -1,14 +1,15 @@
 import {Injectable} from '@nestjs/common';
 import * as admin from 'firebase-admin';
+import {App, AdminAuth} from '../interfaces';
 
 
 
 @Injectable()
-export class FirebaseAdminAuthService implements admin.auth.Auth {
+export class FirebaseAdminAuthService implements AdminAuth {
 
 
     constructor(
-        public readonly  app: admin.app.App,
+        public readonly  app: App,
     ) {
 
     }
