@@ -1,6 +1,6 @@
 {
   "name": "@pimba/excalibur",
-  "version": "0.0.8-test",
+  "version": "0.0.10-test",
   "autor": "gordon_freeman",
   "description": "API of functions and classes for NestJS",
   "main": "lib/index.js",
@@ -49,6 +49,7 @@
     "class-transformer": "^0.2.3",
     "class-validator": "^0.12.2",
     "es6-shim": "^0.35.5",
+    "firebase-admin": "^8.13.0",
     "lodash": "^4.17.15",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.5",

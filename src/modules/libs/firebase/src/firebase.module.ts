@@ -1,10 +1,12 @@
 import {Module} from '@nestjs/common';
-import {FirebaseService} from './firebase.service';
+import {FirebaseModuleOptions} from './interfaces';
+import {FirebasePrincipalModule} from './firebase-principal.module';
 
-@Module({
-    providers: [FirebaseService],
-    exports: [FirebaseService],
-})
+@Module({})
 export class FirebaseModule {
-
+    static register(
+        options: FirebaseModuleOptions,
+    ) {
+        return FirebasePrincipalModule.register(options);
+    }
 }
