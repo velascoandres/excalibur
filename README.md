@@ -28,7 +28,7 @@ to extends your controller class from ``ApiController``, But your controller cla
 
 ```typescript
 @Entity('product')
-export class ProductEntity extends PrincipalEntity {
+export class ProductEntity extends AbstractEntity {
   
 }
 ``` 
@@ -38,9 +38,9 @@ export class ProductEntity extends PrincipalEntity {
 
 ```typescript
 @Injectable()
-export class ProductService extends PrincipalService<ProductEntity> {
+export class ProductService extends AbstractService<ProductEntity> {
   constructor(
-    @InjectRepository(ProductoEntity)
+    @InjectRepository(ProductEntity)
     private readonly _productRepository: Repository<ProductEntity>,
   ) {
     super(_productRepository);
@@ -53,7 +53,7 @@ It's important extends from `PrincipalDto`
 
 
 ```typescript
-export class ProductCreateDto extends PrincipalDto{
+export class ProductCreateDto extends BaseDTO{
   @IsAlpha()
   @IsNotEmpty()
   name: string;
@@ -112,19 +112,32 @@ with the following scheme:
 
 For example:
 The `product entity` has a relation `many to one` with `category entity`, so lets make 
-the following search: Products that have a price greater or equal than `10.00` from the category `snacks`.
+the following search: Products that have a price greater or equal than `10.00`  `OR` less than of `2.00`from the category 
+with names `snacks`, `drinks` or name includes `sna`.
 
 `FindFullQuery`: 
 
 ```json
    {
     "where": {
-        "price": {
-          "$gte": 10.00
-        },
+        "price": [
+          {
+            "$gte": 10.00
+          },
+          {
+            "$lt": 2.00 
+          } 
+        ],
         "category": {
           "$join": "inner",
-          "name": "snacks"
+          "name": [
+            {
+               "$like": "%sna%"
+            },
+            {
+                "$in": ["snacks", "drinks"]
+            }            
+          ] 
         }
     }
   }  
@@ -147,7 +160,7 @@ the following search: Products that have a price greater or equal than `10.00` f
 | `<` |  `$lt` |  "$lt": 20 |
 | `<=` |  `$lte` |  "$lte": 20 |
 | `!=` | `$ne` |   "$ne": 20 |
-| Between | `$btw` | "$bt2": [A, B]  |
+| Between | `$btw` | "$btw": [A, B]  |
 | In | `$in` | "$in": [A, B, ...] |
 | Not In | `$nin` | "$nin": [A, B, ...]"
 | Not Between | `$nbtw` |  "$nbtw": [A, B, ...]"
