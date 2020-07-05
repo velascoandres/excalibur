@@ -24,7 +24,7 @@ Like `Django-Rest-Framework` you can get a generic API for especific `entity`, s
 to extends your controller class from ``ApiController``, But your controller class needs to make use of the 
  follonwing classes.
  
-### The entity must extends from `PrincipalEntity`
+### The entity must extends from `AbstractEntity`
 
 ```typescript
 @Entity('product')
@@ -34,7 +34,7 @@ export class ProductEntity extends AbstractEntity {
 ``` 
  
  
-### Create a service which extends from `PrincipalService`
+### Create a service which extends from `AbstractService`
 
 ```typescript
 @Injectable()
@@ -49,7 +49,7 @@ export class ProductService extends AbstractService<ProductEntity> {
 ```
 
 ### Create a DTO class for update and create:
-It's important extends from `PrincipalDto`
+It's important extends from `BaseDTO`
 
 
 ```typescript
@@ -112,8 +112,8 @@ with the following scheme:
 
 For example:
 The `product entity` has a relation `many to one` with `category entity`, so lets make 
-the following search: Products that have a price greater or equal than `10.00`  `OR` less than of `2.00`from the category 
-with names `snacks`, `drinks` or name includes `sna`.
+the following search: Products that have a price greater or equal than `10.00`  `OR` less than of `2.00`, and the product
+ category with names `snacks`, `drinks` or name includes `sna`.
 
 `FindFullQuery`: 
 
