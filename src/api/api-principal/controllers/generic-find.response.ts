@@ -1,9 +1,9 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {PrincipalEntity} from '../schemas/principal.entity';
+import {AbstractEntity} from '../schemas/abstract-entity';
 
 export class GenericFindResponse {
-    @ApiProperty({ type: [PrincipalEntity], description: 'data fetched by page' })
-    data: [Partial<PrincipalEntity>] | undefined;
+    @ApiProperty({ type: [AbstractEntity], description: 'data fetched by page' })
+    data: [Partial<AbstractEntity>] | undefined;
     @ApiProperty({ type: Number, description: 'total of records' })
     total: number | undefined;
 }

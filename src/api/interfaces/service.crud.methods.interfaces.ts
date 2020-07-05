@@ -1,4 +1,4 @@
-import {FindFullQuery, PrincipalDto} from '../..';
+import {FindFullQuery, BaseDTO} from '../..';
 import {DeepPartial, FindManyOptions} from 'typeorm';
 import {MongodbIndexOptions} from 'typeorm/driver/mongodb/typings';
 import {CrudMethodsInterface} from './crud-methods.interface';
@@ -21,4 +21,4 @@ export interface MongoIndexConfigInterface {
     options?: MongodbIndexOptions;
 }
 
-export type PartialEntity<T> = DeepPartial<T> & PrincipalDto;
+export type PartialEntity<T> = DeepPartial<T> & BaseDTO;

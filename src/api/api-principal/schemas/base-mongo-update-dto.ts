@@ -1,7 +1,7 @@
 import {IsEmpty, IsNotEmpty} from 'class-validator';
 import {ObjectID} from 'typeorm';
 
-export class PrincipalMongoUpdateDto {
+export class BaseMongoUpdateDto {
     @IsNotEmpty()
     id: ObjectID | undefined;
     @IsEmpty()

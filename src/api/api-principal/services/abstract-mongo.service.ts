@@ -6,12 +6,12 @@ import {
     MongoRepository,
 } from 'typeorm';
 import {BadRequestException, InternalServerErrorException} from '@nestjs/common';
-import {PrincipalService} from './principal.service';
-import {MongoIndexConfigInterface, PrincipalDto} from '../../..';
-import {PrincipalMongoUpdateDto} from '../../..';
+import {AbstractService} from './abstract.service';
+import {MongoIndexConfigInterface, BaseDTO} from '../../..';
+import {BaseMongoUpdateDto} from '../../..';
 import {PartialEntity} from '../../interfaces/service.crud.methods.interfaces';
 
-export abstract class PrincipalMongoService<Entity> extends PrincipalService<Entity> {
+export abstract class AbstractMongoService<Entity> extends AbstractService<Entity> {
     protected constructor(
         private mongoRepository: MongoRepository<Entity>,
         private indexConfig?: MongoIndexConfigInterface,
@@ -28,7 +28,7 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
         }
     }
 
-    async createOne(row: DeepPartial<Entity> | PrincipalDto): Promise<Entity> {
+    async createOne(row: DeepPartial<Entity> | BaseDTO): Promise<Entity> {
         try {
             return this.mongoRepository.create(row as DeepPartial<Entity>);
         } catch (error) {
@@ -91,7 +91,7 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
         }
     }
 
-    async createMany(documents: DeepPartial<Entity>[] | PrincipalDto[] | Entity[]): Promise<[Entity[], number]> {
+    async createMany(documents: DeepPartial<Entity>[] | BaseDTO[] | Entity[]): Promise<[Entity[], number]> {
         let createdDocuments: InsertWriteOpResult;
         let ids = [];
         try {
@@ -119,7 +119,7 @@ export abstract class PrincipalMongoService<Entity> extends PrincipalService<Ent
     }
 
     async updateMany(
-        documents: DeepPartial<Entity>[] | PrincipalMongoUpdateDto[]): Promise<Entity[]> {
+        documents: DeepPartial<Entity>[] | BaseMongoUpdateDto[]): Promise<Entity[]> {
         const ObjectId = require('mongodb').ObjectID;
         const ids = (documents as any[]).map(doc => ObjectId(doc.id));
         try {

@@ -1,10 +1,10 @@
-import {PrincipalDto} from '../..';
+import {BaseDTO} from '../..';
 import {DeepPartial, ObjectLiteral} from 'typeorm';
 
 
 export interface DtoConfigInterface {
-    createDtoType: typeof PrincipalDto;
-    updateDtoType: typeof PrincipalDto;
+    createDtoType: typeof BaseDTO;
+    updateDtoType: typeof BaseDTO;
 }
 
 export interface ControllerCrudMehods<T>   {

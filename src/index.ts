@@ -2,10 +2,10 @@
 export {crearDatos} from './api/functions/files/load-test-data';
 export {borrarArhicvo} from './api/functions/files/delete-files';
 export {ApiController} from './api/api-principal/controllers/api.controller';
-export {PrincipalService} from './api/api-principal/services/principal.service';
-export {PrincipalEntity} from './api/api-principal/schemas/principal.entity';
+export {AbstractService} from './api/api-principal/services/abstract.service';
+export {AbstractEntity} from './api/api-principal/schemas/abstract-entity';
 export {PrincipalAuthCrudValidation} from './api/api-principal/auth/principal.abstract.auth.crud';
-export {PrincipalDto} from './api/api-principal/schemas/principal.dto';
+export {BaseDTO} from './api/api-principal/schemas/base-dto';
 export {CrudDoc} from './api/decorators/crud-doc/crud-doc';
 export {CrudApiDocConfig} from './api/decorators/crud-doc/interfaces';
 export {findFull} from './api/functions/search/complex-search/find-full.funcion';
@@ -18,13 +18,13 @@ export {OrderByInterface} from './api/functions/search/complex-search/interfaces
 export {
     SimpleQueyOperator
 } from './api/functions/search/complex-search/interfaces/simple-quey-operator';
-export {PrincipalMongoService} from './api/api-principal/services/principal.mongo.service';
+export {AbstractMongoService} from './api/api-principal/services/abstract-mongo.service';
 export {ServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods.interfaces';
 export {MongoServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods.interfaces';
 export {MongoIndexConfigInterface} from './api/interfaces/service.crud.methods.interfaces';
 export {ApiMongoController} from './api/api-principal/controllers/api.mongo.controller';
-export {PrincipalMongoUpdateDto} from './api/api-principal/schemas/principal.mongo.update.dto';
-export {PrincipalMongoEntity} from './api/api-principal/schemas/principal.mongo.entity';
+export {BaseMongoUpdateDto} from './api/api-principal/schemas/base-mongo-update-dto';
+export {AbstractMongoEntity} from './api/api-principal/schemas/abstract-mongo.entity';
 export * from './api/interfaces/controllers.interfaces';
 export {GENERIC_TYPE_VALIDATOR} from './api/decorators/cutom-validator/constants';
 export {IsType} from './api/decorators/cutom-validator/isType';

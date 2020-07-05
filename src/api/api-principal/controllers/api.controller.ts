@@ -10,14 +10,14 @@ import {
     Request,
     Response,
 } from '@nestjs/common';
-import {PrincipalService} from '../../..';
+import {AbstractService} from '../../..';
 import {validate} from 'class-validator';
 import 'reflect-metadata';
 import 'es6-shim';
 import {plainToClass} from 'class-transformer';
 import {PrincipalAuthCrudValidation} from '../../..';
 import {AuthCrudGeneric} from '../auth/auth.crud.generic';
-import {PrincipalDto} from '../../..';
+import {BaseDTO} from '../../..';
 import {
     ApiBadRequestResponse,
     ApiCreatedResponse,
@@ -31,8 +31,8 @@ import {DeepPartial} from 'typeorm';
 
 export abstract class ApiController<Entidad = any> implements ControllerCrudMehods<Entidad> {
     protected constructor(
-        private readonly _principalService: PrincipalService<Entidad>,
-        private readonly _dtoConfig: DtoConfigInterface = {createDtoType: PrincipalDto, updateDtoType: PrincipalDto},
+        private readonly _principalService: AbstractService<Entidad>,
+        private readonly _dtoConfig: DtoConfigInterface = {createDtoType: BaseDTO, updateDtoType: BaseDTO},
         private readonly _authSecurityCrud: PrincipalAuthCrudValidation = new AuthCrudGeneric(),
     ) {
     }
@@ -89,7 +89,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
         if (canDoAction) {
             const isValidId = !isNaN(Number(id));
             if (isValidId) {
-                const dtoEntity = plainToClass(this._dtoConfig.updateDtoType as typeof PrincipalDto, recordToUpdate) as object;
+                const dtoEntity = plainToClass(this._dtoConfig.updateDtoType, recordToUpdate) as object;
                 const validationErrors = await validate(dtoEntity);
                 if (validationErrors.length > 0) {
                     response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});

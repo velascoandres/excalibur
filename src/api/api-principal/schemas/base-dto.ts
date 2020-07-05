@@ -1,6 +1,6 @@
 import {IsEmpty} from 'class-validator';
 
-export class PrincipalDto {
+export class BaseDTO {
     @IsEmpty()
     id: number | undefined;
     @IsEmpty()
