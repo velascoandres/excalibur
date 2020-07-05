@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import admin from 'firebase-admin';
+import * as admin from 'firebase-admin';
 
 
 

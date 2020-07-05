@@ -18,16 +18,6 @@ API of functions and classes for Nestjs
 npm i @pimba/excalibur
 ```
 
-In your tsconfig.json set `esModuleInterop` as `true`
-
-```json
-{
-  "compilerOptions": {
-    "esModuleInterop": true
-  }
-}
-```
-
 
 ## API REST 
 Like `Django-Rest-Framework` you can get a generic API for especific `entity`, so you need
@@ -37,14 +27,14 @@ to extends your controller class from ``ApiController``, But your controller cla
 ### The entity must extends from `PrincipalEntity`
 
 ```typescript
-@Entity('producto')
-export class ProductoEntity extends PrincipalEntity {
+@Entity('product')
+export class ProductEntity extends PrincipalEntity {
   
 }
 ``` 
  
  
-### Create a service who extends from `PrincipalService`
+### Create a service which extends from `PrincipalService`
 
 ```typescript
 @Injectable()
@@ -79,7 +69,7 @@ export class ProductCreateDto extends PrincipalDto{
 
 ```typescript
 @Controller('product')
-export class ProductoController extends ApiController<ProductEntity> {
+export class ProductController extends ApiController<ProductEntity> {
     constructor(private readonly _productService: ProductService) {
         super(
             _productService,
@@ -99,10 +89,10 @@ set of routes will be generated.
 | HTTP METHOD | PATH  | Controller and Service method |
 | --------- | ------ | ----------------------------- |
 |  POST  | `<entityName>`  | createOne              |
-|  PUT | `/<entityName>/id` |  updateOne |
-|  GET | `/<entityName>/id` | findOne  | 
+|  PUT | `/<entityName>/<id:number>` |  updateOne |
+|  GET | `/<entityName>/<id:number>` | findOne  | 
 | GET  | `/<entityName>?query=<FindFullQuery>`  | findAll |
-| DELETE |  `/<entityName>/id` | deleteOne |
+| DELETE |  `/<entityName>/<id:number>` | deleteOne |
 
 ###  Find Full Query
 
@@ -110,13 +100,13 @@ set of routes will be generated.
 For SQL DB you can make a search criteria, that complies 
 with the following scheme:
 
-```json
+```text
    {
     "where": {
-         <Entity attributes and relations>
+         // Entity attributes and relations
     },
-    "skip": 0, // PAGINATION
-    "take": 10 // PATINGATION
+    "skip": 0, // Pagination
+    "take": 10 // Pagination
   }  
 ```
 
@@ -177,13 +167,13 @@ The pagination by default is `skip: 0` and `take: 10`.
 ##### Order By
 The order by criteria by default with respect the entity `id` is `DESC`: 
  
-```json
+```text
    {
     "where": {
-         <Entity attributes and relations>
+         
     },
     "orderBy": {
-      <Order by criteria>
+        // Order by criteria
     }
   }  
 ```
