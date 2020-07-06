@@ -11,5 +11,5 @@ type OperadoresCompuestos = 'In' | 'NotIn' | 'Between' | 'Like' | 'Not' | 'NotEq
 // }
 
 export type ComplexOperator = '$in' | '$nin' | '$btw' | '$nbtw'| '$like' | '$ne' |
-    '$lt' | '$gt' | '$ilike' | '$lte' | '$gte';
+    '$lt' | '$gt' | '$ilike' | '$lte' | '$gte' | '$eq';
 // {"$in":[]}

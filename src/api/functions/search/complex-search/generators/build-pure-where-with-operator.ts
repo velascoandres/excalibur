@@ -1,6 +1,7 @@
 import {ComplexOperator} from '../interfaces/complex-operator-type';
 import {PureWhereInterface} from '../interfaces/pureWhereInterface';
 import {ObjectLiteral} from 'typeorm';
+import {inReductor} from '../reductors/in-reductor';
 
 export function buildPureWhereWithOperator(
     attribute: string,
@@ -24,10 +25,10 @@ export function buildPureWhereWithOperator(
     const pureWhere: PureWhereInterface = {where: '', parameters: {}};
     switch (operator) {
         case '$in':
-            pureWhere.where = `${entityName}.${attribute} In(${valuesToCompare.join()})`;
+            pureWhere.where = `${entityName}.${attribute} In(${inReductor(valuesToCompare)})`;
             return pureWhere;
         case '$nin':
-            pureWhere.where = `${entityName}.${attribute} Not In(${valuesToCompare.join(',')})`;
+            pureWhere.where = `${entityName}.${attribute} Not In(${inReductor(valuesToCompare)})`;
             return pureWhere;
 
         case '$btw':
@@ -87,6 +88,12 @@ export function buildPureWhereWithOperator(
         case '$gte':
             initialParameters[strParameterKey] = valuesToCompare[0];
             pureWhere.where = `${entityName}.${attribute} >= :${strParameterKey}`;
+            pureWhere.parameters = initialParameters;
+            return pureWhere;
+
+        case '$eq':
+            initialParameters[strParameterKey] = valuesToCompare[0];
+            pureWhere.where = `${entityName}.${attribute} = :${strParameterKey}`;
             pureWhere.parameters = initialParameters;
             return pureWhere;
 
