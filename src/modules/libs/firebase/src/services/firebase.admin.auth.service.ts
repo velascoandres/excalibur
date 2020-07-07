@@ -130,3 +130,10 @@ export class FirebaseAdminAuthService implements AdminAuth {
         return this.auth.verifySessionCookie(sessionCookie);
     }
 }
+
+/*
+This file is a partial modification of the following project:
+Full project source: https://github.com/Aginix/nestjs-firebase-admin
+Copyright 2020 by Sam Aginix (https://github.com/Aginix).
+All rights reserved.
+ */
