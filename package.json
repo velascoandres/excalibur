@@ -1,6 +1,6 @@
 {
   "name": "@pimba/excalibur",
-  "version": "0.0.14-test",
+  "version": "0.0.15-test",
   "autor": "gordon_freeman",
   "description": "API of functions and classes for NestJS",
   "main": "lib/index.js",
@@ -23,7 +23,9 @@
     "nestjs",
     "controllers",
     "services",
-    "query-builder"
+    "query-builder",
+    "google-cloud",
+    "firebase"
   ],
   "author": "gordon_freeman",
   "license": "MIT",
