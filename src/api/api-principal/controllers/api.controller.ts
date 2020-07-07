@@ -10,7 +10,7 @@ import {
     Request,
     Response,
 } from '@nestjs/common';
-import {AbstractService} from '../../..';
+import {AbstractService, DtoConfig} from '../../..';
 import {validate} from 'class-validator';
 import 'reflect-metadata';
 import 'es6-shim';
@@ -32,7 +32,7 @@ import {DeepPartial} from 'typeorm';
 export abstract class ApiController<Entidad = any> implements ControllerCrudMehods<Entidad> {
     protected constructor(
         private readonly _principalService: AbstractService<Entidad>,
-        private readonly _dtoConfig: DtoConfigInterface = {createDtoType: BaseDTO, updateDtoType: BaseDTO},
+        private readonly _dtoConfig: DtoConfigInterface | DtoConfig = {createDtoType: BaseDTO, updateDtoType: BaseDTO},
         private readonly _authSecurityCrud: PrincipalAuthCrudValidation = new AuthCrudGeneric(),
     ) {
     }

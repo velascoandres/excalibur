@@ -8,7 +8,7 @@ import {
 import {BadRequestException, InternalServerErrorException} from '@nestjs/common';
 import {AbstractService} from './abstract.service';
 import {MongoIndexConfigInterface, BaseDTO} from '../../..';
-import {BaseMongoUpdateDto} from '../../..';
+import {BaseMongoDTO} from '../../..';
 import {PartialEntity} from '../../interfaces/service.crud.methods.interfaces';
 
 export abstract class AbstractMongoService<Entity> extends AbstractService<Entity> {
@@ -119,7 +119,7 @@ export abstract class AbstractMongoService<Entity> extends AbstractService<Entit
     }
 
     async updateMany(
-        documents: DeepPartial<Entity>[] | BaseMongoUpdateDto[]): Promise<Entity[]> {
+        documents: DeepPartial<Entity>[] | BaseMongoDTO[]): Promise<Entity[]> {
         const ObjectId = require('mongodb').ObjectID;
         const ids = (documents as any[]).map(doc => ObjectId(doc.id));
         try {

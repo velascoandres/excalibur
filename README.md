@@ -5,11 +5,23 @@ API of functions and classes for Nestjs
 
 1. [Instalation](#install)
 2. [API-REST](#api-rest)
-3. [Swagger](#api-rest)
-4. [Guards](#api-rest)
-5. [Interceptors](#api-rest)
-6. [Google-Cloud](#api-rest)
-7. [Firebase](#api-rest)
+3. [Decorators](#decorators)
+
+3.1 [Swagger](#swagger)
+
+3.2 [Guards](#guards)
+
+3.3 [Interceptors](#interceptors)
+
+3.4 [Headers](#headers)
+
+3.5 [CrudApi](#crudapi)
+
+4. [Google Cloud Storage](#google-cloud-storage)
+
+5. [Firebase Authentification](#firebase-authentification)
+
+6. [Special Thanks](#special-thanks)
 
 
 ## Install:
@@ -24,7 +36,7 @@ Like `Django-Rest-Framework` you can get a generic API for especific `entity`, s
 to extends your controller class from ``ApiController``, But your controller class needs to make use of the 
  follonwing classes.
  
-### The entity must extends from `AbstractEntity`
+If you want the entity has an auntoincremental id column, createdAt, updatedAt columns, you need to extends from `AbstractEntity`
 
 ```typescript
 @Entity('product')
@@ -33,8 +45,7 @@ export class ProductEntity extends AbstractEntity {
 }
 ``` 
  
- 
-### Create a service which extends from `AbstractService`
+Create a service which extends from `AbstractService`
 
 ```typescript
 @Injectable()
@@ -49,8 +60,7 @@ export class ProductService extends AbstractService<ProductEntity> {
 ```
 
 ### Create a DTO class for update and create:
-It's important extends from `BaseDTO`
-
+It's important extends from `BaseDTO`, this dto class has id createdAt and updatedAt fields as "must be empty" validator
 
 ```typescript
 export class ProductCreateDto extends BaseDTO{
@@ -83,18 +93,19 @@ export class ProductController extends ApiController<ProductEntity> {
 ```
 
 ### API-REST ENPOINTS:
-For  `entityName` given on the `Controller` decorator. The following 
+For  `controllerPrefix` given on the `Controller` decorator. The following 
 set of routes will be generated.
 
 | HTTP METHOD | PATH  | Controller and Service method |
 | --------- | ------ | ----------------------------- |
-|  POST  | `<entityName>`  | createOne              |
-|  PUT | `/<entityName>/<id:number>` |  updateOne |
-|  GET | `/<entityName>/<id:number>` | findOne  | 
-| GET  | `/<entityName>?query=<FindFullQuery>`  | findAll |
-| DELETE |  `/<entityName>/<id:number>` | deleteOne |
+|  POST  | `<controllerPrefix>`  | createOne              |
+|  PUT | `/<controllerPrefix>/<id:number>` |  updateOne |
+|  GET | `/<controllerPrefix>/<id:number>` | findOne  | 
+| GET  | `/<controllerPrefix>?query=<FindFullQuery>`  | findAll |
+| DELETE |  `/<controllerPrefix>/<id:number>` | deleteOne |
 
-###  Find Full Query
+###  Find Full QueryAginix Technologies
+
 
 #### SQL DB
 For SQL DB you can make a search criteria, that complies 
@@ -149,6 +160,7 @@ the following search: Products that have a price greater or equal than `10.00`  
 
 ##### Find Full Query Object
 
+
 ###### Operators
 
 | Operator |   keyword  |  Example |
@@ -159,11 +171,14 @@ the following search: Products that have a price greater or equal than `10.00`  
 | `>=`  | `$gte` |  "$gte": 20 |
 | `<` |  `$lt` |  "$lt": 20 |
 | `<=` |  `$lte` |  "$lte": 20 |
+| `=` |  `$eq` |  "$eq": 20 |
 | `!=` | `$ne` |   "$ne": 20 |
 | Between | `$btw` | "$btw": [A, B]  |
 | In | `$in` | "$in": [A, B, ...] |
 | Not In | `$nin` | "$nin": [A, B, ...]"
 | Not Between | `$nbtw` |  "$nbtw": [A, B, ...]"
+
+> if your are using MongoDB, you must use the query operators for mongo, check the [documentation](https://docs.mongodb.com/manual/reference/operator/query/)
 
 ##### Join Relations
 The join relations could be many levels as you want, you need to write the 
@@ -190,3 +205,356 @@ The order by criteria by default with respect the entity `id` is `DESC`:
     }
   }  
 ```
+
+### MongoDB
+
+
+#### Entity (Optional)
+If you want the entity has an ObjectId, updatedAt columns, you need to extends from `AbstractMongoEntity`
+```typescript
+
+@Entity('post')
+export class PostEntity extends AbstractMongoEntity{
+    
+}
+```
+
+#### DTO 
+It's important extends from `BaseMongoDTO`, this dto class has id and updatedAt fields as "must be empty" validator
+
+```typescript
+export class Post extends BaseMongoDTO{
+
+}
+```
+
+#### Service
+The service class must extends from `AbstractMongoService`
+
+```typescript
+@Injectable()
+export class PostService extends AbstractMongoService<PostEntity> {
+  constructor(
+    @InjectRepository(PostEntity, 'mongo_conn')
+    private postRepository: MongoRepository<PostEntity>,
+  ) {
+    super(
+      localizacionRepository,
+      { // MongoIndexConfigInterface
+        fieldOrSpec: { localization: '2dsphere' },
+        options: {
+          min: -180,
+          max: 180,
+        },
+      },
+    );
+  }
+}
+```
+
+#### Controller
+
+```typescript
+@Controller('posts')
+export class LocalizacionController extends ApiMongoController<postEntity> {
+    constructor(
+        private readonly _postService: PostService
+    ) {
+        super(
+            _postService,
+            {
+                createDtoType: PostCreateDto,
+                updateDtoType: PostUpdateDto,
+            }
+        );
+    }
+}
+```
+
+## Decorators
+
+### Swagger
+If you want document the CRUD methods paths on swagger you need to make use of `CrudDoc` decorator or `CrudApi` decorator
+
+Example: 
+For every method you should make a configuration. The follwing example shows a complete
+example. 
+
+In another file if you want, make the configuration as a constant.
+
+```typescript
+export const PRODUCT_SWAGGER_CONFIG: CrudApiConfig = {
+    createOne: { // MethodName
+        apiBody: {
+            type: ProductCrearDto
+        },
+        headers: [
+            {
+                name: 'X-MyHeader',
+                description: 'Custom header',
+            },
+        ],
+        responses: [
+            {
+                type: ProductCreateDto,
+                status: HttpStatus.CREATED,
+                description: 'Created Product'
+            },
+            {
+                status: HttpStatus.BAD_REQUEST,
+                description: 'Data not valid',
+            }
+        ]
+    },
+    updateOne: {
+        apiBody: {
+            type: ProductUpdateDto,
+        },
+        responses: [
+            {
+                type: ProductCreateDto,
+                status: HttpStatus.OK,
+                description: 'Updated product'
+            }
+        ]
+    },
+    findAll: {
+        headers: [
+            {
+                name: 'X-MyHeader',
+                description: 'Custom header',
+            },
+        ],
+        responses: [
+            {
+                type: ProductFindResponse,
+                status: HttpStatus.OK,
+                description: 'Fetched Products'
+            }
+        ]
+    }
+}
+```
+
+```typescript
+@CrudDoc(
+     PRODUCT_SWAGGER_CONFIG,
+)
+@Controller('product')
+export class ProductController
+```
+
+
+### GUARDS
+For Guards for every `Crud Method` you need to make use of `CrudGuards` or `CrudApi` decorator.
+
+Example:
+```typescript
+@CrudGuards(
+     {
+         findAll: [ProductoFindAllGuard,]
+         updateOne: [ProductoUpdaeOneGuard],
+         ...othersCrudMethod
+     }
+)
+@Controller('product')
+export class ProductController
+```
+
+### Interceptors
+
+For Interceptors for every `Crud Method` you need to make use of `CrudInterceptors` or `CrudApi` decorator.
+
+Example:
+```typescript
+@CrudInterceptors(
+     {
+         findAll: [ProductoFindallInterceptor,]
+         ...othersCrudMethod
+     }
+)
+@Controller('product')
+export class ProductController
+```
+
+### Headers
+
+For Headers on `Crud Methods` you need to make use of `CrudHeaders` or `CrudApi` decorator.
+
+Example:
+```typescript
+@CrudHeaders(
+     {
+         findAll: {
+              name: 'Custom Header',
+              value: ''
+         },
+         ...othersCrudMethod
+     }
+)
+@Controller('product')
+export class ProductController
+```
+
+### CrudApi
+The `CrudApi` is a general decorator to put the configuration of swagger, guards, interceptors and headers for every
+Crud Method.
+
+Example:
+
+
+```typescript
+@CrudApi(
+    {
+        findAll: {
+            guards: [ProductFindAllGuard,],
+            interceptors: [ProductFindallInterceptor],
+            documentation: PRODUCT_SWAGGER_CONFIG.findAll,
+            header: {
+                name: 'Custom Header',
+                value: ''
+            },
+        },
+        createOne: {
+            documentation: PRODUCT_SWAGGER_CONFIG.createOne,
+        },
+        updateOne: {
+            documentation: PRODUCT_SWAGGER_CONFIG.updateOne,
+        }
+    },
+)
+@Controller('product')
+export class ProductController
+```
+
+## Google Cloud Storage
+> Don't forget to export your google-cloud credentials before start the server.
+
+
+Import the module with your bucket name.
+```typescript
+@Module({
+    imports: [
+        GoogleCloudStorageModule
+            .register({bucketDefaultName: '<bucket-name>'}),
+    ],
+})
+export class SomeModule {
+}
+```
+
+Inject the google-cloud-service in your controller
+
+```typescript
+@Controller('some')
+export class SomeController {
+
+    constructor(
+        private readonly _firebaseService: FirebaseAdminAuthService
+        private readonly _googleCloudStorageService: GoogleCloudStorageService,
+    ) {
+    }
+}
+```
+
+Use the service to store a file
+```typescript
+    @Post('upload-picture')
+    @UseInterceptors(
+        FileInterceptor('picture'),
+    )
+    async uploadPicture(
+            @UploadedFile() pictureFile: UploadedFileMetadata,
+    ){
+       try {
+          return  await this._googleCloudStorageService.upload(pictureFile);
+       }catch (error) {
+          throw new InternalServerErrorException('Error on Upload');
+       }
+    }
+```
+
+### GoogleCloudStorageFileInterceptor
+
+You can use the `GoogleCloudStorageFileInterceptor` to store a file 
+using a specific folder/prefix name
+
+```typescript
+    @Post('upload-picture')
+    @UseInterceptors(
+        GoogleCloudStorageFileInterceptor(
+            'picture', 
+            undefined, 
+            { 
+              prefix: 'pictures'
+            }
+        )
+    )
+    async uploadPicture(
+        @UploadedFile() pictureFile
+    ){
+            return  pictureFile;
+    }
+```
+
+## Firebase Authentification
+
+> If you want use `admin.credential.applicationDefault()` just don't forget to export your Firebase credentials before start the server.
+
+Import the module with your projectID.
+
+```typescript
+@Module({
+    imports: [
+        FirebaseModule.register(
+            {
+                projectId: '<your-projectId>',
+                credential: admin.credential.applicationDefault(),
+            },
+        ),
+    ],
+})
+export class SomeModule {
+}
+```
+
+Inject the firebase-service in your controller
+
+```typescript
+@Controller('some')
+export class SomeController {
+
+    constructor(
+        private readonly _firebaseService: FirebaseAdminAuthService
+    ) {
+    }
+}
+```
+
+Use the service: 
+```typescript
+    @Post('register-user')
+    async registerUser(
+        @Body() user: {
+            email: string,
+            name: string,
+            password: string,
+        }
+    ) {
+        return await this._firebaseService.createUser(
+            {
+                disabled: false,
+                email: user.email,
+                displayName: user.email,
+                emailVerified: true,
+                password: user.password,
+            }
+        );
+    }
+
+
+```
+
+
+## Special Thanks
+The modules for google-cloud-storage and firebase were based on the [Aginix Technologies](https://github.com/Aginix) libraries

@@ -1,10 +1,20 @@
-import {BaseDTO} from '../..';
+import {BaseDTO, BaseMongoDTO} from '../..';
 import {DeepPartial, ObjectLiteral} from 'typeorm';
 
 
-export interface DtoConfigInterface {
+export interface DtoConfig {
+    createDtoType: any;
+    updateDtoType: any;
+}
+
+export interface DtoConfigInterface extends DtoConfig{
     createDtoType: typeof BaseDTO;
     updateDtoType: typeof BaseDTO;
+}
+
+export interface DtoMongoConfigInterface extends DtoConfig{
+    createDtoType: typeof BaseMongoDTO;
+    updateDtoType: typeof BaseMongoDTO;
 }
 
 export interface ControllerCrudMehods<T>   {
