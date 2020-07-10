@@ -1,4 +1,5 @@
 import {SimpleQueyOperator} from './simple-quey-operator';
+import {OperadorConsultaSimpleInterface} from '../../../../../../lib/api/functions/search/complex-search/interfaces/operador.consulta.simple.interface';
 
 // ComplexOperatorsType
 /// Deprecated
@@ -6,10 +7,11 @@ type OperadoresCompuestos = 'In' | 'NotIn' | 'Between' | 'Like' | 'Not' | 'NotEq
     'LessThan' | 'MoreThan' | 'ILike' | 'LessThanEq' | 'MoreThanEq';
 
 // QueryOperator
-// export interface OperadorConsultaInterface extends OperadorConsultaSimpleInterface {
-//     operacion: ComplexOperator;
-// }
+// QueryOperator
+// export type OperadorConsultaInterface = OperadorConsultaSimpleInterface & {
+//     [k in ComplexOperator]: any;
+// };
 
-export type ComplexOperator = '$in' | '$nin' | '$btw' | '$nbtw'| '$like' | '$ne' |
+export type ComplexOperator = '$in' | '$nin' | '$btw' | '$nbtw' | '$like' | '$ne' |
     '$lt' | '$gt' | '$ilike' | '$lte' | '$gte' | '$eq';
 // {"$in":[]}

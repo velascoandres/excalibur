@@ -5,3 +5,4 @@ export const QUERY_OPERATORS = [
 
 export const JOIN_KEYWORD = '$join';
 export const BASE_ENTITY_NAME = 'baseEntity';
+export const OR_KEYWORD = '$or';

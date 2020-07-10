@@ -11,10 +11,11 @@ export function buildWhereOperador(
     entityName: string,
     index: number = 1,
 ): SelectQueryBuilder<{}> {
-    const conjuncion = 'and';
-    // if (valorConOperador.conjuncion) {
-    //     conjuncion = valorConOperador.conjuncion;
-    // }
+    let conjuncion = 'and';
+    if (valueWithOperator.$or) {
+        conjuncion = 'or';
+    }
+    console.log(conjuncion);
     const pureWhere = buildPureWhereWithOperator(atribute, valueWithOperator, entityName, index) as PureWhereInterface;
     return generateWhereQuery(currentQuery, pureWhere, conjuncion);
 }
