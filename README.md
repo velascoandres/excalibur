@@ -178,7 +178,7 @@ the following search: Products that have a price greater or equal than `10.00`  
 ### Or operator
 You can make a query with `or` operator using the keyword `"$or"` as `"true"`
 
-For example: Get products with a price of `7` or name includes of `"choco"`
+For example: Get products with a price of `7` or name includes `"choco"`
 
 ```json
    {
