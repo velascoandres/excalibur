@@ -3,8 +3,7 @@
 API of functions, classes and  modules for `Nestjs` framework.
 
 <img src="https://img.shields.io/npm/dm/@pimba/excalibur"></img>
-<img src="https://img.shields.io/npm/v/@pimba/excalibur
-"></img>
+<img src="https://img.shields.io/npm/v/@pimba/excalibur"></img>
 <img src="https://img.shields.io/github/languages/top/velascoandres/excalibur"></img>
 <img src="https://img.shields.io/github/languages/code-size/velascoandres/excalibur"></img>
 <img src="https://img.shields.io/npm/l/@pimba/excalibur"></img>
