@@ -15,7 +15,6 @@ export function buildWhereOperador(
     if (valueWithOperator.$or) {
         conjuncion = 'or';
     }
-    console.log(conjuncion);
     const pureWhere = buildPureWhereWithOperator(atribute, valueWithOperator, entityName, index) as PureWhereInterface;
     return generateWhereQuery(currentQuery, pureWhere, conjuncion);
 }
