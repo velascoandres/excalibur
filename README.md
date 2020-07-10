@@ -49,6 +49,8 @@ to extends your controller class from ``ApiController``, But your controller cla
 If you want the entity has an auntoincremental id column, createdAt, updatedAt columns, you need to extends from `AbstractEntity`
 
 ```typescript
+import {AbstractEntity} from '@pimba/excalibur/lib';
+
 @Entity('product')
 export class ProductEntity extends AbstractEntity {
   
@@ -58,6 +60,8 @@ export class ProductEntity extends AbstractEntity {
 Create a service which extends from `AbstractService`
 
 ```typescript
+import {AbstractService} from '@pimba/excalibur/lib';
+
 @Injectable()
 export class ProductService extends AbstractService<ProductEntity> {
   constructor(
@@ -73,6 +77,8 @@ export class ProductService extends AbstractService<ProductEntity> {
 It's important extends from `BaseDTO`, this dto class has id createdAt and updatedAt fields as "must be empty" validator
 
 ```typescript
+import {BaseDTO} from '@pimba/excalibur/lib';
+
 export class ProductCreateDto extends BaseDTO{
   @IsAlpha()
   @IsNotEmpty()
@@ -88,6 +94,8 @@ export class ProductCreateDto extends BaseDTO{
 ### Puting it all together
 
 ```typescript
+import {ApiController} from '@pimba/excalibur/lib';
+
 @Controller('product')
 export class ProductController extends ApiController<ProductEntity> {
     constructor(private readonly _productService: ProductService) {
@@ -153,7 +161,7 @@ the following search: Products that have a price greater or equal than `10.00`  
           "$join": "inner",
           "name": [
             {
-               "$like": "%sna%"
+               "$like": "%25sna%25"
             },
             {
                 "$in": ["snacks", "drinks"]
@@ -163,6 +171,24 @@ the following search: Products that have a price greater or equal than `10.00`  
     }
   }  
 ```
+
+> On `like` operator with the wildcar `%`, you should use `%25` instead of `%` cause some problems with browsers and `http clients`
+> as `Postman`.
+
+### Or operator
+You can make a query with `or` operator using the keyword `"$or"` as `"true"`
+
+For example: Get products with a price of `7` or name includes of `"choco"`
+
+```json
+   {
+    "where": {
+        "price": {"$eq": 7, "$or": true},
+        "name": {"$like": "%25choco%25", "$or":  true}
+    }
+  }  
+```
+
 ##### Putting it all together
  
 `GET /product?query={"where":{.......}}`
@@ -222,6 +248,7 @@ The order by criteria by default with respect the entity `id` is `DESC`:
 #### Entity (Optional)
 If you want the entity has an ObjectId, updatedAt columns, you need to extends from `AbstractMongoEntity`
 ```typescript
+import {AbstractMongoEntity} from '@pimba/excalibur/lib';
 
 @Entity('post')
 export class PostEntity extends AbstractMongoEntity{
@@ -233,6 +260,8 @@ export class PostEntity extends AbstractMongoEntity{
 It's important extends from `BaseMongoDTO`, this dto class has id and updatedAt fields as "must be empty" validator
 
 ```typescript
+import {BaseMongoDTO} from '@pimba/excalibur/lib';
+
 export class Post extends BaseMongoDTO{
 
 }
@@ -242,6 +271,8 @@ export class Post extends BaseMongoDTO{
 The service class must extends from `AbstractMongoService`
 
 ```typescript
+import {AbstractMongoService} from '@pimba/excalibur/lib';
+
 @Injectable()
 export class PostService extends AbstractMongoService<PostEntity> {
   constructor(
@@ -265,6 +296,8 @@ export class PostService extends AbstractMongoService<PostEntity> {
 #### Controller
 
 ```typescript
+import {ApiMongoController} from '@pimba/excalibur/lib';
+
 @Controller('posts')
 export class LocalizacionController extends ApiMongoController<postEntity> {
     constructor(
@@ -347,6 +380,9 @@ export const PRODUCT_SWAGGER_CONFIG: CrudApiConfig = {
 ```
 
 ```typescript
+import {CrudDoc} from '@pimba/excalibur/lib';
+
+
 @CrudDoc(
      PRODUCT_SWAGGER_CONFIG,
 )
@@ -360,6 +396,8 @@ For Guards for every `Crud Method` you need to make use of `CrudGuards` or `Crud
 
 Example:
 ```typescript
+import {CrudGuards} from '@pimba/excalibur/lib';
+
 @CrudGuards(
      {
          findAll: [ProductoFindAllGuard,]
@@ -377,6 +415,9 @@ For Interceptors for every `Crud Method` you need to make use of `CrudIntercepto
 
 Example:
 ```typescript
+import {CrudInterceptors} from '@pimba/excalibur/lib';
+
+
 @CrudInterceptors(
      {
          findAll: [ProductoFindallInterceptor,]
@@ -393,6 +434,8 @@ For Headers on `Crud Methods` you need to make use of `CrudHeaders` or `CrudApi`
 
 Example:
 ```typescript
+import {CrudHeaders} from '@pimba/excalibur/lib';
+
 @CrudHeaders(
      {
          findAll: {
@@ -414,6 +457,8 @@ Example:
 
 
 ```typescript
+import {CrudApi} from '@pimba/excalibur/lib';
+
 @CrudApi(
     {
         findAll: {
