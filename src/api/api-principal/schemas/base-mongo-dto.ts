@@ -1,8 +1,8 @@
-import {IsEmpty, IsNotEmpty} from 'class-validator';
+import {IsEmpty} from 'class-validator';
 import {ObjectID} from 'typeorm';
 
 export class BaseMongoDTO {
-    @IsNotEmpty()
+    @IsEmpty()
     id: ObjectID | undefined;
     @IsEmpty()
     updatedAt: string = '';

@@ -52,6 +52,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
             const entityDto = plainToClass(this._dtoConfig.createDtoType, newRecord) as object;
             const validationErrors = await validate(entityDto);
             if (validationErrors.length > 0) {
+                console.error(validationErrors);
                 response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
             } else {
                 try {
@@ -92,6 +93,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                 const dtoEntity = plainToClass(this._dtoConfig.updateDtoType, recordToUpdate) as object;
                 const validationErrors = await validate(dtoEntity);
                 if (validationErrors.length > 0) {
+                    console.error(validationErrors);
                     response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
                 } else {
                     try {

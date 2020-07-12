@@ -1,13 +1,23 @@
-import {Column, ObjectID, ObjectIdColumn} from 'typeorm';
+import {CreateDateColumn, ObjectID, ObjectIdColumn, UpdateDateColumn} from 'typeorm';
 
 export abstract class AbstractMongoEntity {
-    @ObjectIdColumn()
-    id?: ObjectID;
-
-    @Column({
-            type: 'date',
-            name: 'updated_at',
-        },
+    @ObjectIdColumn(
+        {
+        }
     )
-    updatedAt: Date = new Date();
+    id?: ObjectID;
+    @CreateDateColumn(
+        {
+            type: 'datetime',
+            name: 'created_at',
+        }
+    )
+    createdAt: Date | undefined;
+    @UpdateDateColumn(
+        {
+            type: 'datetime',
+            name: 'updated_at',
+        }
+    )
+    updatedAt: Date | undefined;
 }

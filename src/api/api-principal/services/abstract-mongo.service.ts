@@ -30,7 +30,7 @@ export abstract class AbstractMongoService<Entity> extends AbstractService<Entit
 
     async createOne(row: DeepPartial<Entity> | BaseDTO): Promise<Entity> {
         try {
-            return this.mongoRepository.create(row as DeepPartial<Entity>);
+            return this.mongoRepository.save(row as DeepPartial<Entity>);
         } catch (error) {
             throw new InternalServerErrorException('Error on delete document');
         }

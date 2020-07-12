@@ -23,7 +23,7 @@ export {ServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods
 export {MongoServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods.interfaces';
 export {MongoIndexConfigInterface} from './api/interfaces/service.crud.methods.interfaces';
 export {ApiMongoController} from './api/api-principal/controllers/api.mongo.controller';
-export {BaseMongoDTO} from './api/api-principal/schemas/base-mongo-d-t-o';
+export {BaseMongoDTO} from './api/api-principal/schemas/base-mongo-dto';
 export {AbstractMongoEntity} from './api/api-principal/schemas/abstract-mongo.entity';
 export * from './api/interfaces/controllers.interfaces';
 export {GENERIC_TYPE_VALIDATOR} from './api/decorators/cutom-validator/constants';
