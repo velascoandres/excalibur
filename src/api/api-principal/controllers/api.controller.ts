@@ -205,10 +205,10 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
     ) {
         const canDoAction: boolean = this._authSecurityCrud.findAllAuth(req, response, this);
         if (canDoAction) {
+            let skip = 0;
+            let take = 10;
+            let result: [Entidad[], number];
             try {
-                let skip = 0;
-                let take = 10;
-                let result: [Entidad[], number];
                 let query: FindFullQuery;
                 if (searchCriteria) {
                     query = JSON.parse(searchCriteria);
@@ -223,14 +223,14 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                 const rest = total - (skip + take);
                 const isLastPage = rest <= 0;
                 let nextQuery = null;
-                if (!isLastPage){
+                if (!isLastPage) {
                     const isNotLimit = rest >= take;
                     const nextSkip = skip + take;
                     const nextTake = isNotLimit ? take : rest;
                     const partialQuery: Partial<FindFullQuery> = {...query};
                     partialQuery.skip = nextSkip;
                     partialQuery.take = nextTake;
-                    partialQuery.where = Object.keys(query.where).length > 0 ? partialQuery.where: undefined;
+                    partialQuery.where = Object.keys(query.where).length > 0 ? partialQuery.where : undefined;
                     nextQuery = partialQuery;
                 }
                 const queryResponse = {
@@ -244,11 +244,17 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                 console.error(
                     {
                         error,
-                        mensaje: 'Error on fetch results',
+                        message: 'Incorrect query params, bringing default query!',
                         data: searchCriteria,
                     },
                 );
-                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
+                result = await this._principalService.findAll();
+                const defaultQueryResponse = {
+                    nextQuery: {skip: 10, take},
+                    data: result[0],
+                    total: result[1],
+                };
+                response.status(HttpStatus.OK).json(defaultQueryResponse);
             }
         } else {
             response.status(HttpStatus.UNAUTHORIZED).send({message: 'Not authorized'});
