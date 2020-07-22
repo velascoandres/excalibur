@@ -172,8 +172,60 @@ the following search: Products that have a price greater or equal than `10.00`  
   }  
 ```
 
-> On `like` operator with the wildcar `%`, you should use `%25` instead of `%` cause some problems with browsers and `http clients`
-> as `Postman`.
+
+
+
+> On `like` operator with the wildcar `%`, you should use `%25` instead of `%` 
+>cause some problems with browsers and `http clients`
+> as `Postman`. If you are working on backend side you could use the widlcard `%` without problems.
+> Also you could use any [wildcard](https://www.w3schools.com/sql/sql_wildcards.asp) on `like` operator.
+
+#### Examples
+
+> Browser or client side
+
+```text
+http://localhost:3000/product?query={"where":{name:"%25choco%25"}}
+```
+
+
+
+> Backend side
+
+```typescript
+const query = {
+    where: {
+        id: { $like: '%chocho%' },
+        category: {
+            name: 'candy',
+        },
+        supermaket: { // inner join with `supermarket` entity.
+            id: 25,
+            address: '',
+            city: {  // inner join with `city` entity.
+                name: {$like: 'c[^u]'},
+                state: {  // inner join with `state` entity.
+                   id: {$in: [4, 5, 6, 7]},
+                },   
+            },
+        },         
+    },
+    skip: 0,
+    take: 30,  // Pagination  
+}
+const searchResponse = await this.productService.findAll(query);
+const filterProducts = searchResponse[0];
+const totalFecthed = searchResponse[1]; // All filtered records in the Data Base
+```
+
+> For scape characters on `like` operator: use  `\\`
+
+
+```text
+percentCode: {"$like": "%25\\%25%25"}} // Client side
+percentCode: {"$like": "%\\%%"}} // Backend side
+```
+
 
 ### Or operator
 You can make a query with `or` operator using the keyword `"$or"` as `"true"`
@@ -401,7 +453,7 @@ import {CrudGuards} from '@pimba/excalibur/lib';
 @CrudGuards(
      {
          findAll: [ProductoFindAllGuard,]
-         updateOne: [ProductoUpdaeOneGuard],
+         updateOne: [ProductUpdaeOneGuard],
          ...othersCrudMethod
      }
 )
@@ -420,7 +472,7 @@ import {CrudInterceptors} from '@pimba/excalibur/lib';
 
 @CrudInterceptors(
      {
-         findAll: [ProductoFindallInterceptor,]
+         findAll: [ProductFindallInterceptor,]
          ...othersCrudMethod
      }
 )
