@@ -122,7 +122,7 @@ set of routes will be generated.
 | GET  | `/<controllerPrefix>?query=<FindFullQuery>`  | findAll |
 | DELETE |  `/<controllerPrefix>/<id:number>` | deleteOne |
 
-###  Find Full QueryAginix Technologies
+###  Find Full Query
 
 
 #### SQL DB
