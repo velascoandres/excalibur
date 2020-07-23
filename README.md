@@ -119,7 +119,7 @@ set of routes will be generated.
 |  POST  | `<controllerPrefix>`  | createOne              |
 |  PUT | `/<controllerPrefix>/<id:number>` |  updateOne |
 |  GET | `/<controllerPrefix>/<id:number>` | findOne  | 
-| GET  | `/<controllerPrefix>?query=<FindFullQuery>`  | findAll |
+| GET  | `/<controllerPrefix>?query=<find-query>`  | findAll |
 | DELETE |  `/<controllerPrefix>/<id:number>` | deleteOne |
 
 ###  Find  Query
@@ -145,10 +145,10 @@ the following search:
 Products that have a price `greater than or equal` to `10` or `less than` 2 and that the name of the product category 
 can be `snacks`, `drinks` or that the same name of the category includes `"sna"`.
 
-`FindFullQuery`: 
+`Find-Query`: 
 
 ```json
-   {
+   {`
     "where": {
         "price": [
           {
