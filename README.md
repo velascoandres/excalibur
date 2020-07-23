@@ -42,9 +42,9 @@ npm i @pimba/excalibur
 
 
 ## API REST 
-Like `Django-Rest-Framework` you can get a generic API for especific an `entity`, so you need
+Like `Django-Rest-Framework` you can get a generic API for an especific `entity`, so you need
 to extends your controller class from ``ApiController``, But your controller class needs to make use of the 
- following classes.
+ following classes: 
  
 If you want the entity has an auntoincremental id column, createdAt, updatedAt columns, you need to extends from `AbstractEntity`
 
@@ -111,7 +111,7 @@ export class ProductController extends ApiController<ProductEntity> {
 ```
 
 ### API-REST ENPOINTS:
-For  `controllerPrefix` given on the `Controller` decorator. The following 
+For  a `controllerPrefix` given on the `Controller` decorator. The following 
 set of routes will be generated.
 
 | HTTP METHOD | PATH  | Controller and Service method |
@@ -122,10 +122,10 @@ set of routes will be generated.
 | GET  | `/<controllerPrefix>?query=<FindFullQuery>`  | findAll |
 | DELETE |  `/<controllerPrefix>/<id:number>` | deleteOne |
 
-###  Find Full Query
+###  Find  Query
 
 
-#### SQL DB
+#### SQL Data Bases
 For SQL DB you can make a search criteria, that complies 
 with the following scheme:
 
@@ -141,8 +141,9 @@ with the following scheme:
 
 For example:
 The `product entity` has a relation `many to one` with `category entity`, so lets make 
-the following search: Products that have a price greater or equal than `10.00`  `OR` less than of `2.00`, and the product
- category with names `snacks`, `drinks` or name includes `sna`.
+the following search: 
+Products that have a price `greater than or equal` to `10` or `less than` 2 and that the name of the product category 
+can be `snacks`, `drinks` or that the same name of the category includes `"sna"`.
 
 `FindFullQuery`: 
 
@@ -177,20 +178,64 @@ the following search: Products that have a price greater or equal than `10.00`  
 
 > On `like` operator with the wildcar `%`, you should use `%25` instead of `%` 
 >cause some problems with browsers and `http clients`
-> as `Postman`. If you are working on backend side you could use the widlcard `%` without problems.
-> Also you could use any [wildcard](https://www.w3schools.com/sql/sql_wildcards.asp) on `like` operator.
-
+> as `Postman`.
 #### Examples
 
 > Browser or client side
 
 ```text
-http://localhost:3000/product?query={"where":{name:"%25choco%25"}}
+http://localhost:3000/product?query={"where":{"name":{"$like":"%25choco%25"},"category":{}}}
 ```
 
+Results:
 
+```json
+{
+    "nextQuery": null,
+    "data": [
+        {
+            "price": "18",
+            "id": 22,
+            "createdAt": "2020-07-23T23:51:56.898Z",
+            "updatedAt": "2020-07-23T23:51:56.898Z",
+            "name": "chocobreak",
+            "description": "Voluptate irure eu dolor sit et id nisi dolore ex aliquip.",
+            "category": {
+                "id": 8,
+                "name": "candies"
+            }
+        },
+        {
+            "price": "16",
+            "id": 21,
+            "createdAt": "2020-07-23T23:51:56.897Z",
+            "updatedAt": "2020-07-23T23:51:56.897Z",
+            "name": "great chocolate",
+            "description": "Commodo sit duis id consectetur minim nisi nostrud ex sit ad aute cillum eiusmod.",
+            "category": {
+                "id": 8,
+                "name": "candies"
+            }
+        },
+        {
+            "price": "2",
+            "id": 17,
+            "createdAt": "2020-07-23T23:51:56.891Z",
+            "updatedAt": "2020-07-23T23:51:56.891Z",
+            "name": "happy chocolate",
+            "description": "Duis magna exercitation aute pariatur voluptate velit magna ut.",
+            "category": {
+                "id": 8,
+                "name": "candies"
+            }
+        }
+    ],
+    "total": 3
+}
+```
 
-> Backend side
+> If you are working on backend side you could use the widlcard `%` without problems.
+> Also you could use any [wildcard](https://www.w3schools.com/sql/sql_wildcards.asp) on `like` operator.
 
 ```typescript
 const query = {
@@ -213,7 +258,7 @@ const query = {
     skip: 0,
     take: 30,  // Pagination  
 }
-const searchResponse = await this.productService.findAll(query);
+const searchResponse: [ProductEntity[], number] = await this.productService.findAll(query);
 const filterProducts = searchResponse[0];
 const totalFecthed = searchResponse[1]; // All filtered records in the Data Base
 ```
@@ -274,7 +319,7 @@ The join relations could be many levels as you want, you need to write the
  
 
 
-If the join is of the `inner` type it is not necessary to put the keyword `"$join": "inner"`, only if you want to use a join of the type "left" (`" $ join ":" left "`)
+If the join is of the `inner` type it is not necessary to put the keyword `"$join": "inner"`, only if you want to use a join of the type "left" (`" $join ":" left"`)
 
 
 ##### Pagination
@@ -372,7 +417,7 @@ export class PostController extends ApiMongoController<postEntity> {
 For Document the API-REST paths on swagger, you need to make use of `CrudDoc` decorator or `CrudApi` decorator.
 
 Example: 
-For every method you should make a configuration. The follwing example shows a complete
+For every CRUD method you should make a configuration. The follwing example shows a complete
 example. 
 
 In another file if you want, make the configuration as a constant.
@@ -535,11 +580,13 @@ export class ProductController
 ```
 
 ## Google Cloud Storage
-> Don't forget to export your google-cloud credentials before start the server.
 
 
 Import the module with your bucket name.
 ```typescript
+
+import { GoogleCloudStorageModule } from '@pimba/excalibur/lib';
+
 @Module({
     imports: [
         GoogleCloudStorageModule
@@ -549,15 +596,18 @@ Import the module with your bucket name.
 export class SomeModule {
 }
 ```
+> Don't forget to export your google-cloud credentials before start the server.
+
 
 Inject the google-cloud-service in your controller
 
 ```typescript
+import { GoogleCloudStorageService } from '@pimba/excalibur/lib';
+
 @Controller('some')
 export class SomeController {
 
     constructor(
-        private readonly _firebaseService: FirebaseAdminAuthService
         private readonly _googleCloudStorageService: GoogleCloudStorageService,
     ) {
     }
@@ -584,7 +634,12 @@ Use the service to store a file
 ### GoogleCloudStorageFileInterceptor
 
 You can use the `GoogleCloudStorageFileInterceptor` to store a file 
-using a specific folder/prefix name
+using a specific folder/prefix name.
+
+```typescript
+import { GoogleCloudStorageFileInterceptor } from '@pimba/excalibur/lib';
+```
+
 
 ```typescript
     @Post('upload-picture')
@@ -606,11 +661,12 @@ using a specific folder/prefix name
 
 ## Firebase Authentification
 
-> If you want use `admin.credential.applicationDefault()` just don't forget to export your Firebase credentials before start the server.
 
 Import the module with your projectID.
 
 ```typescript
+import { FirebaseModule } from '@pimba/excalibur/lib';
+
 @Module({
     imports: [
         FirebaseModule.register(
@@ -625,9 +681,15 @@ export class SomeModule {
 }
 ```
 
+> If you want use `admin.credential.applicationDefault()` just don't forget to export your Firebase credentials before start the server.
+
+
 Inject the firebase-service in your controller
 
 ```typescript
+import { FirebaseAdminAuthService } from '@pimba/excalibur/lib';
+
+
 @Controller('some')
 export class SomeController {
 
