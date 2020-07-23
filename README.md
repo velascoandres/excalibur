@@ -291,7 +291,7 @@ For example: Get products with a price of `7` or name includes `"choco"`
 `GET /product?query={"where":{.......}}`
 
 
-##### Find Full Query Object
+##### Find Query Object
 
 
 ###### Operators
@@ -315,7 +315,7 @@ For example: Get products with a price of `7` or name includes `"choco"`
 
 ##### Join Relations
 The join relations could be many levels as you want, you need to write the 
-`ManyToOne`, `OneToMany`, `OneToOne`, relationship name in your `Find Full Query Object` like the previous example.
+`ManyToOne`, `OneToMany`, `OneToOne`, relationship name in your `Find Query Object` like the previous example.
  
 
 
