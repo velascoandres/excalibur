@@ -1,10 +1,10 @@
 
-<div style="text-align:center">
-<img  src="https://raw.githubusercontent.com/velascoandres/excalibur/master/logo/sword.png"></img>
-<h1>Excalibur</h1>
-</div>
 
-# Excalibur
+<p align="center">
+    <img  src="https://raw.githubusercontent.com/velascoandres/excalibur/master/logo/sword.png"></img>
+    <h1 align="center">Excalibur</h1>
+</p>
+
 API of functions, classes and  modules for `Nestjs` framework.
 
 <img src="https://img.shields.io/npm/dm/@pimba/excalibur"></img>
