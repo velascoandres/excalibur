@@ -42,9 +42,9 @@ npm i @pimba/excalibur
 
 
 ## API REST 
-Like `Django-Rest-Framework` you can get a generic API for especific `entity`, so you need
+Like `Django-Rest-Framework` you can get a generic API for especific an `entity`, so you need
 to extends your controller class from ``ApiController``, But your controller class needs to make use of the 
- follonwing classes.
+ following classes.
  
 If you want the entity has an auntoincremental id column, createdAt, updatedAt columns, you need to extends from `AbstractEntity`
 
@@ -74,7 +74,7 @@ export class ProductService extends AbstractService<ProductEntity> {
 ```
 
 ### Create a DTO class for update and create:
-It's important extends from `BaseDTO`, this dto class has id createdAt and updatedAt fields as "must be empty" validator
+It's important extends from `BaseDTO`, this dto class has id, createdAt and updatedAt fields as "must be empty" validator
 
 ```typescript
 import {BaseDTO} from '@pimba/excalibur/lib';
@@ -350,8 +350,8 @@ export class PostService extends AbstractMongoService<PostEntity> {
 ```typescript
 import {ApiMongoController} from '@pimba/excalibur/lib';
 
-@Controller('posts')
-export class LocalizacionController extends ApiMongoController<postEntity> {
+@Controller('post')
+export class PostController extends ApiMongoController<postEntity> {
     constructor(
         private readonly _postService: PostService
     ) {
@@ -369,7 +369,7 @@ export class LocalizacionController extends ApiMongoController<postEntity> {
 ## Decorators
 
 ### Swagger
-If you want document the CRUD methods paths on swagger you need to make use of `CrudDoc` decorator or `CrudApi` decorator
+For Document the API-REST paths on swagger, you need to make use of `CrudDoc` decorator or `CrudApi` decorator.
 
 Example: 
 For every method you should make a configuration. The follwing example shows a complete
