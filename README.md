@@ -1,4 +1,9 @@
 
+<div style="text-align:center">
+<img  src="https://raw.githubusercontent.com/velascoandres/excalibur/master/logo/sword.png"></img>
+<h1>Excalibur</h1>
+</div>
+
 # Excalibur
 API of functions, classes and  modules for `Nestjs` framework.
 
@@ -148,7 +153,7 @@ can be `snacks`, `drinks` or that the same name of the category includes `"sna"`
 `Find-Query`: 
 
 ```json
-   {`
+   {
     "where": {
         "price": [
           {
@@ -235,7 +240,8 @@ Results:
 ```
 
 > If you are working on backend side you could use the widlcard `%` without problems.
-> Also you could use any [wildcard](https://www.w3schools.com/sql/sql_wildcards.asp) on `like` operator.
+> Also you could use any [wildcard](https://www.w3schools.com/sql/sql_wildcards.asp) on `like` operator according your 
+>data base.
 
 ```typescript
 const query = {
