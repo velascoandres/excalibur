@@ -37,3 +37,4 @@ export {CrudHeaders} from './api/decorators/crud-headers/crud-headers';
 // MODULOS ************************************************************
 export * from './modules/libs/google-cloud-storage/src/index';
 export * from './modules/libs/firebase/src/index';
+export * from './modules/libs/email/src/index';

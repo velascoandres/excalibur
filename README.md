@@ -36,7 +36,9 @@ API of functions, classes and  modules for `Nestjs` framework.
 
 5. [Firebase Authentification](#firebase-authentification)
 
-6. [Special Thanks](#special-thanks)
+6. [Email Module](#email)
+
+7. [Special Thanks](#special-thanks)
 
 
 ## Install:
@@ -423,10 +425,9 @@ export class PostController extends ApiMongoController<postEntity> {
 For Document the API-REST paths on swagger, you need to make use of `CrudDoc` decorator or `CrudApi` decorator.
 
 Example: 
-For every CRUD method you should make a configuration. The follwing example shows a complete
-example. 
+For every CRUD method you should make a configuration. The follwing example shows a configuration object: 
 
-In another file if you want, make the configuration as a constant.
+In another file (if you want), make the configuration as a constant.
 
 ```typescript
 export const PRODUCT_SWAGGER_CONFIG: CrudApiConfig = {
@@ -730,6 +731,63 @@ Use the service:
 
 ```
 
+## Email
+The library uses [nodemailer](https://nodemailer.com/about/) to provide a module for sending emails.
+
+Import the module with the transports options:
+```typescript
+import {EmailModule} from '@pimba/excalibur/lib';
+
+@Module(
+    {
+        imports: [
+            EmailModule.register(
+                  {
+                     transport: {
+                        host: 'smtp.some-host.email',
+                        port: 587, // smtp port
+                        secure: false, // true for 465, false for other ports,
+                        auth: {
+                          user: '<your-username-or-email>',
+                          pass: '<your-password>',
+                        },
+                      }
+                  }
+            )
+        ]   
+    }   
+)
+export class SomeModule {
+}
+```
+
+> If your want to know more about nodemailer please checke its [documentation](!https://nodemailer.com/about/)
+
+In order to send emails, your need to inject the service: 
+
+```typescript
+@Controller('some-controller')
+export class SomeController  {
+    constructor(
+        private readonly emailService: EmailService,
+    ) {
+    }
+
+    @Get('email')
+    async sendEmail() {
+        await this.emailService
+            .sendMail(
+                {
+                    from: '<sender>',
+                    to: ['receiver / recievers'],
+                    subject: 'Hello',
+                    text: 'Hello World!!',
+                }
+            );
+        return 'OK';
+    }
+}
+```
 
 ## Special Thanks
 The modules for google-cloud-storage and firebase were based on the [Aginix Technologies](https://github.com/Aginix) libraries
