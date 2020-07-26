@@ -741,7 +741,8 @@ import {EmailModule} from '@pimba/excalibur/lib';
 @Module(
     {
         imports: [
-            EmailModule.register(
+            EmailModule
+                .register(
                   {
                      transport: {
                         host: 'smtp.some-host.email',
@@ -779,7 +780,7 @@ export class SomeController  {
             .sendMail(
                 {
                     from: '<sender>',
-                    to: ['receiver / recievers'],
+                    to: ['<receiver-1>', '<receiver-2>', '<receiver-3>'], // receiver/receivers
                     subject: 'Hello',
                     text: 'Hello World!!',
                 }
