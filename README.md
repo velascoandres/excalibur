@@ -762,7 +762,7 @@ export class SomeModule {
 }
 ```
 
-> If your want to know more about nodemailer please checke its [documentation](!https://nodemailer.com/about/)
+> If your want to know more about nodemailer please check its [documentation](!https://nodemailer.com/about/)
 
 In order to send emails, your need to inject the service: 
 
