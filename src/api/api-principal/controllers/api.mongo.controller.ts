@@ -1,5 +1,5 @@
-import {BaseMongoDTO, DtoConfig, DtoConfigInterface, DtoMongoConfigInterface} from '../../..';
-import {PrincipalAuthCrudValidation, ApiController, BaseDTO, AbstractMongoService} from '../../..';
+import {BaseMongoDTO, DtoMongoConfigInterface} from '../../..';
+import {PrincipalAuthCrudValidation, ApiController, AbstractMongoService} from '../../..';
 import {AuthCrudGeneric} from '../auth/auth.crud.generic';
 
 

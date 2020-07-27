@@ -6,6 +6,8 @@ export class BaseMongoDTO {
     id: ObjectID | undefined;
     @IsEmpty()
     updatedAt: string = '';
+    @IsEmpty()
+    createdAt: string = '';
     constructor() {
     }
 }

@@ -7,27 +7,27 @@ export interface DtoConfig {
     updateDtoType: any;
 }
 
-export interface DtoConfigInterface extends DtoConfig{
-    createDtoType: typeof BaseDTO;
-    updateDtoType: typeof BaseDTO;
+export interface DtoConfigInterface extends DtoConfig {
+    createDtoType: typeof BaseDTO | (new() => any);
+    updateDtoType: typeof BaseDTO | (new() => any);
 }
 
-export interface DtoMongoConfigInterface extends DtoConfig{
-    createDtoType: typeof BaseMongoDTO;
-    updateDtoType: typeof BaseMongoDTO;
+export interface DtoMongoConfigInterface extends DtoConfig {
+    createDtoType: typeof BaseMongoDTO | (new() => any);
+    updateDtoType: typeof BaseMongoDTO | (new() => any);
 }
 
-export interface ControllerCrudMehods<T>   {
+export interface ControllerCrudMehods<T> {
 
-     createOne(newRecord: DeepPartial<T>, req: any, response: any): any;
+    createOne(newRecord: DeepPartial<T>, req: any, response: any): any;
 
-     updateOne(recordToUpdate: DeepPartial<T>, id: number, req: any, response: any): any;
+    updateOne(recordToUpdate: DeepPartial<T>, id: number, req: any, response: any): any;
 
-     deleteOne(id: number, req: any, response: any): any;
+    deleteOne(id: number, req: any, response: any): any;
 
-     findAll(searchCriteria: ObjectLiteral, req: any, response: any): any;
+    findAll(searchCriteria: ObjectLiteral, req: any, response: any): any;
 
-     findOneById(id: number, req: any, response: any): any;
+    findOneById(id: number, req: any, response: any): any;
 
 }
 

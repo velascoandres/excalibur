@@ -5,7 +5,7 @@
     <h1 align="center">Excalibur</h1>
 </p>
 
-API of functions, classes and  modules for `Nestjs` framework.
+Excalibur is a set of functions and classes api plus several modules for `Nest.js`.
 
 <img src="https://img.shields.io/npm/dm/@pimba/excalibur"></img>
 <img src="https://img.shields.io/npm/v/@pimba/excalibur"></img>
@@ -18,7 +18,7 @@ API of functions, classes and  modules for `Nestjs` framework.
 
 ## Index
 
-1. [Instalation](#install)
+1. [Installation](#install)
 2. [API-REST](#api-rest)
 3. [Decorators](#decorators)
 
@@ -49,11 +49,20 @@ npm i @pimba/excalibur
 
 
 ## API REST 
-Like `Django-Rest-Framework` you can get a generic API for an especific `entity`, so you need
-to extends your controller class from ``ApiController``, But your controller class needs to make use of the 
- following classes: 
+
+One of the strongest features of this library is to implement an API-REST quickly. To do this, you must 
+first consider implementing the following classes:
+
+* Entity
+* Service
+* DTO
+* Controller
  
-If you want the entity has an auntoincremental id column, createdAt, updatedAt columns, you need to extends from `AbstractEntity`
+ 
+#### Create entity class with extends from `AbstractEntity`
+
+If you want the entity has an auntoincremental id column, createdAt, updatedAt columns.
+
 
 ```typescript
 import {AbstractEntity} from '@pimba/excalibur/lib';
@@ -64,7 +73,7 @@ export class ProductEntity extends AbstractEntity {
 }
 ``` 
  
-Create a service which extends from `AbstractService`
+#### Create a service class which extends from `AbstractService`
 
 ```typescript
 import {AbstractService} from '@pimba/excalibur/lib';
@@ -80,8 +89,10 @@ export class ProductService extends AbstractService<ProductEntity> {
 }
 ```
 
-### Create a DTO class for update and create:
-It's important extends from `BaseDTO`, this dto class has id, createdAt and updatedAt fields as "must be empty" validator
+#### Create a DTO class for update and create:
+
+
+It is optional to extend from `BaseDTO`, This class allows to validate that the fields: `id`, `createdAt` and `updatedAt` should not be empty
 
 ```typescript
 import {BaseDTO} from '@pimba/excalibur/lib';
@@ -281,7 +292,7 @@ percentCode: {"$like": "%\\%%"}} // Backend side
 
 
 ### Or operator
-You can make a query with `or` operator using the keyword `"$or"` as `"true"`
+You can make a query with `OR` operator using the keyword `"$or"` as `"true"`
 
 For example: Get products with a price of `7` or name includes `"choco"`
 
@@ -362,7 +373,7 @@ export class PostEntity extends AbstractMongoEntity{
 ```
 
 #### DTO 
-It's important extends from `BaseMongoDTO`, this dto class has id and updatedAt fields as "must be empty" validator
+It is optional to extend from `BaseMongoDTO`. This class allows to validate that the fields: `id`, `createdAt` and `updatedAt` should not be empty
 
 ```typescript
 import {BaseMongoDTO} from '@pimba/excalibur/lib';
@@ -792,3 +803,4 @@ export class SomeController  {
 
 ## Special Thanks
 The modules for google-cloud-storage and firebase were based on the [Aginix Technologies](https://github.com/Aginix) libraries
+
