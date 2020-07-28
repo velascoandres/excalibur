@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import {BadRequestException, InternalServerErrorException} from '@nestjs/common';
 import {AbstractService} from './abstract.service';
-import {MongoIndexConfigInterface, BaseDTO} from '../../..';
+import {MongoIndexConfigInterface} from '../../..';
 import {BaseMongoDTO} from '../../..';
 import {PartialEntity} from '../../interfaces/service.crud.methods.interfaces';
 
@@ -28,7 +28,7 @@ export abstract class AbstractMongoService<Entity> extends AbstractService<Entit
         }
     }
 
-    async createOne(row: DeepPartial<Entity> | BaseDTO): Promise<Entity> {
+    async createOne(row: DeepPartial<Entity> | BaseMongoDTO): Promise<Entity> {
         try {
             return this.mongoRepository.save(row as DeepPartial<Entity>);
         } catch (error) {
@@ -91,7 +91,7 @@ export abstract class AbstractMongoService<Entity> extends AbstractService<Entit
         }
     }
 
-    async createMany(documents: DeepPartial<Entity>[] | BaseDTO[] | Entity[]): Promise<[Entity[], number]> {
+    async createMany(documents: DeepPartial<Entity>[] | BaseMongoDTO[] | Entity[]): Promise<[Entity[], number]> {
         let createdDocuments: InsertWriteOpResult;
         let ids = [];
         try {
