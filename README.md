@@ -120,8 +120,8 @@ export class ProductController extends ApiController<ProductEntity> {
         super(
             _productService,
             {
-                createDtoType: ProductCrearDto,
-                updateDtoType: ProductEditarDto,
+                createDtoType: ProductCreateDto,
+                updateDtoType: ProductEditDto,
             }
         );
     }
