@@ -7,7 +7,7 @@
 
 Excalibur is a set of functions and classes api plus several modules for `Nest.js`.
 
-<img src="https://img.shields.io/npm/dt/@pimba/excalibur"></img>
+<img src="https://img.shields.io/npm/dm/@pimba/excalibur"></img>
 <img src="https://img.shields.io/npm/v/@pimba/excalibur"></img>
 <img src="https://img.shields.io/github/languages/top/velascoandres/excalibur"></img>
 <img src="https://img.shields.io/github/languages/code-size/velascoandres/excalibur"></img>
@@ -19,10 +19,18 @@ Excalibur is a set of functions and classes api plus several modules for `Nest.j
 ## Index
 
 1. [Installation](#install)
+2. [API-REST](#api-rest)
+3. [Decorators](#decorators)
 
-2. [API-REST](#rest-api)
+    3.1 [Swagger](#swagger)
 
-3. [Security](#security)
+    3.2 [Guards](#guards)
+
+    3.3 [Interceptors](#interceptors)
+
+    3.4 [Headers](#headers)
+
+    3.5 [CrudApi](#crudapi)
 
 4. [Google Cloud Storage](#google-cloud-storage)
 
@@ -40,7 +48,7 @@ npm i @pimba/excalibur
 ```
 
 
-## REST API
+## API REST 
 
 One of the strongest features of this library is to implement an API-REST quickly. To do this, you must 
 first consider implementing the following classes:
@@ -422,124 +430,172 @@ export class PostController extends ApiMongoController<postEntity> {
 }
 ```
 
-## Security
-In order to protect the access to the generic REST-API, you can use a class that implements the `ExcaliburAuth` 
-interface:
+## Decorators
 
-````typescript
-import {Observable} from 'rxjs';
-import {ExcaliburAuth} from '@pimba/excalibur/lib';
+### Swagger
+For Document the API-REST paths on swagger, you need to make use of `CrudDoc` decorator or `CrudApi` decorator.
 
-@Injectable()
-export class ProductAuthorization implements ExcaliburAuth {
+Example: 
+For every CRUD method you should make a configuration. The follwing example shows a configuration object: 
 
-  
-    createOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
-       // Your strategy to give authorization  
-       return of(true);
-    }
-
-    deleteOneAuth(req: any, res: any, controller: ApiController): Observable<boolean> {
-         return of(true);
-    }
-
-    findAllAuth(req: any, res: any, controller: ApiController): Observable<boolean> {
-         return of(true);
-    }
-
-    findOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
-         return of(true);
-    }
-
-    findOneByIdAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
-         return of(true);
-    }
-
-    updateOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
-         return of(true);
-    }
-}
-````
-For each method of the REST API an authorization strategy should be implemented.  The parameters of each method 
-are the request, the response and the reference to the controller (this last one is you need to make use of a 
-controller attribute).
-
-You can make use of any service inside the class, lets look the following example.
+In another file (if you want), make the configuration as a constant.
 
 ```typescript
-import {map} from 'rxjs/operators';
-import {from, Observable} from 'rxjs';
-import {ExcaliburAuth} from '@pimba/excalibur/lib'; import {Injectable} from '@nestjs/common';
-
-@Injectable()
-export class ProductAuthorization implements ExcaliburAuth {
-
-    constructor(
-            private readonly authentificationService: AuthentificationService,
-        ) {
-    }
-  
-    createOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
-       const user = req.body.user;
-       const permissionsResponse$ = from(this.authentificationService.canCreateProduct(user));
-        return permissionsResponse$
-            .pipe(
-                map(
-                    (permissionsResponse: boolean) => permissionsResponse,
-                )
-        );
-       return of(true);
-    }
-}
-```
-After that, declare this class on its respective module as a provider.
-
- 
-```typescript
-import {AuthentificationModule} from '../authentification/authentification.module';
-import {ProductAuthorization} from './security/product.auth';
-
-@Module({
-    imports: [
-        AuthentificationModule,
-    ],
-    providers: [
-        ProductoService,
-        ProductAuthorization,
-    ],
-    controllers: [
-        ProductoController
-    ],
-    exports: [
-        ProductoService,
-    ],
-})
-export class ProductoModule {
-}
-```
-
-Declare this class on the controller as an attribute.
-> By default, the `ApiController class`  has a generic Authorization class.
-
-```typescript
-@Controller('product')
-export class ProductController extends ApiController<ProductEntity> {
-    constructor(
-        private readonly productService: ProductoService,
-        private readonly productAuthorization: ProductAuthorization,
-    ) {
-        super(
-            _productoService,
+export const PRODUCT_SWAGGER_CONFIG: CrudApiConfig = {
+    createOne: { // MethodName
+        apiBody: {
+            type: ProductCrearDto
+        },
+        headers: [
             {
-                createDtoType: ProductCreateDto,
-                updateDtoType: ProductUpdateDto,
+                name: 'X-MyHeader',
+                description: 'Custom header',
             },
-           productAuthorization,
-        );
+        ],
+        responses: [
+            {
+                type: ProductCreateDto,
+                status: HttpStatus.CREATED,
+                description: 'Created Product'
+            },
+            {
+                status: HttpStatus.BAD_REQUEST,
+                description: 'Data not valid',
+            }
+        ]
+    },
+    updateOne: {
+        apiBody: {
+            type: ProductUpdateDto,
+        },
+        responses: [
+            {
+                type: ProductCreateDto,
+                status: HttpStatus.OK,
+                description: 'Updated product'
+            }
+        ]
+    },
+    findAll: {
+        headers: [
+            {
+                name: 'X-MyHeader',
+                description: 'Custom header',
+            },
+        ],
+        responses: [
+            {
+                type: ProductFindResponse,
+                status: HttpStatus.OK,
+                description: 'Fetched Products'
+            }
+        ]
     }
 }
 ```
 
+```typescript
+import {CrudDoc} from '@pimba/excalibur/lib';
+
+
+@CrudDoc(
+     PRODUCT_SWAGGER_CONFIG,
+)
+@Controller('product')
+export class ProductController
+```
+
+
+### GUARDS
+For Guards for every `Crud Method` you need to make use of `CrudGuards` or `CrudApi` decorator.
+
+Example:
+```typescript
+import {CrudGuards} from '@pimba/excalibur/lib';
+
+@CrudGuards(
+     {
+         findAll: [ProductoFindAllGuard,]
+         updateOne: [ProductUpdaeOneGuard],
+         ...othersCrudMethod
+     }
+)
+@Controller('product')
+export class ProductController
+```
+
+### Interceptors
+
+For Interceptors for every `Crud Method` you need to make use of `CrudInterceptors` or `CrudApi` decorator.
+
+Example:
+```typescript
+import {CrudInterceptors} from '@pimba/excalibur/lib';
+
+
+@CrudInterceptors(
+     {
+         findAll: [ProductFindallInterceptor,]
+         ...othersCrudMethod
+     }
+)
+@Controller('product')
+export class ProductController
+```
+
+### Headers
+
+For Headers on `Crud Methods` you need to make use of `CrudHeaders` or `CrudApi` decorator.
+
+Example:
+```typescript
+import {CrudHeaders} from '@pimba/excalibur/lib';
+
+@CrudHeaders(
+     {
+         findAll: {
+              name: 'Custom Header',
+              value: ''
+         },
+         ...othersCrudMethod
+     }
+)
+@Controller('product')
+export class ProductController
+```
+
+### CrudApi
+The `CrudApi` is a general decorator to put the configuration of swagger, guards, interceptors and headers for every
+Crud Method.
+
+Example:
+
+
+```typescript
+import {CrudApi} from '@pimba/excalibur/lib';
+
+@CrudApi(
+    {
+        findAll: {
+            guards: [ProductFindAllGuard,],
+            interceptors: [ProductFindallInterceptor],
+            documentation: PRODUCT_SWAGGER_CONFIG.findAll,
+            header: {
+                name: 'Custom Header',
+                value: ''
+            },
+        },
+        createOne: {
+            documentation: PRODUCT_SWAGGER_CONFIG.createOne,
+        },
+        updateOne: {
+            documentation: PRODUCT_SWAGGER_CONFIG.updateOne,
+        }
+    },
+)
+@Controller('product')
+export class ProductController
+```
 
 ## Google Cloud Storage
 
