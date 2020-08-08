@@ -1,7 +1,7 @@
 import {ApiController} from '../..';
 import {Observable} from 'rxjs';
 
-export interface ExcaliburAuthInterface {
+export interface ExcaliburAuth {
     createOneAuht(
         req: any,
         res: any,

@@ -1,8 +1,8 @@
 import {ApiController} from '../../..';
 import {Observable} from 'rxjs';
-import {ExcaliburAuthInterface} from '../../interfaces/excalibur-auth.interface';
+import {ExcaliburAuth} from '../../interfaces/excalibur.auth';
 
-export abstract class PrincipalAuthCrudValidation implements ExcaliburAuthInterface{
+export abstract class PrincipalAuthCrudValidation implements ExcaliburAuth{
     // For especific controller method implement an auth or security method
     // TODO implement auth strategy
     abstract createOneAuht(

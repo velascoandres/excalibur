@@ -29,13 +29,13 @@ import {GenericFindResponse} from './generic-find.response';
 import {ControllerCrudMehods, DtoConfigInterface} from '../../..';
 import {DeepPartial} from 'typeorm';
 import {Observable} from 'rxjs';
-import {ExcaliburAuthInterface} from '../../interfaces/excalibur-auth.interface';
+import {ExcaliburAuth} from '../../interfaces/excalibur.auth';
 
 export abstract class ApiController<Entidad = any> implements ControllerCrudMehods<Entidad> {
     protected constructor(
         private readonly _principalService: AbstractService<Entidad>,
         private readonly _dtoConfig: DtoConfigInterface | DtoConfig = {createDtoType: BaseDTO, updateDtoType: BaseDTO},
-        private readonly _authSecurityCrud: PrincipalAuthCrudValidation | (Function & ExcaliburAuthInterface) = new AuthCrudGeneric(),
+        private readonly _authSecurityCrud: PrincipalAuthCrudValidation | (Function & ExcaliburAuth) = new AuthCrudGeneric(),
     ) {
     }
 
