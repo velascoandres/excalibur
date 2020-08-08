@@ -5,7 +5,6 @@ import {generateWhereQuery} from './generate-where-query';
 import {buildSimplePureWhere} from './build-simple-pure-where';
 import {buildPureWhereWithOperator} from './build-pure-where-with-operator';
 import {VerificatorHelper} from '../verificators-functions/verificator-helper';
-import {WherePuroInterface} from '../../../../../../lib/api/functions/search/complex-search/interfaces/wherePuro.interface';
 
 export function generateWhere(
     query: SelectQueryBuilder<{}>,

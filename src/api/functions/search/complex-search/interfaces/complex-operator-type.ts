@@ -1,5 +1,4 @@
 import {SimpleQueyOperator} from './simple-quey-operator';
-import {OperadorConsultaSimpleInterface} from '../../../../../../lib/api/functions/search/complex-search/interfaces/operador.consulta.simple.interface';
 
 // ComplexOperatorsType
 /// Deprecated

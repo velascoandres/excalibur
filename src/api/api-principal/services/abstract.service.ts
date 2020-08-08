@@ -22,7 +22,7 @@ export abstract class AbstractService<Entity> implements ServiceCrudMethodsInter
         record: DeepPartial<Entity>,
     ): Promise<Entity> {
         try {
-            const updatedRecord = await this._repository.update(id, record);
+            const updatedRecord = await this._repository.update(+id, record);
         } catch (error) {
             console.error(
                 {
@@ -40,7 +40,7 @@ export abstract class AbstractService<Entity> implements ServiceCrudMethodsInter
                 }
             );
         }
-        const response = await this._repository.findOne(id) as Entity;
+        const response = await this._repository.findOne(+id) as Entity;
         if (response) {
             return response;
         } else {
@@ -52,8 +52,12 @@ export abstract class AbstractService<Entity> implements ServiceCrudMethodsInter
         // CREA UNA INSTANCIA DE LA ENTIDAD
         let recordToDelete: Entity;
         try {
-            recordToDelete = await this.findOneById(recordId);
+            recordToDelete = await this._repository.findOne(recordId) as Entity;
         } catch (error) {
+            console.error({
+                    error,
+                },
+            );
             throw new NotFoundException(
                 {
                     message: 'Record not found'
@@ -63,8 +67,12 @@ export abstract class AbstractService<Entity> implements ServiceCrudMethodsInter
         try {
             const deletedRecord = await this._repository.remove(recordToDelete);
             return recordToDelete;
-        } catch (e) {
-            throw new NotFoundException('Record not found');
+        } catch (error) {
+            console.error({
+                    error,
+                },
+            );
+            throw new NotFoundException('Error on delete');
         }
     }
 

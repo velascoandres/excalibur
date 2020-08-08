@@ -10,7 +10,7 @@ import {
     Type
 } from '@nestjs/common';
 import {GoogleCloudStorageService} from '../google-cloud-storage.service';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
 import {FileInterceptor} from '@nestjs/platform-express';
 
 
@@ -43,9 +43,10 @@ export function GoogleCloudStorageFileInterceptor(
                 //     `File with fieldName: "${fieldName}" not found`,
                 // );
                 throw new BadGatewayException({
-                    message: `Error on intercept file:
+                        message: `Error on intercept file:
                     File with fieldName: "${fieldName}" not found`
-                });
+                    },
+                );
                 // return of(undefined);
             }
             file.storageUrl = await this._googleCloudStorageService.upload(file, googleClodudStorageOptions);
