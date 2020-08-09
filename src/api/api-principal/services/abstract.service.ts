@@ -48,25 +48,11 @@ export abstract class AbstractService<Entity> implements ServiceCrudMethodsInter
         }
     }
 
-    async deleteOne(recordId: number): Promise<Entity> {
-        // CREA UNA INSTANCIA DE LA ENTIDAD
-        let recordToDelete: Entity;
+    async deleteOne(recordId: number, deleted: Entity): Promise<Entity> {
         try {
-            recordToDelete = await this._repository.findOne(recordId) as Entity;
-        } catch (error) {
-            console.error({
-                    error,
-                },
-            );
-            throw new NotFoundException(
-                {
-                    message: 'Record not found'
-                }
-            );
-        }
-        try {
-            const deletedRecord = await this._repository.remove(recordToDelete);
-            return recordToDelete;
+            // const recordToDelete = {... await this._repository.findOne(+recordId) as Entity };
+            return await this._repository.remove(deleted);
+            // return recordToDelete;
         } catch (error) {
             console.error({
                     error,

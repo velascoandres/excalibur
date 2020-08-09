@@ -7,7 +7,7 @@ export interface ServiceCrudMethodsInterface<T> extends CrudMethodsInterface{
     createOne: (row: T) => Promise<T>;
     updateOne: (id: number, row: T) => Promise<T>;
     findAll: (params?: FindFullQuery) => Promise<[T[], number]>;
-    deleteOne: (id: number) => Promise<T>;
+    deleteOne: (id: number, ...args: any) => Promise<T>;
     findOneById: (id: number) => Promise<T>;
 }
 

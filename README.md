@@ -469,7 +469,8 @@ You can make use of any service inside the class, lets look the following exampl
 ```typescript
 import {map} from 'rxjs/operators';
 import {from, Observable} from 'rxjs';
-import {ExcaliburAuth} from '@pimba/excalibur/lib'; import {Injectable} from '@nestjs/common';
+import {ExcaliburAuth} from '@pimba/excalibur/lib'; 
+import {Injectable} from '@nestjs/common';
 
 @Injectable()
 export class ProductAuthorization implements ExcaliburAuth {

@@ -2,7 +2,7 @@ import {
     Body,
     Delete,
     Get,
-    HttpStatus,
+    HttpStatus, NotFoundException,
     Param,
     Post,
     Put,
@@ -29,9 +29,11 @@ import {GenericFindResponse} from './generic-find.response';
 import {ControllerCrudMehods, DtoConfigInterface} from '../../..';
 import {DeepPartial} from 'typeorm';
 import {Observable} from 'rxjs';
-import {ExcaliburAuth} from '../../interfaces/excalibur.auth';
+import {ExcaliburAuth} from '../../..';
 
 export abstract class ApiController<Entidad = any> implements ControllerCrudMehods<Entidad> {
+
+
     protected constructor(
         private readonly _principalService: AbstractService<Entidad>,
         private readonly _dtoConfig: DtoConfigInterface | DtoConfig = {createDtoType: BaseDTO, updateDtoType: BaseDTO},
@@ -98,7 +100,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
             .subscribe(
                 async (canDoAction: boolean) => {
                     if (canDoAction) {
-                        const isValidId = !isNaN(Number(id));
+                        const isValidId = this.validateId(id);
                         if (isValidId) {
                             const dtoEntity = plainToClass(this._dtoConfig.updateDtoType, recordToUpdate) as object;
                             const validationErrors = await validate(dtoEntity);
@@ -106,9 +108,13 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                                 console.error(validationErrors);
                                 response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
                             } else {
+                                const record = await this._principalService.findOneById(id);
+                                if (!record){
+                                    response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
+                                }
                                 try {
                                     const recordUpdated = await this._principalService.updateOne(
-                                        Number(id),
+                                        id,
                                         recordToUpdate,
                                     );
                                     response.status(HttpStatus.OK).send(recordUpdated);
@@ -148,11 +154,15 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
             .subscribe(
                 async (canDoAction: boolean) => {
                     if (canDoAction) {
-                        const isIdValid = !isNaN(Number(id));
+                        const isIdValid = this.validateId(id);
                         if (isIdValid) {
+                            const record = await this._principalService.findOneById(id);
+                            if (!record){
+                                response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
+                            }
                             try {
-                                const recordDeleted = await this._principalService.deleteOne(Number(id));
-                                response.status(HttpStatus.OK).send(recordDeleted);
+                                const deteleResponse = await this._principalService.deleteOne(id, record);
+                                response.status(HttpStatus.OK).send(deteleResponse);
                             } catch (error) {
                                 console.error(
                                     {
@@ -188,7 +198,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
             .subscribe(
                 async (canDoAction: boolean) => {
                     if (canDoAction) {
-                        const isIdValid = !isNaN(Number(id));
+                        const isIdValid = this.validateId(id);
                         if (isIdValid) {
                             try {
                                 const fetchedRecord = await this._principalService.findOneById(
@@ -286,6 +296,10 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                     }
                 }
             );
+    }
+
+    protected validateId(id: any): boolean {
+        return !isNaN(Number(id));
     }
 }
 

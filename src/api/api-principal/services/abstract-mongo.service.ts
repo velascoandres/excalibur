@@ -5,11 +5,12 @@ import {
     InsertWriteOpResult,
     MongoRepository,
 } from 'typeorm';
-import {BadRequestException, InternalServerErrorException} from '@nestjs/common';
+import {BadRequestException, InternalServerErrorException, NotFoundException} from '@nestjs/common';
 import {AbstractService} from './abstract.service';
-import {MongoIndexConfigInterface} from '../../..';
+import {FindFullQuery, MongoIndexConfigInterface} from '../../..';
 import {BaseMongoDTO} from '../../..';
 import {PartialEntity} from '../../interfaces/service.crud.methods.interfaces';
+import {DeleteResult} from 'typeorm';
 
 export abstract class AbstractMongoService<Entity> extends AbstractService<Entity> {
     protected constructor(
@@ -36,34 +37,32 @@ export abstract class AbstractMongoService<Entity> extends AbstractService<Entit
         }
     }
 
-    async deleteOne(id: number): Promise<Entity> {
+    async deleteOne(id: any): Promise<Entity> {
         try {
             const ObjectId = require('mongodb').ObjectID;
-            const deleteResponse = await this.mongoRepository.delete(
-                ObjectId(id),
-            );
-            return this.findOneById(id);
+            return (await this.mongoRepository.findOneAndDelete(
+                {
+                    _id: ObjectId(id),
+                }
+            )).value;
         } catch (error) {
             throw new InternalServerErrorException('Error on delete document');
         }
     }
 
-    async findAll(optionsOrConditions?: FindManyOptions<Entity> | Partial<Entity>): Promise<[Entity[], number]> {
-        try {
+    async findAll(optionsOrConditions?: FindFullQuery): Promise<[Entity[], number]> {
+        if (optionsOrConditions) {
             return await this.mongoRepository.findAndCount(optionsOrConditions);
-        } catch (error) {
-            throw new InternalServerErrorException('Error on fetch document');
+        } else {
+            return await this.mongoRepository.findAndCount({skip: 0, take: 10});
         }
     }
 
-    async findOneById(id: number): Promise<Entity> {
-        const ObjectId = require('mongodb').ObjectID;
+    async findOneById(id: any): Promise<Entity> {
         try {
-            return await this.mongoRepository.findOne({
-                where: {
-                    _id: ObjectId(id),
-                },
-            }) as Entity;
+            return await this.mongoRepository.findOne(
+                id,
+            ) as Entity;
         } catch (error) {
             throw new InternalServerErrorException(
                 {
@@ -76,12 +75,14 @@ export abstract class AbstractMongoService<Entity> extends AbstractService<Entit
     async updateOne(id: string | number, row: PartialEntity<Entity>): Promise<Entity> {
         try {
             const ObjectId = require('mongodb').ObjectID;
-            await this.mongoRepository.findOneAndUpdate(ObjectId(id), row);
-            return await this.mongoRepository.findOne({
-                where: {
+            const res = await this.mongoRepository.updateOne(
+                {
                     _id: ObjectId(id),
                 },
-            }) as Entity;
+                {$set: {...row}},
+                {upsert: false,}
+            );
+            return await this.mongoRepository.findOne(id) as Entity;
         } catch (error) {
             throw new InternalServerErrorException(
                 {
