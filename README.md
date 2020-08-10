@@ -20,7 +20,7 @@ Excalibur is a set of functions and classes api plus several modules for `Nest.j
 
 1. [Installation](#install)
 
-2. [API-REST](#rest-api)
+2. [REST-API](#rest-api)
 
 3. [Security](#security)
 
@@ -461,7 +461,7 @@ export class ProductAuthorization implements ExcaliburAuth {
 }
 ````
 For each method of the REST API an authorization strategy should be implemented.  The parameters of each method 
-are the request, the response and the reference to the controller (this last one is you need to make use of a 
+are the request, the response and the reference to the controller (this last one is if you need to make use of a 
 controller attribute).
 
 You can make use of any service inside the class, lets look the following example.
