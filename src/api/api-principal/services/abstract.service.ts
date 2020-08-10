@@ -48,11 +48,10 @@ export abstract class AbstractService<Entity> implements ServiceCrudMethodsInter
         }
     }
 
-    async deleteOne(recordId: number, deleted: Entity): Promise<Entity> {
+    async deleteOne(recordId: number): Promise<Entity> {
         try {
-            // const recordToDelete = {... await this._repository.findOne(+recordId) as Entity };
-            return await this._repository.remove(deleted);
-            // return recordToDelete;
+            const recordToDelete = {...await this._repository.findOne(+recordId) as Entity};
+            return await this._repository.remove(recordToDelete);
         } catch (error) {
             console.error({
                     error,
@@ -78,10 +77,26 @@ export abstract class AbstractService<Entity> implements ServiceCrudMethodsInter
     async findOne(
         parametros?: FindManyOptions<Entity>,
     ): Promise<Entity> {
-        return await this._repository.findOne(parametros) as Entity;
+        try {
+            return await this._repository.findOne(parametros) as Entity;
+        } catch (error) {
+            throw new InternalServerErrorException(
+                {
+                    message: 'Error on fecth document by id'
+                }
+            );
+        }
     }
 
     async findOneById(id: number): Promise<Entity> {
-        return await this._repository.findOne(id) as Entity;
+        try {
+            return await this._repository.findOne(id) as Entity;
+        } catch (error) {
+            throw new InternalServerErrorException(
+                {
+                    message: 'Error on fecth document by id'
+                }
+            );
+        }
     }
 }

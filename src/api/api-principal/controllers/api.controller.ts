@@ -108,8 +108,12 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                                 console.error(validationErrors);
                                 response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
                             } else {
-                                const record = await this._principalService.findOneById(id);
-                                if (!record){
+                                try {
+                                    const record = await this._principalService.findOneById(id);
+                                    if (!record){
+                                        response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
+                                    }
+                                } catch (error) {
                                     response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
                                 }
                                 try {
@@ -128,6 +132,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                                     );
                                     response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
                                 }
+
                             }
                         } else {
                             response.status(HttpStatus.BAD_REQUEST).send({message: 'Invalid Id'});
@@ -156,12 +161,18 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                     if (canDoAction) {
                         const isIdValid = this.validateId(id);
                         if (isIdValid) {
-                            const record = await this._principalService.findOneById(id);
-                            if (!record){
+                            try {
+                                const record = await this._principalService.findOneById(id);
+                                if (!record){
+                                    response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
+                                    return;
+                                }
+                            } catch (error) {
                                 response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
+                                return;
                             }
                             try {
-                                const deteleResponse = await this._principalService.deleteOne(id, record);
+                                const deteleResponse = await this._principalService.deleteOne(id);
                                 response.status(HttpStatus.OK).send(deteleResponse);
                             } catch (error) {
                                 console.error(

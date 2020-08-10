@@ -10,7 +10,6 @@ import {AbstractService} from './abstract.service';
 import {FindFullQuery, MongoIndexConfigInterface} from '../../..';
 import {BaseMongoDTO} from '../../..';
 import {PartialEntity} from '../../interfaces/service.crud.methods.interfaces';
-import {DeleteResult} from 'typeorm';
 
 export abstract class AbstractMongoService<Entity> extends AbstractService<Entity> {
     protected constructor(
