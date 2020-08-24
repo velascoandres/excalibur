@@ -27,7 +27,6 @@ export async function generateQuery(
             if (hasComplexOperatorQuery) {
                 baseQueryBuilder = buildWhereOperador(baseQueryBuilder, atributeName, atributeValue, parentEntity);
             }
-            console.log(!hasComplexOperatorQuery, !isObject);
             if (!hasComplexOperatorQuery && !isObject) {
                 baseQueryBuilder = generateWhere(baseQueryBuilder, atributeName, atributeValue, parentEntity);
             }
