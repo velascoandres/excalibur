@@ -68,9 +68,18 @@ export abstract class AbstractService<Entity> implements ServiceCrudMethodsInter
         if (!tieneParametros) {
             return await this._repository.findAndCount({skip: 0, take: 10});
         } else {
+            const tieneParametroWhere = parametros?.where !== undefined;
             const nombreTabla: string = this._repository.metadata.tableName;
             const conexion: string = this._repository.metadata.connection.name;
-            return await findFull<Entity>(nombreTabla, parametros as FindFullQuery, conexion);
+            if (tieneParametroWhere) {
+                return await findFull<Entity>(nombreTabla, parametros as FindFullQuery, conexion);
+            } else {
+                const parametroReformulado = {
+                    where: {},
+                    ...parametros,
+                };
+                return await findFull<Entity>(nombreTabla, parametroReformulado as FindFullQuery, conexion);
+            }
         }
     }
 

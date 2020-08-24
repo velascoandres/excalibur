@@ -110,7 +110,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                             } else {
                                 try {
                                     const record = await this._principalService.findOneById(id);
-                                    if (!record){
+                                    if (!record) {
                                         response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
                                     }
                                 } catch (error) {
@@ -163,7 +163,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                         if (isIdValid) {
                             try {
                                 const record = await this._principalService.findOneById(id);
-                                if (!record){
+                                if (!record) {
                                     response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
                                     return;
                                 }
@@ -276,7 +276,9 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
                                 const partialQuery: Partial<FindFullQuery> = {...query};
                                 partialQuery.skip = nextSkip;
                                 partialQuery.take = nextTake;
-                                partialQuery.where = Object.keys(query.where).length > 0 ? partialQuery.where : undefined;
+                                if (query.where) {
+                                    partialQuery.where = Object.keys(query.where).length > 0 ? partialQuery.where : undefined;
+                                }
                                 nextQuery = partialQuery;
                             }
                             const queryResponse = {
