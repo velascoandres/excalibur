@@ -19,15 +19,15 @@ export interface DtoMongoConfigInterface extends DtoConfig {
 
 export interface ControllerCrudMehods<T> {
 
-    createOne(newRecord: DeepPartial<T>, req: any, response: any): any;
+    createOne(newRecord: DeepPartial<T>, req: any, response: any, ...args: any[]): any;
 
-    updateOne(recordToUpdate: DeepPartial<T>, id: number, req: any, response: any): any;
+    updateOne(recordToUpdate: DeepPartial<T>, id: number, req: any, response: any, ...args: any[]): any;
 
-    deleteOne(id: number, req: any, response: any): any;
+    deleteOne(id: number, req: any, response: any, ...args: any[]): any;
 
-    findAll(searchCriteria: ObjectLiteral, req: any, response: any): any;
+    findAll(searchCriteria: ObjectLiteral, req: any, response: any, ...args: any[]): any;
 
-    findOneById(id: number, req: any, response: any): any;
+    findOneById(id: number, req: any, response: any, ...args: any[]): any;
 
 }
 

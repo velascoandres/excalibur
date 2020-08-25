@@ -50,6 +50,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
         @Body() newRecord: DeepPartial<Entidad>,
         @Request() req: any,
         @Response() response: any,
+        ...args: any[]
     ) {
         const canDoAction$: Observable<boolean> = this._authSecurityCrud.createOneAuht(req, response, this);
         canDoAction$
@@ -94,6 +95,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
         @Param('id') id: number,
         @Request() req: any,
         @Response() response: any,
+        ...args: any[]
     ) {
         const canDoAction$: Observable<boolean> = this._authSecurityCrud.updateOneAuht(req, response, this);
         canDoAction$
@@ -153,6 +155,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
         @Param('id') id: number,
         @Request() req: any,
         @Response() response: any,
+        ...args: any[]
     ) {
         const canDoAction$: Observable<boolean> = this._authSecurityCrud.deleteOneAuth(req, response, this);
         canDoAction$
@@ -203,6 +206,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
         @Param('id') id: number,
         @Request() req: any,
         @Response() response: any,
+        ...args: any[]
     ) {
         const canDoAction$: Observable<boolean> = this._authSecurityCrud.findOneByIdAuht(req, response, this);
         canDoAction$
@@ -245,6 +249,7 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
         @Query('query') searchCriteria: any,
         @Request() req: any,
         @Response() response: any,
+        ...args: any[]
     ) {
         const canDoAction$: Observable<boolean> = this._authSecurityCrud.findAllAuth(req, response, this);
         canDoAction$
