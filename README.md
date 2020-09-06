@@ -26,11 +26,13 @@ Excalibur is a set of functions and classes api plus several modules for `Nest.j
 
 4. [Google Cloud Storage](#google-cloud-storage)
 
-5. [Firebase Authentification](#firebase-authentification)
+5.  [Google Cloud Vision](#google-cloud-vision)
 
-6. [Email Module](#email)
+6. [Firebase Admin Authentification](#firebase-admin-authentification)
 
-7. [Special Thanks](#special-thanks)
+7. [Email Module](#email)
+
+8. [Special Thanks](#special-thanks)
 
 
 ## Install:
@@ -623,7 +625,7 @@ import { GoogleCloudStorageFileInterceptor } from '@pimba/excalibur/lib';
 ```
 
 
-## Google Cloud API Vision
+## Google Cloud Vision
 
 Import module: `GoogleCloudVisionApiModule`:
 
@@ -695,7 +697,7 @@ export class SomeController {
 | detectHandwrittenText | Detects get handwritten text in an image  |  image-url or buffer |
 
 
-## Firebase Authentification
+## Firebase Admin Authentification
 
 
 Import the module with your projectID.
