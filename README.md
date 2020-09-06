@@ -660,7 +660,7 @@ export class SomeController {
       @UseInterceptors(
         FileInterceptor('image'),
       )
-      async predecirImagen(
+      async inspectImage(
         @UploadedFile() imageFile,
       ) {
         // Fecth the file and get it's buffer.  
