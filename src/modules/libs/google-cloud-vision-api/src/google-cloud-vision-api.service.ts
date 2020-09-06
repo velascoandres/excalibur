@@ -64,7 +64,7 @@ export class GoogleCloudVisionApiService {
         return results.safeSearchAnnotation as ISafeSearchAnnotation;
     }
 
-    async detectTextOnImages(image: string | Buffer)
+    async detectText(image: string | Buffer)
         : Promise<IEntityAnnotation[]> {
         const [results] = await this.client.textDetection(image);
         return results.textAnnotations as IEntityAnnotation[];
