@@ -9,7 +9,7 @@ export class SwaggerHelper {
     static buildApiBody(
         configObject: CreateUpdateOneConfig,
         methodName: string,
-        target: Prototype,
+        target: any,
     ): void {
         const params = SwaggerMakers.makeCustomApiBody(configObject.apiBody);
         const metadataValue = Reflect.getMetadata(
@@ -69,6 +69,7 @@ export class SwaggerHelper {
             target.prototype[methodName],
         );
     }
+
     static buildApiHeaders(
         configObject: ApiHeaderOptions,
         methodName: string,
