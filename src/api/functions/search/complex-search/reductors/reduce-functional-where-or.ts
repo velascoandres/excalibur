@@ -34,7 +34,6 @@ export function reduceFunctionalWhereOr(
             acumulator.parameters = {...pureWhereLocal.parameters};
         }
         acumulator.conjunction = 'and';
-        console.log(acumulator);
         return acumulator;
     };
 }
