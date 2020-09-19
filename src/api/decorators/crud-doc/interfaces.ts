@@ -18,7 +18,7 @@ export interface ApiQueryMetadata extends ParameterOptions {
     enumName?: string;
 }
 
-export type CrudMethod = 'createOne' | 'updateOne' | 'findAll' | 'findOneById' | 'deleteOne';
+export type CrudMethod = keyof (CrudMethodsInterface);
 
 export type MetodosApi = {
     [k in CrudMethod]: CrudMethod;

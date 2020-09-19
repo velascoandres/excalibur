@@ -1,5 +1,5 @@
-import {BaseDTO, BaseMongoDTO} from '../..';
-import {DeepPartial, ObjectLiteral} from 'typeorm';
+import { BaseDTO, BaseMongoDTO } from '../..';
+import { DeepPartial, ObjectLiteral } from 'typeorm';
 
 
 export interface DtoConfig {
@@ -8,13 +8,13 @@ export interface DtoConfig {
 }
 
 export interface DtoConfigInterface extends DtoConfig {
-    createDtoType: typeof BaseDTO | (new() => any);
-    updateDtoType: typeof BaseDTO | (new() => any);
+    createDtoType: typeof BaseDTO | (new () => any);
+    updateDtoType: typeof BaseDTO | (new () => any);
 }
 
 export interface DtoMongoConfigInterface extends DtoConfig {
-    createDtoType: typeof BaseMongoDTO | (new() => any);
-    updateDtoType: typeof BaseMongoDTO | (new() => any);
+    createDtoType: typeof BaseMongoDTO | (new () => any);
+    updateDtoType: typeof BaseMongoDTO | (new () => any);
 }
 
 export interface ControllerCrudMehods<T> {
@@ -28,6 +28,14 @@ export interface ControllerCrudMehods<T> {
     findAll(searchCriteria: ObjectLiteral, req: any, response: any, ...args: any[]): any;
 
     findOneById(id: number, req: any, response: any, ...args: any[]): any;
+
+    createBulk(newRecords: DeepPartial<T>[], req: any, response: any, ...args: any[]): any;
+
+    updateBulk(records: DeepPartial<T>[], req: any, response: any, ...args: any[]): any;
+
+    deleteBulk(ids: number[], req: any, response: any, ...args: any[]): any;
+
+    count(searchCriteria: ObjectLiteral, req: any, response: any, ...args: any[]): any;
 
 }
 

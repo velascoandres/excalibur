@@ -27,7 +27,7 @@ import {
 import {FindFullQuery} from '../../..';
 import {GenericFindResponse} from './generic-find.response';
 import {ControllerCrudMehods, DtoConfigInterface} from '../../..';
-import {DeepPartial} from 'typeorm';
+import {DeepPartial, ObjectLiteral} from 'typeorm';
 import {Observable} from 'rxjs';
 import {ExcaliburAuth} from '../../..';
 
@@ -39,6 +39,18 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
         private readonly _dtoConfig: DtoConfigInterface | DtoConfig = {createDtoType: BaseDTO, updateDtoType: BaseDTO},
         private readonly _authSecurityCrud: PrincipalAuthCrudValidation | (Function & ExcaliburAuth) = new AuthCrudGeneric(),
     ) {
+    }
+    createBulk(newRecords: DeepPartial<Entidad>[], req: any, response: any, ...args: any[]) {
+        throw new Error('Method not implemented.');
+    }
+    updateBulk(records: DeepPartial<Entidad>[], req: any, response: any, ...args: any[]) {
+        throw new Error('Method not implemented.');
+    }
+    deleteBulk(ids: number[], req: any, response: any, ...args: any[]) {
+        throw new Error('Method not implemented.');
+    }
+    count(searchCriteria: ObjectLiteral, req: any, response: any, ...args: any[]) {
+        throw new Error('Method not implemented.');
     }
 
     @Post()

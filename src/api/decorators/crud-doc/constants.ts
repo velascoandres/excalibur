@@ -15,10 +15,16 @@ export const DEFAULT_HEADER_OPTIONS: Partial<ApiHeaderOptions> = {
     name: '',
 };
 
+
+
 export const API_METHODS_NAMES_OBJECT: MetodosApi = {
     createOne: 'createOne',
     updateOne: 'updateOne',
     deleteOne: 'deleteOne',
     findOneById: 'findOneById',
-    findAll: 'findAll'
+    findAll: 'findAll',
+    count: 'count',
+    createBulk: 'createBulk',
+    updateBulk: 'updateBulk',
+    deleteBulk: 'deleteBulk',
 }
