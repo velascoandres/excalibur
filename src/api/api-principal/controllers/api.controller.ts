@@ -35,9 +35,9 @@ export abstract class ApiController<Entidad = any> implements ControllerCrudMeho
 
 
     protected constructor(
-        private readonly _principalService: AbstractService<Entidad>,
-        private readonly _dtoConfig: DtoConfigInterface | DtoConfig = {createDtoType: BaseDTO, updateDtoType: BaseDTO},
-        private readonly _authSecurityCrud: PrincipalAuthCrudValidation | (Function & ExcaliburAuth) = new AuthCrudGeneric(),
+        protected readonly _principalService: AbstractService<Entidad>,
+        protected readonly _dtoConfig: DtoConfigInterface | DtoConfig = {createDtoType: BaseDTO, updateDtoType: BaseDTO},
+        protected readonly _authSecurityCrud: PrincipalAuthCrudValidation | (Function & ExcaliburAuth) = new AuthCrudGeneric(),
     ) {
     }
     createBulk(newRecords: DeepPartial<Entidad>[], req: any, response: any, ...args: any[]) {
