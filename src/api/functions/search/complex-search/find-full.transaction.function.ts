@@ -1,16 +1,16 @@
-import {EntityManager, ObjectType} from 'typeorm';
+import {EntityManager, ObjectType, SelectQueryBuilder} from 'typeorm';
 import {FindFullQuery} from './interfaces/find-full-query';
 import {InternalServerErrorException} from '@nestjs/common';
 import {searchRecords} from './search-functions/search-records';
 import {TransactionResponse} from './interfaces/transaction-response';
 import {BASE_ENTITY_NAME} from './constants/query-operators';
 
-export async function findFullTransaccion(
+export async function findFullTransaccion<T>(
     entityManager: EntityManager,
-    entity: ObjectType<{}>,
+    entity: string,
     findFullQuery: FindFullQuery,
 ): Promise<TransactionResponse<[{}[], number]>> {
-    const currentQuery = entityManager.createQueryBuilder(entity, BASE_ENTITY_NAME);
+    const currentQuery: SelectQueryBuilder<T> = entityManager.createQueryBuilder(entity, BASE_ENTITY_NAME);
     try {
         const data =  await searchRecords(currentQuery, findFullQuery);
         return {

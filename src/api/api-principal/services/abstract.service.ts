@@ -6,7 +6,7 @@ import {ServiceCrudMethodsInterface} from '../../..';
 
 export abstract class AbstractService<Entity> implements ServiceCrudMethodsInterface<Entity> {
     protected constructor(
-        private readonly _repository: Repository<Entity>,
+        protected readonly _repository: Repository<Entity>,
     ) {
     }
 
