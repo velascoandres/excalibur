@@ -65,13 +65,13 @@ export class ProductEntity extends AbstractEntity {
 }
 ``` 
  
-#### Create a service class which extends from `AbstractService`
+#### Create a service class which extends from `PrincipalService`
 
 ```typescript
-import {AbstractService} from '@pimba/excalibur/lib';
+import {PrincipalService} from '@pimba/excalibur/lib';
 
 @Injectable()
-export class ProductService extends AbstractService<ProductEntity> {
+export class ProductService extends PrincipalService<ProductEntity> {
   constructor(
     @InjectRepository(ProductEntity)
     private readonly _productRepository: Repository<ProductEntity>,
@@ -104,10 +104,10 @@ export class ProductCreateDto extends BaseDTO{
 ### Puting it all together
 
 ```typescript
-import {ApiController} from '@pimba/excalibur/lib';
+import {PrincipalCrudController} from '@pimba/excalibur/lib';
 
 @Controller('product')
-export class ProductController extends ApiController<ProductEntity> {
+export class ProductController extends PrincipalCrudController<ProductEntity> {
     constructor(private readonly _productService: ProductService) {
         super(
             _productService,
@@ -434,28 +434,28 @@ import {ExcaliburAuth} from '@pimba/excalibur/lib';
 export class ProductAuthorization implements ExcaliburAuth {
 
   
-    createOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    createOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
        // Your strategy to give authorization  
        return of(true);
     }
 
-    deleteOneAuth(req: any, res: any, controller: ApiController): Observable<boolean> {
+    deleteOneAuth(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
          return of(true);
     }
 
-    findAllAuth(req: any, res: any, controller: ApiController): Observable<boolean> {
+    findAllAuth(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
          return of(true);
     }
 
-    findOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    findOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
          return of(true);
     }
 
-    findOneByIdAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    findOneByIdAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
          return of(true);
     }
 
-    updateOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    updateOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
          return of(true);
     }
 }
@@ -479,7 +479,7 @@ export class ProductAuthorization implements ExcaliburAuth {
         ) {
     }
   
-    createOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    createOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
        const user = req.body.user;
        const permissionsResponse$ = from(this.authentificationService.canCreateProduct(user));
         return permissionsResponse$
@@ -519,11 +519,11 @@ export class ProductoModule {
 ```
 
 Declare this class on the controller as an attribute.
-> By default, the `ApiController class`  has a generic Authorization class.
+> By default, the `PrincipalCrudController class`  has a generic Authorization class.
 
 ```typescript
 @Controller('product')
-export class ProductController extends ApiController<ProductEntity> {
+export class ProductController extends PrincipalCrudController<ProductEntity> {
     constructor(
         private readonly productService: ProductoService,
         private readonly productAuthorization: ProductAuthorization,

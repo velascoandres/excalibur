@@ -1,35 +1,35 @@
-import {ApiController} from '../..';
+import {PrincipalCrudController} from '../..';
 import {Observable} from 'rxjs';
 
 export interface ExcaliburAuth {
     createOneAuht(
         req: any,
         res: any,
-        controller: ApiController
+        controller: PrincipalCrudController
     ): Observable<boolean>;
     updateOneAuht(
         req: any,
         res: any,
-        controller: ApiController
+        controller: PrincipalCrudController
     ): Observable<boolean>;
     deleteOneAuth(
         req: any,
         res: any,
-        controller: ApiController
+        controller: PrincipalCrudController
     ): Observable<boolean>;
     findAllAuth(
         req: any,
         res: any,
-        controller: ApiController
+        controller: PrincipalCrudController
     ): Observable<boolean>;
     findOneAuht(
         req: any,
         res: any,
-        controller: ApiController
+        controller: PrincipalCrudController
     ): Observable<boolean>;
     findOneByIdAuht(
         req: any,
         res: any,
-        controller: ApiController
+        controller: PrincipalCrudController
     ): Observable<boolean>;
 }

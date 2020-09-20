@@ -1,4 +1,4 @@
-import {ApiController} from '../../..';
+import {PrincipalCrudController} from '../../..';
 import {Observable} from 'rxjs';
 import {ExcaliburAuth} from '../../interfaces/excalibur.auth';
 
@@ -8,36 +8,36 @@ export abstract class PrincipalAuthCrudValidation implements ExcaliburAuth{
     abstract createOneAuht(
         req: any,
         res: any,
-        controller: ApiController
+        controller: PrincipalCrudController
     ): Observable<boolean>;
     // TODO implement auth strategy
     abstract updateOneAuht(
         req: any,
         res: any,
-        controller: ApiController
+        controller: PrincipalCrudController
     ): Observable<boolean>;
     // TODO implement auth strategy
     abstract deleteOneAuth(
         req: any,
         res: any,
-        controller: ApiController
+        controller: PrincipalCrudController
     ): Observable<boolean>;
     // TODO implement auth strategy
     abstract findAllAuth(
         req: any,
         res: any,
-        controller: ApiController
+        controller: PrincipalCrudController
     ): Observable<boolean>;
     // TODO implement auth strategy
     abstract findOneAuht(
         req: any,
         res: any,
-        controller: ApiController
+        controller: PrincipalCrudController
     ): Observable<boolean>;
     // TODO implement auth strategy
     abstract findOneByIdAuht(
         req: any,
         res: any,
-        controller: ApiController
+        controller: PrincipalCrudController
     ): Observable<boolean>;
 }

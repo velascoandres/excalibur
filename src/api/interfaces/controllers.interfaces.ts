@@ -29,11 +29,11 @@ export interface ControllerCrudMehods<T> {
 
     findOneById(id: number, req: any, response: any, ...args: any[]): any;
 
-    createBulk(newRecords: DeepPartial<T>[], req: any, response: any, ...args: any[]): any;
+    createMany(newRecords: DeepPartial<T>[], req: any, response: any, ...args: any[]): any;
 
-    updateBulk(records: DeepPartial<T>[], req: any, response: any, ...args: any[]): any;
+    updateMany(records: DeepPartial<T>[], req: any, response: any, ...args: any[]): any;
 
-    deleteBulk(ids: number[], req: any, response: any, ...args: any[]): any;
+    deleteMany(ids: number[], req: any, response: any, ...args: any[]): any;
 
     count(searchCriteria: ObjectLiteral, req: any, response: any, ...args: any[]): any;
 

@@ -24,7 +24,7 @@ export const API_METHODS_NAMES_OBJECT: MetodosApi = {
     findOneById: 'findOneById',
     findAll: 'findAll',
     count: 'count',
-    createBulk: 'createBulk',
-    updateBulk: 'updateBulk',
-    deleteBulk: 'deleteBulk',
+    createMany: 'createMany',
+    updateMany: 'updateMany',
+    deleteMany: 'deleteMany',
 }

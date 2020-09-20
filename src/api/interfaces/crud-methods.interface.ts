@@ -4,8 +4,8 @@ export interface CrudMethodsInterface {
     findAll?: any;
     deleteOne?: any;
     findOneById?: any;
-    createBulk?: any;
-    updateBulk?: any;
-    deleteBulk?: any;
+    createMany?: any;
+    updateMany?: any;
+    deleteMany?: any;
     count?: any;
 }

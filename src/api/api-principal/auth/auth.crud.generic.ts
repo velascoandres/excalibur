@@ -1,29 +1,29 @@
 import {PrincipalAuthCrudValidation} from './principal.abstract.auth.crud';
-import {ApiController} from '../../..';
+import {PrincipalCrudController} from '../../..';
 import {Observable, of} from 'rxjs';
 
 export class AuthCrudGeneric extends PrincipalAuthCrudValidation {
-    createOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    createOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
         return of(true);
     }
 
-    deleteOneAuth(req: any, res: any, controller: ApiController): Observable<boolean> {
+    deleteOneAuth(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
         return of(true);
     }
 
-    findAllAuth(req: any, res: any, controller: ApiController): Observable<boolean> {
+    findAllAuth(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
         return of(true);
     }
 
-    findOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    findOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
         return of(true);
     }
 
-    findOneByIdAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    findOneByIdAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
         return of(true);
     }
 
-    updateOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    updateOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
         return of(true);
     }
 

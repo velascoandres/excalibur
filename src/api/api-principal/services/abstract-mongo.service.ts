@@ -1,17 +1,16 @@
 import {
     DeepPartial,
     DeleteWriteOpResultObject,
-    FindManyOptions,
     InsertWriteOpResult,
     MongoRepository,
 } from 'typeorm';
-import {BadRequestException, InternalServerErrorException, NotFoundException} from '@nestjs/common';
-import {AbstractService} from './abstract.service';
+import {BadRequestException, InternalServerErrorException} from '@nestjs/common';
+import {PrincipalService} from './principal.service';
 import {FindFullQuery, MongoIndexConfigInterface} from '../../..';
 import {BaseMongoDTO} from '../../..';
 import {PartialEntity} from '../../interfaces/service.crud.methods.interfaces';
 
-export abstract class AbstractMongoService<Entity> extends AbstractService<Entity> {
+export abstract class AbstractMongoService<Entity> extends PrincipalService<Entity> {
     protected constructor(
         private mongoRepository: MongoRepository<Entity>,
         private indexConfig?: MongoIndexConfigInterface,

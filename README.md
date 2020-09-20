@@ -431,33 +431,34 @@ interface:
 ````typescript
 import {Observable} from 'rxjs';
 import {ExcaliburAuth} from '@pimba/excalibur/lib';
+import {PrincipalCrudController} from '@pimba/excalibur/lib';
 
 @Injectable()
 export class ProductAuthorization implements ExcaliburAuth {
 
   
-    createOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    createOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
        // Your strategy to give authorization  
        return of(true);
     }
 
-    deleteOneAuth(req: any, res: any, controller: ApiController): Observable<boolean> {
+    deleteOneAuth(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
          return of(true);
     }
 
-    findAllAuth(req: any, res: any, controller: ApiController): Observable<boolean> {
+    findAllAuth(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
          return of(true);
     }
 
-    findOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    findOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
          return of(true);
     }
 
-    findOneByIdAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    findOneByIdAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
          return of(true);
     }
 
-    updateOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    updateOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
          return of(true);
     }
 }
@@ -472,6 +473,7 @@ You can make use of any service inside the class, lets look the following exampl
 import {map} from 'rxjs/operators';
 import {from, Observable} from 'rxjs';
 import {ExcaliburAuth} from '@pimba/excalibur/lib'; 
+import {PrincipalCrudController} from '@pimba/excalibur/lib'; 
 import {Injectable} from '@nestjs/common';
 
 @Injectable()
@@ -482,7 +484,7 @@ export class ProductAuthorization implements ExcaliburAuth {
         ) {
     }
   
-    createOneAuht(req: any, res: any, controller: ApiController): Observable<boolean> {
+    createOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
        const user = req.body.user;
        const permissionsResponse$ = from(this.authentificationService.canCreateProduct(user));
         return permissionsResponse$
@@ -491,7 +493,6 @@ export class ProductAuthorization implements ExcaliburAuth {
                     (permissionsResponse: boolean) => permissionsResponse,
                 )
         );
-       return of(true);
     }
 }
 ```

@@ -73,13 +73,13 @@ export class ProductEntity extends AbstractEntity {
 }
 ``` 
  
-#### Create a service class which extends from `AbstractService`
+#### Create a service class which extends from `PrincipalService`
 
 ```typescript
-import {AbstractService} from '@pimba/excalibur/lib';
+import {PrincipalService} from '@pimba/excalibur/lib';
 
 @Injectable()
-export class ProductService extends AbstractService<ProductEntity> {
+export class ProductService extends PrincipalService<ProductEntity> {
   constructor(
     @InjectRepository(ProductEntity)
     private readonly _productRepository: Repository<ProductEntity>,
@@ -112,10 +112,10 @@ export class ProductCreateDto extends BaseDTO{
 ### Puting it all together
 
 ```typescript
-import {ApiController} from '@pimba/excalibur/lib';
+import {PrincipalCrudController} from '@pimba/excalibur/lib';
 
 @Controller('product')
-export class ProductController extends ApiController<ProductEntity> {
+export class ProductController extends PrincipalCrudController<ProductEntity> {
     constructor(private readonly _productService: ProductService) {
         super(
             _productService,
