@@ -4,11 +4,11 @@ import {
     InsertWriteOpResult,
     MongoRepository,
 } from 'typeorm';
-import {BadRequestException, InternalServerErrorException} from '@nestjs/common';
-import {PrincipalService} from './principal.service';
-import {FindFullQuery, MongoIndexConfigInterface} from '../../..';
-import {BaseMongoDTO} from '../../..';
-import {PartialEntity} from '../../interfaces/service.crud.methods.interfaces';
+import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { PrincipalService } from './principal.service';
+import { FindFullQuery, MongoIndexConfigInterface } from '../../..';
+import { BaseMongoDTO } from '../../..';
+import { PartialEntity } from '../../interfaces/service.crud.methods.interfaces';
 
 export abstract class AbstractMongoService<Entity> extends PrincipalService<Entity> {
     protected constructor(
@@ -52,7 +52,7 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
         if (optionsOrConditions) {
             return await this.mongoRepository.findAndCount(optionsOrConditions);
         } else {
-            return await this.mongoRepository.findAndCount({skip: 0, take: 10});
+            return await this.mongoRepository.findAndCount({ skip: 0, take: 10 });
         }
     }
 
@@ -77,8 +77,8 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
                 {
                     _id: ObjectId(id),
                 },
-                {$set: {...row}},
-                {upsert: false,}
+                { $set: { ...row } },
+                { upsert: false, }
             );
             return await this.mongoRepository.findOne(id) as Entity;
         } catch (error) {
@@ -90,7 +90,7 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
         }
     }
 
-    async createMany(documents: DeepPartial<Entity>[] | BaseMongoDTO[] | Entity[]): Promise<[Entity[], number]> {
+    async createMany(documents: DeepPartial<Entity>[] | BaseMongoDTO[] | Entity[]): Promise<Entity[]> {
         let createdDocuments: InsertWriteOpResult;
         let ids = [];
         try {
@@ -98,7 +98,7 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
                 documents,
             );
         } catch (error) {
-            console.error({error,});
+            console.error({ error, });
             throw new InternalServerErrorException('Error on create many documents');
         }
         try {
@@ -110,23 +110,21 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
                     },
                 },
             };
-            return await this.findAll(query);
+            return (await this.findAll(query))[0];
         } catch (error) {
-            console.error({error,});
+            console.error({ error, });
             throw new InternalServerErrorException('Error on fecth the created documents');
         }
     }
 
     async updateMany(
         documents: DeepPartial<Entity>[] | BaseMongoDTO[]): Promise<Entity[]> {
-        const ObjectId = require('mongodb').ObjectID;
-        const ids = (documents as any[]).map(doc => ObjectId(doc.id));
         try {
             return await this.mongoRepository.save(
                 documents as DeepPartial<Entity>[],
             );
         } catch (error) {
-            console.error({error,});
+            console.error({ error, });
             throw new InternalServerErrorException('Error on updated many documents');
         }
     }
@@ -139,13 +137,13 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
             const deleteResponse: DeleteWriteOpResultObject = await this.mongoRepository.deleteMany(
                 {
                     where: {
-                        _id: {$in: [...formatIds]},
+                        _id: { $in: [...formatIds] },
                     },
                 }
             );
             return deleteResponse.deletedCount ? deleteResponse.deletedCount : 0;
         } catch (error) {
-            console.error({error,});
+            console.error({ error, });
             throw new InternalServerErrorException('Error on delte many documents');
         }
     }

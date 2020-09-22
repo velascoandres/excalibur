@@ -30,6 +30,7 @@ import { ControllerCrudMehods, DtoConfigInterface } from '../../..';
 import { DeepPartial, ObjectLiteral } from 'typeorm';
 import { Observable } from 'rxjs';
 import { ExcaliburAuth } from '../../..';
+import { validateMany } from '../../shared-utils/validate-many';
 
 export abstract class PrincipalCrudController<Entidad = any> implements ControllerCrudMehods<Entidad> {
 
@@ -51,7 +52,35 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
         @Request() req: any,
         @Response() response: any,
     ) {
-        throw new Error('Method not implemented.');
+        const canDoAction$: Observable<boolean> = this._authSecurityCrud.createManyAuth(req, response, this);
+        canDoAction$
+            .subscribe(
+                async (canDoAction: boolean) => {
+                    if (canDoAction) {
+                        const validationErrors = await validateMany(newRecords, this._dtoConfig.createDtoType);
+                        if (validationErrors.length > 0) {
+                            console.error(validationErrors);
+                            response.status(HttpStatus.BAD_REQUEST).send({ message: 'Bad Request' });
+                        } else {
+                            try {
+                                const recordCreated = await this._principalService.createMany(newRecords);
+                                response.status(HttpStatus.OK).send(recordCreated);
+                            } catch (error) {
+                                console.error(
+                                    {
+                                        error,
+                                        message: 'Error on create',
+                                        data: { records: newRecords },
+                                    }
+                                );
+                                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
+                            }
+                        }
+                    } else {
+                        response.status(HttpStatus.UNAUTHORIZED).send({ message: 'Not authorized' });
+                    }
+                }
+            );
     }
 
 

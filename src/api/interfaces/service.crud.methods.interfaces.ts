@@ -1,10 +1,12 @@
-import {FindFullQuery, BaseDTO} from '../..';
-import {DeepPartial, FindManyOptions} from 'typeorm';
-import {MongodbIndexOptions} from 'typeorm/driver/mongodb/typings';
-import {CrudMethodsInterface} from './crud-methods.interface';
+import { FindFullQuery, BaseDTO } from '../..';
+import { DeepPartial, FindManyOptions } from 'typeorm';
+import { MongodbIndexOptions } from 'typeorm/driver/mongodb/typings';
+import { CrudMethodsInterface } from './crud-methods.interface';
 
-export interface ServiceCrudMethodsInterface<T> extends CrudMethodsInterface{
+export interface ServiceCrudMethodsInterface<T> extends CrudMethodsInterface {
     createOne: (row: T) => Promise<T>;
+    createMany?: (rows: T[]) => Promise<T[]>;
+    updateMany?: (rows: T[]) => Promise<T[]>;
     updateOne: (id: number, row: T) => Promise<T>;
     findAll: (params?: FindFullQuery) => Promise<[T[], number]>;
     deleteOne: (id: number, ...args: any) => Promise<T>;

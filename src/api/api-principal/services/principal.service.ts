@@ -1,20 +1,24 @@
-import {DeepPartial, FindManyOptions, Repository} from 'typeorm';
-import {InternalServerErrorException, NotFoundException} from '@nestjs/common';
-import {findFull} from '../../..';
-import {FindFullQuery} from '../../..';
-import {ServiceCrudMethodsInterface} from '../../..';
+import { DeepPartial, FindManyOptions, Repository } from 'typeorm';
+import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { findFull } from '../../..';
+import { FindFullQuery } from '../../..';
+import { ServiceCrudMethodsInterface } from '../../..';
 
 export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInterface<Entity> {
     protected constructor(
         protected readonly _repository: Repository<Entity>,
     ) {
     }
+    async createMany(record: DeepPartial<Entity>[]): Promise<Entity[]> {
+        return await this._repository.save(record);
+    }
+
+    async updateMany(records: DeepPartial<Entity>[]): Promise<Entity[]> {
+        return await this._repository.save(records);
+    }
 
     async createOne(record: DeepPartial<Entity>): Promise<Entity> {
-        const createdRecord: any = await this._repository.create(record);
-        // Conectarse a la db
-        const savedRecord = await this._repository.save(createdRecord);
-        return await this._repository.findOne(savedRecord.id) as Entity;
+        return await this._repository.save(record) as Entity;
     }
 
     async updateOne(
@@ -50,12 +54,12 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
 
     async deleteOne(recordId: number): Promise<Entity> {
         try {
-            const recordToDelete = {...await this._repository.findOne(+recordId) as Entity};
+            const recordToDelete = { ...await this._repository.findOne(+recordId) as Entity };
             return await this._repository.remove(recordToDelete);
         } catch (error) {
             console.error({
-                    error,
-                },
+                error,
+            },
             );
             throw new NotFoundException('Error on delete');
         }
@@ -66,7 +70,7 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
     ): Promise<[Entity[], number]> {
         const tieneParametros = parametros && Object.keys(parametros).length > 0;
         if (!tieneParametros) {
-            return await this._repository.findAndCount({skip: 0, take: 10});
+            return await this._repository.findAndCount({ skip: 0, take: 10 });
         } else {
             const tieneParametroWhere = parametros?.where !== undefined;
             const nombreTabla: string = this._repository.metadata.tableName;
