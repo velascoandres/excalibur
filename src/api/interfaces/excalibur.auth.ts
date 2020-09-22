@@ -1,5 +1,5 @@
-import {PrincipalCrudController} from '../..';
-import {Observable} from 'rxjs';
+import { PrincipalCrudController } from '../..';
+import { Observable } from 'rxjs';
 
 export interface ExcaliburAuth {
     createOneAuht(
@@ -28,6 +28,30 @@ export interface ExcaliburAuth {
         controller: PrincipalCrudController
     ): Observable<boolean>;
     findOneByIdAuht(
+        req: any,
+        res: any,
+        controller: PrincipalCrudController
+    ): Observable<boolean>;
+
+    createManyAuth(
+        req: any,
+        res: any,
+        controller: PrincipalCrudController
+    ): Observable<boolean>;
+
+    updateManyAuth(
+        req: any,
+        res: any,
+        controller: PrincipalCrudController
+    ): Observable<boolean>;
+
+    deleteManyAuth(
+        req: any,
+        res: any,
+        controller: PrincipalCrudController
+    ): Observable<boolean>;
+
+    countAuth(
         req: any,
         res: any,
         controller: PrincipalCrudController

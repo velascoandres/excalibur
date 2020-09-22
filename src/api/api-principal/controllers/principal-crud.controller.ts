@@ -10,54 +10,92 @@ import {
     Request,
     Response,
 } from '@nestjs/common';
-import {PrincipalService, DtoConfig} from '../../..';
-import {validate} from 'class-validator';
+import { PrincipalService, DtoConfig } from '../../..';
+import { validate } from 'class-validator';
 import 'reflect-metadata';
 import 'es6-shim';
-import {plainToClass} from 'class-transformer';
-import {PrincipalAuthCrudValidation} from '../../..';
-import {AuthCrudGeneric} from '../auth/auth.crud.generic';
-import {BaseDTO} from '../../..';
+import { plainToClass } from 'class-transformer';
+import { PrincipalAuthCrudValidation } from '../../..';
+import { AuthCrudGeneric } from '../auth/auth.crud.generic';
+import { BaseDTO } from '../../..';
 import {
     ApiBadRequestResponse,
     ApiCreatedResponse,
     ApiInternalServerErrorResponse, ApiOkResponse,
     ApiUnauthorizedResponse
 } from '@nestjs/swagger';
-import {FindFullQuery} from '../../..';
-import {GenericFindResponse} from './generic-find.response';
-import {ControllerCrudMehods, DtoConfigInterface} from '../../..';
-import {DeepPartial, ObjectLiteral} from 'typeorm';
-import {Observable} from 'rxjs';
-import {ExcaliburAuth} from '../../..';
+import { FindFullQuery } from '../../..';
+import { GenericFindResponse } from './generic-find.response';
+import { ControllerCrudMehods, DtoConfigInterface } from '../../..';
+import { DeepPartial, ObjectLiteral } from 'typeorm';
+import { Observable } from 'rxjs';
+import { ExcaliburAuth } from '../../..';
 
 export abstract class PrincipalCrudController<Entidad = any> implements ControllerCrudMehods<Entidad> {
 
 
     protected constructor(
         protected readonly _principalService: PrincipalService<Entidad>,
-        protected readonly _dtoConfig: DtoConfigInterface | DtoConfig = {createDtoType: BaseDTO, updateDtoType: BaseDTO},
+        protected readonly _dtoConfig: DtoConfigInterface | DtoConfig = { createDtoType: BaseDTO, updateDtoType: BaseDTO },
         protected readonly _authSecurityCrud: PrincipalAuthCrudValidation | (Function & ExcaliburAuth) = new AuthCrudGeneric(),
     ) {
     }
-    createMany(newRecords: DeepPartial<Entidad>[], req: any, response: any, ...args: any[]) {
+
+    @Post('create-many')
+    @ApiCreatedResponse({ status: HttpStatus.OK, description: 'The records has been successfully created.' })
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.' })
+    createMany(
+        @Body('records') newRecords: DeepPartial<Entidad>[],
+        @Request() req: any,
+        @Response() response: any,
+    ) {
         throw new Error('Method not implemented.');
     }
-    updateMany(records: DeepPartial<Entidad>[], req: any, response: any, ...args: any[]) {
+
+
+    @Put('update-many')
+    @ApiOkResponse({ status: HttpStatus.OK, description: 'The records has been successfully updated.' })
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.' })
+    updateMany(
+        @Body('records') records: DeepPartial<Entidad>[],
+        @Request() req: any,
+        @Response() response: any,
+    ) {
         throw new Error('Method not implemented.');
     }
-    deleteMany(ids: number[], req: any, response: any, ...args: any[]) {
+
+
+    @Delete('delete-many')
+    @ApiOkResponse({ status: HttpStatus.OK, description: 'The records has been successfully deleted.' })
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.' })
+    deleteMany(
+        @Body('ids') ids: number[],
+        @Request() req: any,
+        @Response() response: any,
+    ) {
         throw new Error('Method not implemented.');
     }
+
+    @Get('count')
+    @ApiOkResponse({ status: HttpStatus.OK, description: 'The records has been successfully counted.' })
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.' })
     count(searchCriteria: ObjectLiteral, req: any, response: any, ...args: any[]) {
         throw new Error('Method not implemented.');
     }
 
     @Post()
-    @ApiCreatedResponse({status: HttpStatus.OK, description: 'The record has been successfully created.'})
-    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'Not authorized'})
-    @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
-    @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
+    @ApiCreatedResponse({ status: HttpStatus.OK, description: 'The record has been successfully created.' })
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.' })
     async createOne(
         @Body() newRecord: DeepPartial<Entidad>,
         @Request() req: any,
@@ -73,7 +111,7 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
                         const validationErrors = await validate(entityDto);
                         if (validationErrors.length > 0) {
                             console.error(validationErrors);
-                            response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
+                            response.status(HttpStatus.BAD_REQUEST).send({ message: 'Bad Request' });
                         } else {
                             try {
                                 const recordCreated = await this._principalService.createOne(newRecord);
@@ -83,14 +121,14 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
                                     {
                                         error,
                                         message: 'Error on create',
-                                        data: {record: newRecord},
+                                        data: { record: newRecord },
                                     }
                                 );
-                                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
+                                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
                             }
                         }
                     } else {
-                        response.status(HttpStatus.UNAUTHORIZED).send({message: 'Not authorized'});
+                        response.status(HttpStatus.UNAUTHORIZED).send({ message: 'Not authorized' });
                     }
                 }
             );
@@ -98,10 +136,10 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
     }
 
     @Put(':id')
-    @ApiOkResponse({status: HttpStatus.OK, description: 'The record has been successfully updated.'})
-    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'Not authorized'})
-    @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
-    @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
+    @ApiOkResponse({ status: HttpStatus.OK, description: 'The record has been successfully updated.' })
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.' })
     async updateOne(
         @Body() recordToUpdate: DeepPartial<Entidad>,
         @Param('id') id: number,
@@ -120,15 +158,15 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
                             const validationErrors = await validate(dtoEntity);
                             if (validationErrors.length > 0) {
                                 console.error(validationErrors);
-                                response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
+                                response.status(HttpStatus.BAD_REQUEST).send({ message: 'Bad Request' });
                             } else {
                                 try {
                                     const record = await this._principalService.findOneById(id);
                                     if (!record) {
-                                        response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
+                                        response.status(HttpStatus.NOT_FOUND).send({ message: 'Record not found' });
                                     }
                                 } catch (error) {
-                                    response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
+                                    response.status(HttpStatus.NOT_FOUND).send({ message: 'Record not found' });
                                 }
                                 try {
                                     const recordUpdated = await this._principalService.updateOne(
@@ -141,28 +179,28 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
                                         {
                                             error,
                                             message: 'Error al actualizar',
-                                            data: {id, datosActualizar: recordToUpdate},
+                                            data: { id, datosActualizar: recordToUpdate },
                                         }
                                     );
-                                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
+                                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
                                 }
 
                             }
                         } else {
-                            response.status(HttpStatus.BAD_REQUEST).send({message: 'Invalid Id'});
+                            response.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid Id' });
                         }
                     } else {
-                        response.status(HttpStatus.UNAUTHORIZED).send({message: 'Not authorized'});
+                        response.status(HttpStatus.UNAUTHORIZED).send({ message: 'Not authorized' });
                     }
                 }
             );
     }
 
     @Delete(':id')
-    @ApiOkResponse({status: HttpStatus.OK, description: 'The record has been deleted.'})
-    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'Not authorized'})
-    @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
-    @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
+    @ApiOkResponse({ status: HttpStatus.OK, description: 'The record has been deleted.' })
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.' })
     async deleteOne(
         @Param('id') id: number,
         @Request() req: any,
@@ -179,11 +217,11 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
                             try {
                                 const record = await this._principalService.findOneById(id);
                                 if (!record) {
-                                    response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
+                                    response.status(HttpStatus.NOT_FOUND).send({ message: 'Record not found' });
                                     return;
                                 }
                             } catch (error) {
-                                response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
+                                response.status(HttpStatus.NOT_FOUND).send({ message: 'Record not found' });
                                 return;
                             }
                             try {
@@ -194,26 +232,26 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
                                     {
                                         error,
                                         message: 'Error on delete',
-                                        data: {id},
+                                        data: { id },
                                     },
                                 );
-                                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
+                                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
                             }
                         } else {
-                            response.status(HttpStatus.BAD_REQUEST).send({message: 'Invalid Id'});
+                            response.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid Id' });
                         }
                     } else {
-                        response.status(HttpStatus.UNAUTHORIZED).send({message: 'Not authorized'});
+                        response.status(HttpStatus.UNAUTHORIZED).send({ message: 'Not authorized' });
                     }
                 }
             );
     }
 
     @Get(':id')
-    @ApiOkResponse({status: HttpStatus.OK, description: 'The record has been fetched.'})
-    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'Not authorized'})
-    @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
-    @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
+    @ApiOkResponse({ status: HttpStatus.OK, description: 'The record has been fetched.' })
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.' })
     async findOneById(
         @Param('id') id: number,
         @Request() req: any,
@@ -237,26 +275,26 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
                                     {
                                         error,
                                         mensaje: 'Error on fetch results',
-                                        data: {id},
+                                        data: { id },
                                     },
                                 );
-                                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
+                                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
                             }
                         } else {
-                            response.status(HttpStatus.BAD_REQUEST).send({message: 'Invalid Id'});
+                            response.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid Id' });
                         }
                     } else {
-                        response.status(HttpStatus.UNAUTHORIZED).send({message: 'Not authorized'});
+                        response.status(HttpStatus.UNAUTHORIZED).send({ message: 'Not authorized' });
                     }
                 }
             );
     }
 
     @Get()
-    @ApiOkResponse({status: HttpStatus.OK, description: 'The records has been fetched.', type: GenericFindResponse})
-    @ApiUnauthorizedResponse({status: HttpStatus.UNAUTHORIZED, description: 'Not authorized'})
-    @ApiBadRequestResponse({status: HttpStatus.BAD_REQUEST, description: 'Bad Request'})
-    @ApiInternalServerErrorResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.'})
+    @ApiOkResponse({ status: HttpStatus.OK, description: 'The records has been fetched.', type: GenericFindResponse })
+    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.' })
     async findAll(
         @Query('query') searchCriteria: any,
         @Request() req: any,
@@ -279,7 +317,7 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
                                 skip = query.skip ? query.skip : 0;
                                 take = query.take ? query.take : 10;
                             } else {
-                                query = {where: {}, skip: 0, take: 10};
+                                query = { where: {}, skip: 0, take: 10 };
                                 result = await this._principalService.findAll({} as FindFullQuery);
                             }
                             const total = +result[1];
@@ -290,7 +328,7 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
                                 const isNotLimit = rest >= take;
                                 const nextSkip = skip + take;
                                 const nextTake = isNotLimit ? take : rest;
-                                const partialQuery: Partial<FindFullQuery> = {...query};
+                                const partialQuery: Partial<FindFullQuery> = { ...query };
                                 partialQuery.skip = nextSkip;
                                 partialQuery.take = nextTake;
                                 if (query.where) {
@@ -315,14 +353,14 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
                             );
                             result = await this._principalService.findAll();
                             const defaultQueryResponse = {
-                                nextQuery: {skip: 10, take},
+                                nextQuery: { skip: 10, take },
                                 data: result[0],
                                 total: result[1],
                             };
                             response.status(HttpStatus.OK).json(defaultQueryResponse);
                         }
                     } else {
-                        response.status(HttpStatus.UNAUTHORIZED).send({message: 'Not authorized'});
+                        response.status(HttpStatus.UNAUTHORIZED).send({ message: 'Not authorized' });
                     }
                 }
             );
