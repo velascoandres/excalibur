@@ -13,10 +13,6 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
         return await this._repository.save(record);
     }
 
-    async updateMany(records: DeepPartial<Entity>[]): Promise<Entity[]> {
-        return await this._repository.save(records);
-    }
-
     async createOne(record: DeepPartial<Entity>): Promise<Entity> {
         return await this._repository.save(record) as Entity;
     }
@@ -25,31 +21,8 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
         id: number,
         record: DeepPartial<Entity>,
     ): Promise<Entity> {
-        try {
-            const updatedRecord = await this._repository.update(+id, record);
-        } catch (error) {
-            console.error(
-                {
-                    error,
-                    message: 'Error on update',
-                    data: {
-                        id,
-                        record,
-                    },
-                },
-            );
-            throw new InternalServerErrorException(
-                {
-                    message: 'error on update',
-                }
-            );
-        }
-        const response = await this._repository.findOne(+id) as Entity;
-        if (response) {
-            return response;
-        } else {
-            throw new NotFoundException('Record not found');
-        }
+        const updatedRecord = await this._repository.update(+id, record);
+        return await this._repository.findOneOrFail(+id) as Entity;
     }
 
     async deleteOne(recordId: number): Promise<Entity> {
@@ -61,7 +34,7 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
                 error,
             },
             );
-            throw new NotFoundException('Error on delete');
+            throw new InternalServerErrorException('Error on delete');
         }
     }
 

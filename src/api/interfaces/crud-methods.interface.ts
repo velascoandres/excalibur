@@ -5,7 +5,4 @@ export interface CrudMethodsInterface {
     deleteOne?: any;
     findOneById?: any;
     createMany?: any;
-    updateMany?: any;
-    deleteMany?: any;
-    count?: any;
 }

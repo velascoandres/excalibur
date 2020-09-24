@@ -46,23 +46,4 @@ export abstract class PrincipalAuthCrudValidation implements ExcaliburAuth {
         res: any,
         controller: PrincipalCrudController,
     ): Observable<boolean>;
-    // TODO implement auth strategy
-    abstract updateManyAuth(
-        req: any,
-        res: any,
-        controller: PrincipalCrudController,
-    ): Observable<boolean>;
-    // TODO implement auth strategy
-    abstract deleteManyAuth(
-        req: any,
-        res: any,
-        controller: PrincipalCrudController,
-    ): Observable<boolean>;
-    // TODO implement auth strategy
-    abstract countAuth(
-        req: any,
-        res: any,
-        controller: PrincipalCrudController,
-    ): Observable<boolean>;
-
 }

@@ -38,22 +38,4 @@ export interface ExcaliburAuth {
         res: any,
         controller: PrincipalCrudController
     ): Observable<boolean>;
-
-    updateManyAuth(
-        req: any,
-        res: any,
-        controller: PrincipalCrudController
-    ): Observable<boolean>;
-
-    deleteManyAuth(
-        req: any,
-        res: any,
-        controller: PrincipalCrudController
-    ): Observable<boolean>;
-
-    countAuth(
-        req: any,
-        res: any,
-        controller: PrincipalCrudController
-    ): Observable<boolean>;
 }

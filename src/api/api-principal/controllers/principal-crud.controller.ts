@@ -83,43 +83,6 @@ export abstract class PrincipalCrudController<Entidad = any> implements Controll
             );
     }
 
-
-    @Put('update-many')
-    @ApiOkResponse({ status: HttpStatus.OK, description: 'The records has been successfully updated.' })
-    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
-    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.' })
-    updateMany(
-        @Body('records') records: DeepPartial<Entidad>[],
-        @Request() req: any,
-        @Response() response: any,
-    ) {
-        throw new Error('Method not implemented.');
-    }
-
-
-    @Delete('delete-many')
-    @ApiOkResponse({ status: HttpStatus.OK, description: 'The records has been successfully deleted.' })
-    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
-    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.' })
-    deleteMany(
-        @Body('ids') ids: number[],
-        @Request() req: any,
-        @Response() response: any,
-    ) {
-        throw new Error('Method not implemented.');
-    }
-
-    @Get('count')
-    @ApiOkResponse({ status: HttpStatus.OK, description: 'The records has been successfully counted.' })
-    @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
-    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-    @ApiInternalServerErrorResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Server Error.' })
-    count(searchCriteria: ObjectLiteral, req: any, response: any, ...args: any[]) {
-        throw new Error('Method not implemented.');
-    }
-
     @Post()
     @ApiCreatedResponse({ status: HttpStatus.OK, description: 'The record has been successfully created.' })
     @ApiUnauthorizedResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Not authorized' })
