@@ -12,7 +12,7 @@ export function buildSimplePureWhere(
 ): PureWhereInterface | undefined {
     const strParameterKey = `valorAtributo${index}${entityName}${attribute}`;
     const initialParemeters: ObjectLiteral = {};
-    if (attribute !== JOIN_KEYWORD) {
+    if (!VerificatorHelper.isAttKeyWord(attribute)) {
         // const tieneOperadorSimple = VerificatorHelper.IsSimpleOr(value);
         // if (tieneOperadorSimple) {
         //     value = value as SimpleQueyOperator;

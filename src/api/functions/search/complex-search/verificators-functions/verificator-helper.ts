@@ -1,4 +1,4 @@
-import {OR_KEYWORD, QUERY_OPERATORS} from '../constants/query-operators';
+import {ATTR_KEYWORDS, OR_KEYWORD, QUERY_OPERATORS} from '../constants/query-operators';
 
 export class VerificatorHelper {
 
@@ -39,5 +39,9 @@ export class VerificatorHelper {
             }
         }
         return false;
+    }
+
+    static isAttKeyWord(attr: string): boolean {
+        return ATTR_KEYWORDS.includes(attr);
     }
 }

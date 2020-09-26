@@ -7,6 +7,7 @@ import {buildPureWhereWithOperator} from './build-pure-where-with-operator';
 import {buildPureOrWhere} from './build-pure-or-where';
 import {PureRelationInterface} from '../interfaces/pureRelationInterface';
 import {VerificatorHelper} from '../verificators-functions/verificator-helper';
+import {SELECT_KEYWORD} from '../constants/query-operators';
 
 export function buildWhereWithjoin(
     currentSelectQuieryBuilder: SelectQueryBuilder<{}>,
