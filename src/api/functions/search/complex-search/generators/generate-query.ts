@@ -29,7 +29,7 @@ export async function generateQuery(
             if (hasComplexOperatorQuery) {
                 baseQueryBuilder = buildWhereOperador(baseQueryBuilder, atributeName, atributeValue, parentEntity);
             }
-            if (!hasComplexOperatorQuery && !isObject) {
+            if (!hasComplexOperatorQuery && !isObject && !isSelect) {
                 baseQueryBuilder = generateWhere(baseQueryBuilder, atributeName, atributeValue, parentEntity);
             }
             if (isJoinRelation) {

@@ -1,6 +1,7 @@
 import {ObjectLiteral} from 'typeorm';
 import {VerificatorHelper} from '../verificators-functions/verificator-helper';
 import {AttributesSplitedQuery} from '../interfaces/attributes-splited-query';
+import {SELECT_KEYWORD} from '../constants/query-operators';
 
 
 // splitQueryAttributesByType
@@ -31,12 +32,13 @@ export function splitQueryAttributesByType(
             const attributeValue = query[attributeName];
             const isObject = VerificatorHelper.verifyIsObject(attributeValue);
             const isArray = attributeValue instanceof Array;
+            const isSelect = attributeName === SELECT_KEYWORD;
             // const esObjetoConsulta = esInterfazDeOperadorConsultaCompuesta(valor);
             const hasComplexOperatorQuery = VerificatorHelper.isComplexOperatorObject(attributeValue);
             if (isObject && !hasComplexOperatorQuery) {
                 accumulator.complexQueries.push(attributeName);
             }
-            if (!isObject && !hasComplexOperatorQuery && !isArray) {
+            if (!isObject && !hasComplexOperatorQuery && !isArray && !isSelect) {
                 accumulator.simpleQueries.push(attributeName);
             }
             if (hasComplexOperatorQuery) {
@@ -45,7 +47,10 @@ export function splitQueryAttributesByType(
             if (isArray) {
                 accumulator.whereOrQueries.push(attributeName);
             }
+            if (isSelect) {
+                accumulator.selectAttrs?.push(attributeName);
+            }
             return accumulator;
-        }, {simpleQueries: [], complexOperatorsQueries: [], complexQueries: [], whereOrQueries: []},
+        }, {simpleQueries: [], complexOperatorsQueries: [], complexQueries: [], whereOrQueries: [], selectAttrs: []},
     );
 }
