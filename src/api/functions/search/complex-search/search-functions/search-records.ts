@@ -31,6 +31,7 @@ export async function searchRecords(
     } else {
         queryResponse = await sqlQuery.orderBy(orderBy as OrderByInterface).skip(skip).take(take);
     }
+    queryResponse.skip(skip).take(take);
     // console.log(queryResponse.getSql());
     return queryResponse.getManyAndCount();
 }
