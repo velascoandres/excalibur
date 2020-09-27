@@ -37,18 +37,23 @@ export function splitQueryAttributesByType(
             const hasComplexOperatorQuery = VerificatorHelper.isComplexOperatorObject(attributeValue);
             if (isObject && !hasComplexOperatorQuery) {
                 accumulator.complexQueries.push(attributeName);
+                return accumulator;
             }
             if (!isObject && !hasComplexOperatorQuery && !isArray && !isSelect) {
                 accumulator.simpleQueries.push(attributeName);
+                return accumulator;
             }
             if (hasComplexOperatorQuery) {
                 accumulator.complexOperatorsQueries.push(attributeName);
+                return accumulator;
             }
-            if (isArray) {
+            if (isArray && !isSelect) {
                 accumulator.whereOrQueries.push(attributeName);
+                return accumulator;
             }
             if (isSelect) {
-                accumulator.selectAttrs?.push(attributeName);
+                accumulator.selectAttrs = [...query[attributeName]];
+                return accumulator;
             }
             return accumulator;
         }, {simpleQueries: [], complexOperatorsQueries: [], complexQueries: [], whereOrQueries: [], selectAttrs: []},

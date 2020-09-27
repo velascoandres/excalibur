@@ -43,7 +43,7 @@ export async function generateQuery(
                 );
             }
             if (isSelect) {
-                baseQueryBuilder = buildSelect(baseQueryBuilder, parentEntity, atributeValue);
+                baseQueryBuilder = buildSelect(baseQueryBuilder, parentEntity, atributeValue, false);
             }
         },
     );

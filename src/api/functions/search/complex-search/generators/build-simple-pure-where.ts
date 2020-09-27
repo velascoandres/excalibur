@@ -2,7 +2,6 @@ import {SimpleQueyOperator} from '../../../../..';
 import {PureWhereInterface} from '../interfaces/pureWhereInterface';
 import {ObjectLiteral} from 'typeorm';
 import {VerificatorHelper} from '../verificators-functions/verificator-helper';
-import {JOIN_KEYWORD} from '../constants/query-operators';
 
 export function buildSimplePureWhere(
     attribute: string,
@@ -13,25 +12,6 @@ export function buildSimplePureWhere(
     const strParameterKey = `valorAtributo${index}${entityName}${attribute}`;
     const initialParemeters: ObjectLiteral = {};
     if (!VerificatorHelper.isAttKeyWord(attribute)) {
-        // const tieneOperadorSimple = VerificatorHelper.IsSimpleOr(value);
-        // if (tieneOperadorSimple) {
-        //     value = value as SimpleQueyOperator;
-        //     const conjuncion = value.conjunction ? value.conjunction : 'and';
-        //     const valores = value.values instanceof Array ? [...value.values] : [value.values];
-        //     initialParemeters[strParameterKey] = valores.join(',');
-        //     return {
-        //         where: `${entityName}.${attribute}=:${strParameterKey}`,
-        //         parameters: initialParemeters,
-        //         conjunction: conjuncion,
-        //     };
-        // } else {
-        //     initialParemeters[strParameterKey] = value;
-        //     return {
-        //         where: `${entityName}.${attribute}=:${strParameterKey}`,
-        //         parameters: initialParemeters,
-        //         conjunction: 'and',
-        //     };
-        // }
         initialParemeters[strParameterKey] = value;
         return {
             where: `${entityName}.${attribute}=:${strParameterKey}`,
