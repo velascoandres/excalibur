@@ -7,6 +7,7 @@ import {buildPureWhereWithOperator} from './build-pure-where-with-operator';
 import {buildPureOrWhere} from './build-pure-or-where';
 import {PureRelationInterface} from '../interfaces/pureRelationInterface';
 import {VerificatorHelper} from '../verificators-functions/verificator-helper';
+import {buildSelect} from './build-select';
 
 export function buildWhereWithjoin(
     currentSelectQuieryBuilder: SelectQueryBuilder<{}>,
@@ -24,6 +25,9 @@ export function buildWhereWithjoin(
         // separar simples de compuestos
         const attributesSimplesAndComplexObject = splitQueryAttributesByType(attributeValue);
         const subQueryObject = attributeValue;
+        // Armamos el select
+        const selectAttrs = attributesSimplesAndComplexObject.selectAttrs;
+        console.log(attributesSimplesAndComplexObject);
         // Armamos las condiciones
         const simpleQueryConditions = attributesSimplesAndComplexObject.simpleQueries.reduce(
             (acumulator: PureWhereInterface[], subAttribute: string) => {
@@ -88,13 +92,27 @@ export function buildWhereWithjoin(
             }, basePureRelation,
         );
         if (joinType === 'inner') {
-            currentSelectQuieryBuilder = currentSelectQuieryBuilder.innerJoinAndSelect(
-                basePureRelation.relation, basePureRelation.alias, basePureRelation.condition, pureJoinRelation.parameters,
-            );
+            if (selectAttrs?.length && selectAttrs.length > 0) {
+                currentSelectQuieryBuilder = currentSelectQuieryBuilder.innerJoin(
+                    basePureRelation.relation, basePureRelation.alias, basePureRelation.condition, pureJoinRelation.parameters,
+                );
+                currentSelectQuieryBuilder = buildSelect(currentSelectQuieryBuilder, attributeName, selectAttrs);
+            } else {
+                currentSelectQuieryBuilder = currentSelectQuieryBuilder.innerJoinAndSelect(
+                    basePureRelation.relation, basePureRelation.alias, basePureRelation.condition, pureJoinRelation.parameters,
+                );
+            }
         } else {
-            currentSelectQuieryBuilder = currentSelectQuieryBuilder.leftJoinAndSelect(
-                basePureRelation.relation, basePureRelation.alias, basePureRelation.condition, pureJoinRelation.parameters,
-            );
+            if (selectAttrs?.length && selectAttrs.length > 0) {
+                currentSelectQuieryBuilder = currentSelectQuieryBuilder.leftJoin(
+                    basePureRelation.relation, basePureRelation.alias, basePureRelation.condition, pureJoinRelation.parameters,
+                );
+                currentSelectQuieryBuilder = buildSelect(currentSelectQuieryBuilder, attributeName, selectAttrs);
+            } else {
+                currentSelectQuieryBuilder = currentSelectQuieryBuilder.leftJoinAndSelect(
+                    basePureRelation.relation, basePureRelation.alias, basePureRelation.condition, pureJoinRelation.parameters,
+                );
+            }
         }
         // En caso de que tambien la relacion tuviera otras relaciones anidades se volvera a llamar a esta funcion
         // para los compuestos es recursivo,
