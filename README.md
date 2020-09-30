@@ -1,8 +1,6 @@
 <p align="center">
-
     <img  src="https://raw.githubusercontent.com/velascoandres/excalibur/master/logo/sword.png"></img>
     <h1 align="center">Excalibur</h1>
-
 </p>
 
 Excalibur is a set of functions and classes api plus several modules for `Nest.js` .
