@@ -9,11 +9,11 @@ import {BASE_ENTITY_NAME, SELECT_KEYWORD} from '../constants/query-operators';
 import {buildSelect} from './build-select';
 
 // Esta es la funcion api-principal en donde primero se itera a la raiz
-export async function generateQuery(
-    baseQueryBuilder: SelectQueryBuilder<{}>,
+export async function generateQuery<T>(
+    baseQueryBuilder: SelectQueryBuilder<T>,
     query: { [x: string]: any; },
     parentEntity: string = BASE_ENTITY_NAME,
-): Promise<SelectQueryBuilder<{}>> {
+): Promise<SelectQueryBuilder<T>> {
     const atributes = Object.keys(query);
     await atributes.forEach(
         (atributeName: string) => {

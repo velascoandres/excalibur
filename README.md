@@ -1,11 +1,11 @@
-
-
 <p align="center">
+
     <img  src="https://raw.githubusercontent.com/velascoandres/excalibur/master/logo/sword.png"></img>
     <h1 align="center">Excalibur</h1>
+
 </p>
 
-Excalibur is a set of functions and classes api plus several modules for `Nest.js`.
+Excalibur is a set of functions and classes api plus several modules for `Nest.js` .
 
 <img src="https://img.shields.io/npm/dt/@pimba/excalibur"></img>
 <img src="https://img.shields.io/npm/v/@pimba/excalibur"></img>
@@ -14,7 +14,6 @@ Excalibur is a set of functions and classes api plus several modules for `Nest.j
 <img src="https://img.shields.io/npm/l/@pimba/excalibur"></img>
 <img src="https://img.shields.io/github/stars/velascoandres/excalibur"></img>
 <img src="https://img.shields.io/github/issues/velascoandres/excalibur"></img>
-
 
 ## Index
 
@@ -34,13 +33,12 @@ Excalibur is a set of functions and classes api plus several modules for `Nest.j
 
 8. [Special Thanks](#special-thanks)
 
-
 ## Install:
 
 ```shell script
 npm i @pimba/excalibur
-```
 
+``` 
 
 ## REST API
 
@@ -51,12 +49,13 @@ first consider implementing the following classes:
 * Service
 * DTO
 * Controller
+
  
  
+
 #### Create entity class with extends from `AbstractEntity`
 
 If you want the entity has an auntoincremental id column, createdAt, updatedAt columns.
-
 
 ```typescript
 import {AbstractEntity} from '@pimba/excalibur/lib';
@@ -65,11 +64,13 @@ import {AbstractEntity} from '@pimba/excalibur/lib';
 export class ProductEntity extends AbstractEntity {
   
 }
-``` 
+```
+
  
+
 #### Create a service class which extends from `AbstractService`
 
-```typescript
+``` typescript
 import {AbstractService} from '@pimba/excalibur/lib';
 
 @Injectable()
@@ -85,10 +86,9 @@ export class ProductService extends AbstractService<ProductEntity> {
 
 #### Create a DTO class for update and create:
 
+It is optional to extend from `BaseDTO` , This class allows to validate that the fields: `id` , `createdAt` and `updatedAt` should not be empty
 
-It is optional to extend from `BaseDTO`, This class allows to validate that the fields: `id`, `createdAt` and `updatedAt` should not be empty
-
-```typescript
+``` typescript
 import {BaseDTO} from '@pimba/excalibur/lib';
 
 export class ProductCreateDto extends BaseDTO{
@@ -105,7 +105,7 @@ export class ProductCreateDto extends BaseDTO{
 
 ### Puting it all together
 
-```typescript
+``` typescript
 import {ApiController} from '@pimba/excalibur/lib';
 
 @Controller('product')
@@ -123,25 +123,27 @@ export class ProductController extends ApiController<ProductEntity> {
 ```
 
 ### API-REST ENPOINTS:
+
 For  a `controllerPrefix` given on the `Controller` decorator. The following 
 set of routes will be generated.
 
 | HTTP METHOD | PATH  | Controller and Service method |
 | --------- | ------ | ----------------------------- |
-|  POST  | `<controllerPrefix>`  | createOne              |
+|  POST  | `<controllerPrefix>` | createOne              |
+|  POST  | `<controllerPrefix>` /create-many  | createMany              |
 |  PUT | `/<controllerPrefix>/<id:number>` |  updateOne |
 |  GET | `/<controllerPrefix>/<id:number>` | findOne  | 
-| GET  | `/<controllerPrefix>?query=<find-query>`  | findAll |
-| DELETE |  `/<controllerPrefix>/<id:number>` | deleteOne |
+| GET  | `/<controllerPrefix>?query=<find-query>` | findAll |
+| DELETE | `/<controllerPrefix>/<id:number>` | deleteOne |
 
 ###  Find  Query
 
-
 #### SQL Data Bases
+
 For SQL DB you can make a search criteria, that complies 
 with the following scheme:
 
-```text
+``` text
    {
     "where": {
          // Entity attributes and relations
@@ -152,14 +154,14 @@ with the following scheme:
 ```
 
 For example:
-The `product entity` has a relation `many to one` with `category entity`, so lets make 
+The `product entity` has a relation `many to one` with `category entity` , so lets make 
 the following search: 
 Products that have a price `greater than or equal` to `10` or `less than` 2 and that the name of the product category 
-can be `snacks`, `drinks` or that the same name of the category includes `"sna"`.
+can be `snacks` , `drinks` or that the same name of the category includes `"sna"` .
 
-`Find-Query`: 
+`Find-Query` : 
 
-```json
+``` json
    {
     "where": {
         "price": [
@@ -185,23 +187,21 @@ can be `snacks`, `drinks` or that the same name of the category includes `"sna"`
   }  
 ```
 
+> On `like` operator with the wildcar `%` , you should use `%25` instead of `%`
+> cause some problems with browsers and `http clients`
+> as `Postman` .
 
-
-
-> On `like` operator with the wildcar `%`, you should use `%25` instead of `%` 
->cause some problems with browsers and `http clients`
-> as `Postman`.
 #### Examples
 
 > Browser or client side
 
-```text
+``` text
 http://localhost:3000/product?query={"where":{"name":{"$like":"%25choco%25"},"category":{}}}
 ```
 
 Results:
 
-```json
+``` json
 {
     "nextQuery": null,
     "data": [
@@ -248,9 +248,9 @@ Results:
 
 > If you are working on backend side you could use the widlcard `%` without problems.
 > Also you could use any [wildcard](https://www.w3schools.com/sql/sql_wildcards.asp) on `like` operator according your 
->data base.
+> data base.
 
-```typescript
+``` typescript
 const query = {
     where: {
         id: { $like: '%chocho%' },
@@ -276,21 +276,19 @@ const filterProducts = searchResponse[0];
 const totalFecthed = searchResponse[1]; // All filtered records in the Data Base
 ```
 
-> For scape characters on `like` operator: use  `\\`
+> For scape characters on `like` operator: use `\\`
 
-
-```text
+``` text
 percentCode: {"$like": "%25\\%25%25"}} // Client side
 percentCode: {"$like": "%\\%%"}} // Backend side
 ```
 
-
 ### Or operator
-You can make a query with `OR` operator using the keyword `"$or"` as `"true"`
 
+You can make a query with `OR` operator using the keyword `"$or"` as `"true"`
 For example: Get products with a price of `7` or name includes `"choco"`
 
-```json
+``` json
    {
     "where": {
         "price": {"$eq": 7, "$or": true},
@@ -300,24 +298,23 @@ For example: Get products with a price of `7` or name includes `"choco"`
 ```
 
 ##### Putting it all together
- 
-`GET /product?query={"where":{.......}}`
 
+ 
+ `GET /product?query={"where":{.......}}`
 
 ##### Find Query Object
-
 
 ###### Operators
 
 | Operator |   keyword  |  Example |
 |  ------  |  -----  | --- |
-| Like  |  `$like` | "$like": "%sns%"    |
-| iLike  |  `$ilike` (PostgreSQL) | "$ilike": "%sns%"    |
-|  `> ` | `$gt`  | "$gt": 20 |
-| `>=`  | `$gte` |  "$gte": 20 |
-| `<` |  `$lt` |  "$lt": 20 |
-| `<=` |  `$lte` |  "$lte": 20 |
-| `=` |  `$eq` |  "$eq": 20 |
+| Like  | `$like` | "$like": "%sns%"    |
+| iLike  | `$ilike` (PostgreSQL) | "$ilike": "%sns%"    |
+| `> ` | `$gt` | "$gt": 20 |
+| `>=` | `$gte` |  "$gte": 20 |
+| `<` | `$lt` |  "$lt": 20 |
+| `<=` | `$lte` |  "$lte": 20 |
+| `=` | `$eq` |  "$eq": 20 |
 | `!=` | `$ne` |   "$ne": 20 |
 | Between | `$btw` | "$btw": [A, B]  |
 | In | `$in` | "$in": [A, B, ...] |
@@ -327,21 +324,23 @@ For example: Get products with a price of `7` or name includes `"choco"`
 > if your are using MongoDB, you must use the query operators for mongo, check the [documentation](https://docs.mongodb.com/manual/reference/operator/query/)
 
 ##### Join Relations
+
 The join relations could be many levels as you want, you need to write the 
-`ManyToOne`, `OneToMany`, `OneToOne`, relationship name in your `Find Query Object` like the previous example.
+`ManyToOne` , `OneToMany` , `OneToOne` , relationship name in your `Find Query Object` like the previous example.
  
 
-
-If the join is of the `inner` type it is not necessary to put the keyword `"$join": "inner"`, only if you want to use a join of the type "left" (`" $join ":" left"`)
-
+If the join is of the `inner` type it is not necessary to put the keyword `"$join": "inner"` , only if you want to use a join of the type "left" ( `" $join ":" left"` )
 
 ##### Pagination
-The pagination by default is `skip: 0` and `take: 10`.
+
+The pagination by default is `skip: 0` and `take: 10` .
 
 ##### Order By
-The order by criteria by default with respect the entity `id` is `DESC`: 
+
+The order by criteria by default with respect the entity `id` is `DESC` : 
  
-```text
+
+``` text
    {
     "where": {
          
@@ -352,12 +351,54 @@ The order by criteria by default with respect the entity `id` is `DESC`:
   }  
 ```
 
+
+##### Select columns
+
+In order to get records with an specific set of columns, you could make use of `$sel` operator:
+
+For example: Get products with a bigger than `7` and only retrieves the name of the filtered products.
+
+``` json
+   {
+    "where": {
+        "$sel": ["name"],
+        "price": {"$gt": 7}
+    }
+  }  
+```
+
+Also, you could use the `$sel` operator on queries with joins.
+
+
+> All columns that are retrieved will always include the id column
+
+
+For example: the following query retrieves products with name and its supermarket with only name and address.
+
+``` typescript
+const query = {
+    where: {
+        $sel: ["name"],
+        category: {
+            name: 'candy',
+        },
+        supermaket: { // Select address and name
+            $sel: ["name", "address"], 
+        },         
+    },
+    skip: 0,
+    take: 30, 
+}
+
+```
+
 ### MongoDB
 
-
 #### Entity (Optional)
+
 If you want the entity has an ObjectId, updatedAt columns, you need to extends from `AbstractMongoEntity`
-```typescript
+
+``` typescript
 import {AbstractMongoEntity} from '@pimba/excalibur/lib';
 
 @Entity('post')
@@ -367,9 +408,10 @@ export class PostEntity extends AbstractMongoEntity{
 ```
 
 #### DTO 
-It is optional to extend from `BaseMongoDTO`. This class allows to validate that the fields: `id`, `createdAt` and `updatedAt` should not be empty
 
-```typescript
+It is optional to extend from `BaseMongoDTO` . This class allows to validate that the fields: `id` , `createdAt` and `updatedAt` should not be empty
+
+``` typescript
 import {BaseMongoDTO} from '@pimba/excalibur/lib';
 
 export class Post extends BaseMongoDTO{
@@ -378,9 +420,10 @@ export class Post extends BaseMongoDTO{
 ```
 
 #### Service
+
 The service class must extends from `AbstractMongoService`
 
-```typescript
+``` typescript
 import {AbstractMongoService} from '@pimba/excalibur/lib';
 
 @Injectable()
@@ -405,7 +448,7 @@ export class PostService extends AbstractMongoService<PostEntity> {
 
 #### Controller
 
-```typescript
+``` typescript
 import {ApiMongoController} from '@pimba/excalibur/lib';
 
 @Controller('post')
@@ -425,10 +468,13 @@ export class PostController extends ApiMongoController<postEntity> {
 ```
 
 ## Security
-In order to protect the access to the generic REST-API, you can use a class that implements the `ExcaliburAuth` 
+
+In order to protect the access to the generic REST-API, you can use a class that implements the `ExcaliburAuth`
 interface:
 
-````typescript
+`
+
+``` typescript
 import {Observable} from 'rxjs';
 import {ExcaliburAuth} from '@pimba/excalibur/lib';
 import {PrincipalCrudController} from '@pimba/excalibur/lib';
@@ -463,13 +509,14 @@ export class ProductAuthorization implements ExcaliburAuth {
     }
 }
 ````
+
 For each method of the REST API an authorization strategy should be implemented.  The parameters of each method 
 are the request, the response and the reference to the controller (this last one is if you need to make use of a 
 controller attribute).
 
 You can make use of any service inside the class, lets look the following example.
 
-```typescript
+``` typescript
 import {map} from 'rxjs/operators';
 import {from, Observable} from 'rxjs';
 import {ExcaliburAuth} from '@pimba/excalibur/lib'; 
@@ -496,10 +543,12 @@ export class ProductAuthorization implements ExcaliburAuth {
     }
 }
 ```
+
 After that, declare this class on its respective module as a provider.
 
  
-```typescript
+
+``` typescript
 import {AuthentificationModule} from '../authentification/authentification.module';
 import {ProductAuthorization} from './security/product.auth';
 
@@ -523,9 +572,10 @@ export class ProductoModule {
 ```
 
 Declare this class on the controller as an attribute.
-> By default, the `ApiController class`  has a generic Authorization class.
 
-```typescript
+> By default, the `ApiController class` has a generic Authorization class.
+
+``` typescript
 @Controller('product')
 export class ProductController extends ApiController<ProductEntity> {
     constructor(
@@ -544,12 +594,11 @@ export class ProductController extends ApiController<ProductEntity> {
 }
 ```
 
-
 ## Google Cloud Storage
 
-
 Import the module with your bucket name.
-```typescript
+
+``` typescript
 
 import { GoogleCloudStorageModule } from '@pimba/excalibur/lib';
 
@@ -562,12 +611,12 @@ import { GoogleCloudStorageModule } from '@pimba/excalibur/lib';
 export class SomeModule {
 }
 ```
-> Don't forget to export your google-cloud credentials before start the server.
 
+> Don't forget to export your google-cloud credentials before start the server.
 
 Inject the google-cloud-service in your controller
 
-```typescript
+``` typescript
 import { GoogleCloudStorageService } from '@pimba/excalibur/lib';
 
 @Controller('some')
@@ -581,7 +630,8 @@ export class SomeController {
 ```
 
 Use the service to store a file
-```typescript
+
+``` typescript
     @Post('upload-picture')
     @UseInterceptors(
         FileInterceptor('picture'),
@@ -602,12 +652,11 @@ Use the service to store a file
 You can use the `GoogleCloudStorageFileInterceptor` to store a file 
 using a specific folder/prefix name.
 
-```typescript
+``` typescript
 import { GoogleCloudStorageFileInterceptor } from '@pimba/excalibur/lib';
 ```
 
-
-```typescript
+``` typescript
     @Post('upload-picture')
     @UseInterceptors(
         GoogleCloudStorageFileInterceptor(
@@ -625,12 +674,11 @@ import { GoogleCloudStorageFileInterceptor } from '@pimba/excalibur/lib';
     }
 ```
 
-
 ## Google Cloud Vision
 
-Import module: `GoogleCloudVisionApiModule`:
+Import module: `GoogleCloudVisionApiModule` :
 
-```typescript
+``` typescript
 import { GoogleCloudVisionApiModule } from '@pimba/excalibur/lib';
  
 @Module({
@@ -641,12 +689,12 @@ import { GoogleCloudVisionApiModule } from '@pimba/excalibur/lib';
 export class SomeModule {
 }
 ```
+
 > Don't forget to export your google-cloud credentials before start the server.
 
 Inject the `GoogleCloudVisionApiService` in your controller
 
-
-```typescript
+``` typescript
 import { GoogleCloudVisionApiService } from '@pimba/excalibur/lib';
  
 @Controller('some')
@@ -697,13 +745,11 @@ export class SomeController {
 | detectText |  Detects all text contained in the image |  image-url or buffer |
 | detectHandwrittenText | Detects get handwritten text in an image  |  image-url or buffer |
 
-
 ## Firebase Admin Authentification
-
 
 Import the module with your projectID.
 
-```typescript
+``` typescript
 import { FirebaseModule } from '@pimba/excalibur/lib';
 
 @Module({
@@ -722,12 +768,10 @@ export class SomeModule {
 
 > If you want use `admin.credential.applicationDefault()` just don't forget to export your Firebase credentials before start the server.
 
-
 Inject the firebase-service in your controller
 
-```typescript
+``` typescript
 import { FirebaseAdminAuthService } from '@pimba/excalibur/lib';
-
 
 @Controller('some')
 export class SomeController {
@@ -740,7 +784,8 @@ export class SomeController {
 ```
 
 Use the service: 
-```typescript
+
+``` typescript
     @Post('register-user')
     async registerUser(
         @Body() user: {
@@ -760,14 +805,15 @@ Use the service:
         );
     }
 
-
 ```
 
 ## Email
+
 The library uses [nodemailer](https://nodemailer.com/about/) to provide a module for sending emails.
 
 Import the module with the transports options:
-```typescript
+
+``` typescript
 import {EmailModule} from '@pimba/excalibur/lib';
 
 @Module(
@@ -798,7 +844,7 @@ export class SomeModule {
 
 In order to send emails, your need to inject the service: 
 
-```typescript
+``` typescript
 @Controller('some-controller')
 export class SomeController  {
     constructor(
@@ -823,5 +869,5 @@ export class SomeController  {
 ```
 
 ## Special Thanks
-The modules for google-cloud-storage and firebase were based on the [Aginix Technologies](https://github.com/Aginix) libraries
 
+The modules for google-cloud-storage and firebase were based on the [Aginix Technologies](https://github.com/Aginix) libraries

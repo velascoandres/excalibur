@@ -6,13 +6,13 @@ import {buildSimplePureWhere} from './build-simple-pure-where';
 import {buildPureWhereWithOperator} from './build-pure-where-with-operator';
 import {VerificatorHelper} from '../verificators-functions/verificator-helper';
 
-export function generateWhere(
-    query: SelectQueryBuilder<{}>,
+export function generateWhere<T>(
+    query: SelectQueryBuilder<T>,
     atribute: string,
     value: string | SimpleQueyOperator | any[], // Atribute value
     entityName: string,
     atributeIndex: number = 1,
-): SelectQueryBuilder<{}> {
+): SelectQueryBuilder<T> {
     // Verify is an Array
     const isArray = value instanceof Array;
     if (isArray) {

@@ -4,13 +4,13 @@ import {buildPureWhereWithOperator} from './build-pure-where-with-operator';
 import {PureWhereInterface} from '../interfaces/pureWhereInterface';
 
 // Arma el where con operador en base al conexto de la consulta y retorna un SelectQueryBuilder
-export function buildWhereOperador(
-    currentQuery: SelectQueryBuilder<{}>,
+export function buildWhereOperador<T>(
+    currentQuery: SelectQueryBuilder<T>,
     atribute: string,
     valueWithOperator: ObjectLiteral,
     entityName: string,
     index: number = 1,
-): SelectQueryBuilder<{}> {
+): SelectQueryBuilder<T> {
     let conjuncion = 'and';
     if (valueWithOperator.$or) {
         conjuncion = 'or';

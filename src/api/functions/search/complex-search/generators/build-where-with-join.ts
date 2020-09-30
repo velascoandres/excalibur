@@ -9,13 +9,13 @@ import {PureRelationInterface} from '../interfaces/pureRelationInterface';
 import {VerificatorHelper} from '../verificators-functions/verificator-helper';
 import {buildSelect} from './build-select';
 
-export function buildWhereWithjoin(
-    currentSelectQuieryBuilder: SelectQueryBuilder<{}>,
+export function buildWhereWithjoin<T>(
+    currentSelectQuieryBuilder: SelectQueryBuilder<T>,
     attributeName: string,
     attributeValue: string | any,
     parentEntity: string,
     joinType: 'left' | 'inner' = 'inner',
-): SelectQueryBuilder<{}> {
+): SelectQueryBuilder<T> {
     // Si la relacion tiene condiciones EJ: "producto": {"habilitado": 1, "id": {"operacion":"In", "valores": [1,2,3]}}
     const objectIsNotEmpty = VerificatorHelper.verifyIsNotEmptyObject(attributeValue);
     const relation: string = `${parentEntity}.${attributeName}`;

@@ -9,10 +9,10 @@ export async function findFullTransaccion<T>(
     entityManager: EntityManager,
     entity: string,
     findFullQuery: FindFullQuery,
-): Promise<TransactionResponse<[{}[], number]>> {
+): Promise<TransactionResponse<[T[], number]>> {
     const currentQuery: SelectQueryBuilder<T> = entityManager.createQueryBuilder(entity, BASE_ENTITY_NAME);
     try {
-        const data =  await searchRecords(currentQuery, findFullQuery);
+        const data =  await searchRecords<T>(currentQuery, findFullQuery);
         return {
             response: data,
             entityManager,

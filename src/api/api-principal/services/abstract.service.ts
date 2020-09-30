@@ -2,10 +2,11 @@ import { DeepPartial, EntityManager, FindConditions, ObjectID } from 'typeorm';
 import { FindFullQuery } from '../../..';
 import { PrincipalService } from './principal.service';
 import { findFullTransaccion } from '../../functions/search/complex-search/find-full.transaction.function';
+import { TransactionResponse } from '../../functions/search/complex-search/interfaces/transaction-response';
 
 export abstract class AbstractService<Entity> extends PrincipalService<Entity> {
 
-    async findAllWithTransaction(entityManager: EntityManager, query: FindFullQuery) {
+    async findAllWithTransaction(entityManager: EntityManager, query: FindFullQuery): Promise<TransactionResponse<[Entity[], number]>> {
         const tableName: string = this._repository.metadata.tableName;
         return await findFullTransaccion<Entity>(entityManager, tableName, query as FindFullQuery);
     }
@@ -14,10 +15,14 @@ export abstract class AbstractService<Entity> extends PrincipalService<Entity> {
         entityManager: EntityManager,
         criteria: string | string[] | number | number[] | Date | Date[] | ObjectID | ObjectID[] | FindConditions<Entity>,
         record: DeepPartial<Entity>
-    ) {
+    ): Promise<TransactionResponse<Entity>> {
         const tableName: string = this._repository.metadata.tableName;
         const repository = entityManager.getRepository(tableName);
-        return await repository.findOne(criteria, record);
+        const response = await repository.findOne(criteria, record) as Entity;
+        return {
+            response,
+            entityManager,
+        };
     }
 
     async updateOneWithTransaction(

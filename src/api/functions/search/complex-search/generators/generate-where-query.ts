@@ -1,8 +1,8 @@
 import {SelectQueryBuilder} from 'typeorm';
 import {PureWhereInterface} from '../interfaces/pureWhereInterface';
 
-export function generateWhereQuery(
-    currentQuery: SelectQueryBuilder<{}>,
+export function generateWhereQuery<T>(
+    currentQuery: SelectQueryBuilder<T>,
     pureWhere: PureWhereInterface,
     conjuntion: string,
 ) {
