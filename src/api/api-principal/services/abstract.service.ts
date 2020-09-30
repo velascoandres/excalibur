@@ -29,24 +29,38 @@ export abstract class AbstractService<Entity> extends PrincipalService<Entity> {
         entityManager: EntityManager,
         criteria: string | string[] | number | number[] | Date | Date[] | ObjectID | ObjectID[] | FindConditions<Entity>,
         record: DeepPartial<Entity>
-    ) {
+    ): Promise<TransactionResponse<Entity>> {
         const tableName: string = this._repository.metadata.tableName;
         const repository = entityManager.getRepository(tableName);
-        return await repository.update(criteria, record);
+        const upadteResponse = await repository.update(criteria, record);
+        const response = await repository.findOneOrFail(criteria) as Entity;
+        return {
+            response,
+            entityManager,
+        };
     }
 
-    async createOneWithTransaction(entityManager: EntityManager, newRecord: DeepPartial<Entity>) {
+    async createOneWithTransaction(entityManager: EntityManager, newRecord: DeepPartial<Entity>): Promise<TransactionResponse<Entity>> {
         const tableName: string = this._repository.metadata.tableName;
         const repository = entityManager.getRepository(tableName);
-        return await repository.save(newRecord);
+        const response = await repository.save(newRecord) as Entity;
+        return {
+            response,
+            entityManager,
+        };
     }
 
     async deleteOneWithTransaction(
         entityManager: EntityManager,
         criteria: string | string[] | number | number[] | Date | Date[] | ObjectID | ObjectID[] | FindConditions<Entity>,
-    ) {
+    ): Promise<TransactionResponse<Entity>> {
         const tableName: string = this._repository.metadata.tableName;
         const repository = entityManager.getRepository(tableName);
-        return await repository.delete(criteria);
+        const recordToDelete = await repository.findOneOrFail(criteria) as Entity;
+        const deleteResponse = await repository.delete(criteria);
+        return {
+            entityManager,
+            response: recordToDelete,
+        };
     }
 }
