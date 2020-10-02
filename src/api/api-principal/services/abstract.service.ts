@@ -1,8 +1,8 @@
-import { DeepPartial, EntityManager, FindConditions, ObjectID } from 'typeorm';
-import { FindFullQuery } from '../../..';
-import { PrincipalService } from './principal.service';
-import { findFullTransaccion } from '../../functions/search/complex-search/find-full.transaction.function';
-import { TransactionResponse } from '../../functions/search/complex-search/interfaces/transaction-response';
+import {DeepPartial, EntityManager, FindConditions, ObjectID} from 'typeorm';
+import {FindFullQuery} from '../../..';
+import {PrincipalService} from './principal.service';
+import {findFullTransaccion} from '../../..';
+import {TransactionResponse} from '../../functions/search/complex-search/interfaces/transaction-response';
 
 export abstract class AbstractService<Entity> extends PrincipalService<Entity> {
 
@@ -40,10 +40,22 @@ export abstract class AbstractService<Entity> extends PrincipalService<Entity> {
         };
     }
 
-    async createOneWithTransaction(entityManager: EntityManager, newRecord: DeepPartial<Entity>): Promise<TransactionResponse<Entity>> {
+    async createOneWithTransaction(entityManager: EntityManager, newRecord: DeepPartial<Entity>)
+        : Promise<TransactionResponse<Entity>> {
         const tableName: string = this._repository.metadata.tableName;
         const repository = entityManager.getRepository(tableName);
         const response = await repository.save(newRecord) as Entity;
+        return {
+            response,
+            entityManager,
+        };
+    }
+
+    async createManyWithTransaction(entityManager: EntityManager, newRecords: DeepPartial<Entity>[])
+        : Promise<TransactionResponse<Entity[]>> {
+        const tableName: string = this._repository.metadata.tableName;
+        const repository = entityManager.getRepository(tableName);
+        const response = await repository.save(newRecords) as Entity[];
         return {
             response,
             entityManager,
@@ -58,6 +70,23 @@ export abstract class AbstractService<Entity> extends PrincipalService<Entity> {
         const repository = entityManager.getRepository(tableName);
         const recordToDelete = await repository.findOneOrFail(criteria) as Entity;
         const deleteResponse = await repository.delete(criteria);
+        return {
+            entityManager,
+            response: recordToDelete,
+        };
+    }
+
+    async deleteManyByIdsWithTransaction(
+        entityManager: EntityManager,
+        ids: number[] | string[],
+    ): Promise<TransactionResponse<Entity[]>> {
+        const tableName: string = this._repository.metadata.tableName;
+        const repository = entityManager.getRepository(tableName);
+        const recordToDelete = await repository.findByIds(ids) as Entity[];
+        const query = repository.createQueryBuilder(tableName)
+            .delete()
+            .where('id IN(:ids)', {ids: ids.join(',')});
+        const deleteResponse = await query.execute();
         return {
             entityManager,
             response: recordToDelete,

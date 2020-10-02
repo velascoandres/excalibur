@@ -82,6 +82,7 @@ export class ProductService extends AbstractService<ProductEntity> {
 }
 ```
 
+
 #### Create a DTO class for update and create:
 
 It is optional to extend from `BaseDTO` , This class allows to validate that the fields: `id` , `createdAt` and `updatedAt` should not be empty
@@ -120,6 +121,7 @@ export class ProductController extends ApiController<ProductEntity> {
 }
 ```
 
+
 ### API-REST ENPOINTS:
 
 For  a `controllerPrefix` given on the `Controller` decorator. The following 
@@ -133,6 +135,7 @@ set of routes will be generated.
 |  GET | `/<controllerPrefix>/<id:number>` | findOne  | 
 | GET  | `/<controllerPrefix>?query=<find-query>` | findAll |
 | DELETE | `/<controllerPrefix>/<id:number>` | deleteOne |
+
 
 ###  Find  Query
 
@@ -390,6 +393,77 @@ const query = {
 
 ```
 
+#### Working with transactions
+
+The `AbstractService` class has the following methods in order to perform transactions:
+
+* findAllWithTransaction
+
+* findOneWithTransaction
+
+* createOneWithTransaction
+
+* createManyWithTransaction
+
+* updateOneWithTransaction
+
+* deleteOneWithTransaction
+
+* deleteManyByIdsWithTransaction
+
+Example: 
+
+```typescript
+import {EntityManager, getManager, Repository} from 'typeorm';
+import {AbstractService} from '@pimba/excalibur/lib'; 
+import {getManager} from 'typeorm';
+import {FindFullQuery} from '@pimba/excalibur/lib';
+import {TransactionResponse} from '@pimba/excalibur/lib';
+
+@Injectable()
+export class ProductService extends AbstractService<ProductEntity> {
+  constructor(
+    @InjectRepository(ProductEntity)
+    private readonly _productRepository: Repository<ProductEntity>,
+  ) {
+    super(_productRepository);
+  }
+    
+  async deleteByCategory(categoryId: number): Promise<ProductEntity[]> {
+          return await getManager()
+              .transaction(
+                  'SERIALIZABLE',
+                  async (entityManager: EntityManager) => {
+
+                      // Define the find condition  
+                      const finQuery: FindFullQuery = {
+                          where: {
+                              category: {
+                                  id: categoryId,
+                              }
+                          }
+                      };
+                      const findResponse = await this.findAllWithTransaction(entityManager, finQuery);
+                     
+                      // Update the entityManager for the next operation
+                      entityManager = findResponse.entityManager;
+                      const [productsToDelete, totalFetched] = findResponse.response;
+  
+                      // Get only the ids
+                      const ids = productsToDelete.map(product => product.id);
+                      
+                      // Get only the deleted rows  
+                      const {response} = await this
+                          .deleteManyByIdsWithTransaction(entityManager, ids);
+  
+                      return response;
+                  }
+              );
+      }
+    
+}
+```
+
 ### MongoDB
 
 #### Entity (Optional)
@@ -404,6 +478,8 @@ export class PostEntity extends AbstractMongoEntity{
     
 }
 ```
+
+
 
 #### DTO 
 
@@ -464,7 +540,7 @@ export class PostController extends ApiMongoController<postEntity> {
     }
 }
 ```
-
+newRecords
 ## Security
 
 In order to protect the access to the generic REST-API, you can use a class that implements the `ExcaliburAuth`
