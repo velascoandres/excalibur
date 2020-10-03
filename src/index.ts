@@ -23,6 +23,7 @@ export {AbstractService} from './api/api-principal/services/abstract.service';
 export {ServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods.interfaces';
 export {MongoServiceCrudMethodsInterface} from './api/interfaces/service.crud.methods.interfaces';
 export {MongoIndexConfigInterface} from './api/interfaces/service.crud.methods.interfaces';
+export {TransactionResponse} from './api/functions/search/complex-search/interfaces/transaction-response';
 export {ApiMongoController} from './api/api-principal/controllers/api.mongo.controller';
 export {ApiController} from './api/api-principal/controllers/api.controller';
 export {BaseMongoDTO} from './api/api-principal/schemas/base-mongo-dto';

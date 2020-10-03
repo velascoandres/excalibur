@@ -2,7 +2,7 @@ import {DeepPartial, EntityManager, FindConditions, ObjectID} from 'typeorm';
 import {FindFullQuery} from '../../..';
 import {PrincipalService} from './principal.service';
 import {findFullTransaccion} from '../../..';
-import {TransactionResponse} from '../../functions/search/complex-search/interfaces/transaction-response';
+import {TransactionResponse} from '../../..';
 
 export abstract class AbstractService<Entity> extends PrincipalService<Entity> {
 
