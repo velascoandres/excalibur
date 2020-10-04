@@ -3,7 +3,7 @@ export interface BulkDataConfig {
     pathDev: string;
     dtoClassValidation: (new () => any);
     aliasName?: string;
-    entityName: Function;
+    entity: Function;
     creationOrder: number;
     conection?: string;
 }

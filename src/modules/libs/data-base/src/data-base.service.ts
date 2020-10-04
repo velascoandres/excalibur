@@ -18,27 +18,29 @@ export class DataBaseService {
     async insertData() {
         const bulksConfig = this.bulksConfigOrdered;
         for (const bulk of bulksConfig) {
-            // 1 Obtain repository
-            let repository;
-            const name = bulk.aliasName ? bulk.aliasName : bulk.entityName.name;
+            const entity = bulk.entity;
+            const name = bulk.aliasName ? bulk.aliasName : entity.name;
             const connection = bulk.conection ? bulk.conection : 'default';
             const currentLog: LogInterface = {
                 creationOrder: bulk.creationOrder,
                 entityName: name,
                 connection,
             };
+            const filePath = this.productionFlag ? bulk.pathProd : bulk.pathDev;
+            const DtoClass = bulk.dtoClassValidation;
+            let totalCreated: number = 0;
             try {
-                repository = DataBaseHelper.getRepository(bulk.entityName, bulk.conection);
+                totalCreated = await DataBaseHelper
+                    .insertData(
+                        filePath,
+                        DtoClass,
+                        entity,
+                        connection,
+                    );
+                currentLog.created = totalCreated;
             } catch (error) {
                 currentLog.errors = error;
             }
-            // 2 Get file path
-            const filePath = this.productionFlag ? bulk.pathProd : bulk.pathDev;
-            const DtoClass = bulk.dtoClassValidation;
-            // 3 Create Data
-            // 3.1 Lecture
-            // 3.2 Validation
-            // 3.4 Insertion
             this.saveLog(currentLog);
         }
     }
@@ -49,11 +51,16 @@ export class DataBaseService {
         );
     }
 
-    saveLog(log: LogInterface) {
+    private saveLog(log: LogInterface) {
         this._logs.push(log);
     }
 
     logs() {
         return this._logs;
     }
+
+    private formatLogs(): string {
+        return this._logs.toString();
+    }
+
 }
