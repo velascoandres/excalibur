@@ -2,7 +2,7 @@ import {Inject, Injectable} from '@nestjs/common';
 import {BulkDataConfig} from './interfaces/bulk-data-config.interface';
 import {BULKS_CONFIG, ENV_CONFIG} from './constants';
 import {LogInterface} from './interfaces/log.interface';
-import {getRepository} from './utils/get-repository';
+import {DataBaseHelper} from './utils/data-base-helper';
 
 @Injectable()
 export class DataBaseService {
@@ -28,7 +28,7 @@ export class DataBaseService {
                 connection,
             };
             try {
-                repository = getRepository(bulk.entityName, bulk.conection);
+                repository = DataBaseHelper.getRepository(bulk.entityName, bulk.conection);
             } catch (error) {
                 currentLog.errors = error;
             }
