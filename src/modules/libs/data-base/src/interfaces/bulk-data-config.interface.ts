@@ -1,8 +1,9 @@
 export interface BulkDataConfig {
     pathProd: string;
     pathDev: string;
-    dtoClassValidation: Function;
+    dtoClassValidation: (new () => any);
     aliasName?: string;
+    entityName: Function;
     creationOrder: number;
     conection?: string;
 }
