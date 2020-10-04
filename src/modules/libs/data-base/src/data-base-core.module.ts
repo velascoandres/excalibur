@@ -5,6 +5,7 @@ import {ConfigStore} from './store/config.store';
 import {BULKS_CONFIG, ENV_CONFIG} from './constants';
 import {DataBaseService} from './data-base.service';
 
+@Global()
 @Module(
     {
         providers: [

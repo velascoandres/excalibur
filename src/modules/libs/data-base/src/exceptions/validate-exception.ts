@@ -1,14 +1,25 @@
-import {BulkErrors} from '../interfaces/bulk-errors.interface';
+import {BulkErrors} from '../../../../..';
+import {ValidationError} from 'class-validator';
 
 export class ValidateException {
     constructor(
-        protected error: any,
+        protected error: any | ValidationError[],
     ) {
     }
 
-    public toString(): Pick<BulkErrors, 'validationError'> {
-        return {
-            validationError: this.error,
-        };
+    formatError(): any[] {
+        return this.error.map(
+            (error: ValidationError) => {
+                return {
+                    value: error.value,
+                    constraints: error.constraints,
+                    property: error.property
+                };
+            }
+        );
+    }
+
+    public toString() {
+        return this.error instanceof Array ? this.formatError() : this.error.toString();
     }
 }

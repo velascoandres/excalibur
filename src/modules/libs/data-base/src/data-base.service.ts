@@ -6,12 +6,13 @@ import {DataBaseHelper} from './utils/data-base-helper';
 
 @Injectable()
 export class DataBaseService {
+    private readonly _logs: LogInterface[] = [];
+
     constructor(
         @Inject(ENV_CONFIG)
         private readonly productionFlag: boolean,
         @Inject(BULKS_CONFIG)
         private readonly bulksConfig: BulkDataConfig[],
-        private readonly _logs: LogInterface[] = [],
     ) {
     }
 
@@ -39,7 +40,7 @@ export class DataBaseService {
                     );
                 currentLog.created = totalCreated;
             } catch (error) {
-                currentLog.errors = error;
+                currentLog.errors = error.toString();
             }
             this.saveLog(currentLog);
         }

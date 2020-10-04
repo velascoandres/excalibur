@@ -1,4 +1,4 @@
-import {BulkErrors} from '../interfaces/bulk-errors.interface';
+import {BulkErrors} from '../../../../..';
 
 export class CreateBulkException {
     constructor(

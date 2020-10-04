@@ -6,9 +6,7 @@ export class FileException {
     ) {
     }
 
-    public toString(): Pick<BulkErrors, 'fileError'> {
-        return {
-            fileError: this.error,
-        };
+    public toString(): any {
+        return this.error.toString();
     }
 }

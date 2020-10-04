@@ -43,3 +43,11 @@ export * from './modules/libs/google-cloud-storage/src/index';
 export * from './modules/libs/firebase/src/index';
 export * from './modules/libs/email/src/index';
 export * from './modules/libs/google-cloud-vision-api/src/index';
+export * from './modules/libs/data-base/src/data-base.module';
+export * from './modules/libs/data-base/src/interfaces/bulk-data-config.interface';
+export * from './modules/libs/data-base/src/interfaces/bulk-errors.interface';
+export * from './modules/libs/data-base/src/interfaces/connection-config.type';
+export * from './modules/libs/data-base/src/interfaces/data-base-config.interface';
+export * from './modules/libs/data-base/src/interfaces/log.interface';
+export * from './modules/libs/data-base/src/data-base.service';
+

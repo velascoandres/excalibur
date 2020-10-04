@@ -24,7 +24,7 @@ export class DataBaseHelper {
     }
 
     static readFile(path: string): any[] {
-        const filePath = '../../../../../../../src';
+        const filePath = '../../../../../../../../../';
         const joinedPath = join(__dirname, filePath, path);
         const rows = JSON.parse(
             readFileSync(joinedPath, 'utf-8'),
@@ -45,7 +45,7 @@ export class DataBaseHelper {
             errors = response.errors;
             parseData = response.parsedData;
         } catch (error) {
-            throw new ValidateException(error);
+            throw new ValidateException(error.toString());
         }
         const hasErrors = errors.length > 0;
         if (hasErrors) {
@@ -92,7 +92,7 @@ export class DataBaseHelper {
         } catch (error) {
             throw new CreateBulkException(
                 {
-                    validationError: error,
+                    validationError: error.toString(),
                 }
             );
         }
@@ -103,7 +103,7 @@ export class DataBaseHelper {
         } catch (error) {
             throw new CreateBulkException(
                 {
-                    insertionError: error,
+                    insertionError: error.toString(),
                 }
             );
         }
