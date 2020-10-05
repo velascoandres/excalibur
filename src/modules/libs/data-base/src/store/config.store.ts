@@ -1,4 +1,4 @@
-import {BulkDataConfig} from '../interfaces/bulk-data-config.interface';
+import {BulkDataConfig} from '../../../../..';
 
 export class ConfigStore {
     private static readonly bulksConfig: BulkDataConfig[] = [];

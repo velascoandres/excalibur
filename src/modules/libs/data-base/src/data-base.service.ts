@@ -21,7 +21,7 @@ export class DataBaseService {
         for (const bulk of bulksConfig) {
             const entity = bulk.entity;
             const name = bulk.aliasName ? bulk.aliasName : entity.name;
-            const connection = bulk.conection ? bulk.conection : 'default';
+            const connection = bulk.connection ? bulk.connection : 'default';
             const currentLog: LogInterface = {
                 creationOrder: bulk.creationOrder,
                 entityName: name,
