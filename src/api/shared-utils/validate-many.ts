@@ -1,6 +1,7 @@
 import { plainToClass } from 'class-transformer';
 import { ClassType } from 'class-transformer/ClassTransformer';
 import { validate, ValidationError } from 'class-validator';
+import {ValidationResponse} from '../../modules/libs/data-base/src/interfaces/validation.response';
 
 
 async function _parseAndValidate<T extends { [k: string]: any }>(
@@ -46,14 +47,17 @@ export async function validateMany<T extends { [k: string]: any }>(
 export async function parseAndValidateMany<T extends { [k: string]: any }>(
     records: T[],
     dtoClass: ClassType<T>,
-): Promise<{ parsedData: T[], errors: ValidationError[] }> {
-    let validationErrors: any[] = [];
+): Promise<{ parsedData: T[], errors: ValidationResponse<T>[]}> {
+    let validationErrors: ValidationResponse<T>[] = [];
     const data: T[] = [];
     for (const record of records) {
         const { errors, parsedData } = await _parseAndValidate(record, dtoClass);
         validationErrors = [
             ...validationErrors,
-            ...errors,
+            {
+                parsedData,
+                errors,
+            }
         ];
         data.push(parsedData);
     }

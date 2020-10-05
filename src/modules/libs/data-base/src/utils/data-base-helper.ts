@@ -72,6 +72,7 @@ export class DataBaseHelper {
                     repositoryError: error,
                 }
             );
+
         }
         // Find file
         let records: D[] = [];
