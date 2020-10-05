@@ -1,5 +1,4 @@
 import {ValidationResponse} from '../interfaces/validation.response';
-import {ValidationError} from 'class-validator';
 
 export class ValidateException<T = any> {
     constructor(

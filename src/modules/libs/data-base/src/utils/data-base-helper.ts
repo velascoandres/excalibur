@@ -7,6 +7,7 @@ import {ValidateException} from '../exceptions/validate-exception';
 import {CreateBulkException} from '../exceptions/create-bulk-exception';
 import {ClassType} from 'class-transformer/ClassTransformer';
 import {RepositoryException} from '../exceptions/repository-exception';
+import {ValidationResponse} from '../interfaces/validation.response';
 
 export class DataBaseHelper {
     static getRepository<T>(
@@ -41,7 +42,7 @@ export class DataBaseHelper {
         let errors = [];
         let parseData: any[] = [];
         try {
-            const response = await parseAndValidateMany(rows, dtoClass as ClassType<D>);
+            const response: { parsedData: D[], errors: ValidationResponse<D>[] } = await parseAndValidateMany(rows, dtoClass as ClassType<D>);
             errors = response.errors;
             parseData = response.parsedData;
         } catch (error) {
