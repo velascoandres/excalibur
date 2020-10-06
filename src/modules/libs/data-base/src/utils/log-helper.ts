@@ -1,5 +1,6 @@
 import {COLORS} from '../constants/colors';
 import {GridOptions, RowOptions} from '../interfaces/row-options.interface';
+import {LogInterface} from '../../../../..';
 
 export class LogHelper {
     static addSpaces(value: string, spaces: number) {
@@ -54,5 +55,75 @@ export class LogHelper {
         cols = LogHelper.encloseMargin(cols, bottomTopPatt, borderColor);
         const border = LogHelper.generateBorder(lateralPath, length);
         return cols + border + '\n';
+    }
+
+    static buildLogTable(logs: LogInterface[]) {
+        const orderedLogs = logs.sort(
+            (a: LogInterface, b: LogInterface) => {
+                const after = a.connection;
+                const before = b.connection;
+                if (after > before) {
+                    return 1;
+                }
+                if (before > after) {
+                    return -1;
+                }
+                return 0;
+            },
+        );
+        return orderedLogs.map(
+            (log: LogInterface, index: number, arr: LogInterface[]) => {
+                let showConecction = true;
+                if (index) {
+                    const previousValue: LogInterface = arr[index - 1];
+                    if (previousValue.connection === log.connection) {
+                        showConecction = false;
+                    }
+                }
+                const {creationOrder, created, entityName, errors} = log;
+                const row = LogHelper.generateGrid(
+                    {
+                        values: [
+                            creationOrder.toString(),
+                            entityName,
+                            created ? created.toString() : '0',
+                            errors ? 'FAIL' : 'OK',
+                        ],
+                        grid: [5, 40, 5, 10],
+                        length: 60,
+                        lateralPath: '||',
+                        borderColor: COLORS.fgWhite,
+                        bottomTopPatt: '=',
+                        valueColor: COLORS.fgYellow,
+                    }
+                );
+                if (showConecction) {
+                    const connectionHeader = LogHelper.generateRowFormat(
+                        {
+                            value: log.connection,
+                            length: 60,
+                            lateralPath: '||',
+                            borderColor: COLORS.fgWhite,
+                            bottomTopPatt: '=',
+                            valueColor: COLORS.fgYellow,
+                        },
+                    );
+                    const headers = LogHelper.generateGrid(
+                        {
+                            values: ['Order', 'Entity', 'Created', 'Status'],
+                            grid: [5, 40, 5, 10],
+                            length: 60,
+                            lateralPath: '||',
+                            borderColor: COLORS.fgWhite,
+                            bottomTopPatt: '=',
+                            valueColor: COLORS.fgYellow,
+                        }
+                    );
+                    return connectionHeader + headers + row;
+                } else {
+                    return row;
+                }
+            }
+        );
     }
 }
