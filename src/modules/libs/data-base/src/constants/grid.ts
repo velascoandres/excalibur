@@ -1,2 +1,2 @@
-export const ROW_LENGTH = 80;
-export const GRIDS = [8, 54, 12, 6];
+export const ROW_LENGTH = 100;
+export const GRIDS = [8, 74, 12, 6];

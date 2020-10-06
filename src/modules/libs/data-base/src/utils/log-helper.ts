@@ -1,7 +1,8 @@
 import {COLORS} from '../constants/colors';
 import {GridOptions, RowOptions} from '../interfaces/row-options.interface';
-import {LogInterface} from '../../../../..';
+import {BulkErrors, LogInterface} from '../../../../..';
 import {GRIDS, ROW_LENGTH} from '../constants/grid';
+import {ValidationResponse} from '../interfaces/validation.response';
 
 export class LogHelper {
     static addSpaces(value: string, spaces: number) {
@@ -41,6 +42,32 @@ export class LogHelper {
         return '\n' + border + '\n' + rowFormat + '\n' + border + '\n';
     }
 
+    static formatErrors(
+        error: Partial<BulkErrors>,
+    ) {
+        const keys = Object.keys(error);
+        const border = LogHelper.generateBorder('=', ROW_LENGTH + 5);
+        const errors = keys.reduce(
+            (acc: string, key: string) => {
+                if (key === 'validationError') {
+                    const value = error[key as keyof BulkErrors];
+                    if (value instanceof Array) {
+                        const validationErrors: ValidationResponse<any>[] = error[key];
+                        const errorParseado = validationErrors.map((err) => {
+                            return `\nValidationError:\n  Data: ${JSON.stringify(err.parsedData)}\n  Errors:\n${err.errors}\n`;
+                        }).join('');
+                        acc = acc + errorParseado;
+                    }
+                } else {
+                    const value = error[key as keyof BulkErrors];
+                    acc = acc + value;
+                }
+                return acc;
+            }, ''
+        );
+        return COLORS.fgYellow + errors + COLORS.reset + border + '\n';
+    }
+
     static generateGrid(
         options: GridOptions,
     ) {
@@ -74,6 +101,7 @@ export class LogHelper {
         return orderedLogs.map(
             (log: LogInterface, index: number, arr: LogInterface[]) => {
                 let showConecction = true;
+                let errorsLog = '';
                 if (index) {
                     const previousValue: LogInterface = arr[index - 1];
                     if (previousValue.connection === log.connection) {
@@ -97,6 +125,9 @@ export class LogHelper {
                         valueColor: errors ? COLORS.fgRed : COLORS.fgGreen,
                     }
                 );
+                if (errors) {
+                    errorsLog = LogHelper.formatErrors(errors);
+                }
                 if (showConecction) {
                     const connectionHeader = LogHelper.generateRowFormat(
                         {
@@ -119,9 +150,9 @@ export class LogHelper {
                             valueColor: COLORS.fgBlue,
                         }
                     );
-                    return connectionHeader + headers + row;
+                    return connectionHeader + headers + row + errorsLog;
                 } else {
-                    return row;
+                    return row + errorsLog;
                 }
             }
         );
