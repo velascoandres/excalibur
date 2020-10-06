@@ -61,8 +61,12 @@ export class DataBaseService {
         return this._logs;
     }
 
-    formatLogs(): string {
-        return LogHelper.buildLogTable(this._logs).join('');
+    showSummary(): void {
+        const {logs, errorsLog} = LogHelper.buildLogTable(this._logs);
+        console.info(logs);
+        if (errorsLog.length) {
+            console.error('\nErrors: \n' + errorsLog);
+        }
     }
 
 }

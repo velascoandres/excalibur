@@ -98,10 +98,14 @@ export class LogHelper {
                 return 0;
             },
         );
-        return orderedLogs.map(
-            (log: LogInterface, index: number, arr: LogInterface[]) => {
+        return orderedLogs.reduce(
+            (
+                acc: { errorsLog: string[]; logs: string },
+                log: LogInterface,
+                index: number,
+                arr: LogInterface[],
+            ) => {
                 let showConecction = true;
-                let errorsLog = '';
                 if (index) {
                     const previousValue: LogInterface = arr[index - 1];
                     if (previousValue.connection === log.connection) {
@@ -126,7 +130,7 @@ export class LogHelper {
                     }
                 );
                 if (errors) {
-                    errorsLog = LogHelper.formatErrors(errors);
+                    acc.errorsLog.push(LogHelper.formatErrors(errors));
                 }
                 if (showConecction) {
                     const connectionHeader = LogHelper.generateRowFormat(
@@ -150,11 +154,12 @@ export class LogHelper {
                             valueColor: COLORS.fgBlue,
                         }
                     );
-                    return connectionHeader + headers + row + errorsLog;
+                    acc.logs += connectionHeader + headers + row;
                 } else {
-                    return row + errorsLog;
+                    acc.logs += row;
                 }
-            }
+                return acc;
+            }, {errorsLog: [], logs: ''}
         );
     }
 }
