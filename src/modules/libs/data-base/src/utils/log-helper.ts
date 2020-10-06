@@ -1,6 +1,7 @@
 import {COLORS} from '../constants/colors';
 import {GridOptions, RowOptions} from '../interfaces/row-options.interface';
 import {LogInterface} from '../../../../..';
+import {GRIDS, ROW_LENGTH} from '../constants/grid';
 
 export class LogHelper {
     static addSpaces(value: string, spaces: number) {
@@ -33,10 +34,10 @@ export class LogHelper {
         options: RowOptions,
     ) {
         const {length, value, borderColor, bottomTopPatt, valueColor, lateralPath} = options;
-        let rowFormat = LogHelper.addSpaces(value, length - 1);
+        let rowFormat = LogHelper.addSpaces(value, length);
         rowFormat = LogHelper.encloseColor(rowFormat, valueColor);
         rowFormat = LogHelper.encloseMargin(rowFormat, lateralPath, borderColor);
-        const border = LogHelper.generateBorder(bottomTopPatt, length + 4);
+        const border = LogHelper.generateBorder(bottomTopPatt, length + 5);
         return '\n' + border + '\n' + rowFormat + '\n' + border + '\n';
     }
 
@@ -52,8 +53,8 @@ export class LogHelper {
         ).join('');
         cols = LogHelper.encloseColor(cols, valueColor);
         cols = LogHelper.encloseMargin(cols, lateralPath, borderColor);
-        const border = LogHelper.generateBorder(bottomTopPatt, length + 4);
-        return cols + '\n' +border + '\n';
+        const border = LogHelper.generateBorder(bottomTopPatt, length + 5);
+        return cols + '\n' + border + '\n';
     }
 
     static buildLogTable(logs: LogInterface[]) {
@@ -88,19 +89,19 @@ export class LogHelper {
                             created ? created.toString() : '0',
                             errors ? 'FAIL' : 'OK',
                         ],
-                        grid: [8, 37, 8, 6],
-                        length: 60,
+                        grid: GRIDS,
+                        length: ROW_LENGTH,
                         lateralPath: '||',
                         borderColor: COLORS.fgWhite,
                         bottomTopPatt: '=',
-                        valueColor: COLORS.fgGreen,
+                        valueColor: errors ? COLORS.fgRed : COLORS.fgGreen,
                     }
                 );
                 if (showConecction) {
                     const connectionHeader = LogHelper.generateRowFormat(
                         {
                             value: log.connection,
-                            length: 60,
+                            length: ROW_LENGTH,
                             lateralPath: '||',
                             borderColor: COLORS.fgWhite,
                             bottomTopPatt: '=',
@@ -110,8 +111,8 @@ export class LogHelper {
                     const headers = LogHelper.generateGrid(
                         {
                             values: ['Order', 'Entity', 'Created', 'Status'],
-                            grid: [8, 37, 8, 6],
-                            length: 60,
+                            grid: GRIDS,
+                            length: ROW_LENGTH,
                             lateralPath: '||',
                             borderColor: COLORS.fgWhite,
                             bottomTopPatt: '=',
