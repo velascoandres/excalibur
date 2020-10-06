@@ -33,9 +33,9 @@ export class LogHelper {
     static generateRowFormat(
         options: RowOptions,
     ) {
-        const {length, value, borderColor, bottomTopPatt, lateralPath} = options;
+        const {length, value, borderColor, bottomTopPatt, valueColor,lateralPath} = options;
         let rowFormat = LogHelper.addSpaces(value, length);
-        rowFormat = LogHelper.encloseColor(rowFormat, borderColor);
+        rowFormat = LogHelper.encloseColor(rowFormat, valueColor);
         rowFormat = LogHelper.encloseMargin(rowFormat, lateralPath, borderColor);
         const border = LogHelper.generateBorder(bottomTopPatt, length);
         return '\n' + border + '\n' + rowFormat + '\n' + border + '\n';
@@ -44,14 +44,14 @@ export class LogHelper {
     static generateGrid(
         options: GridOptions,
     ) {
-        const {values, length, grid, borderColor, bottomTopPatt, lateralPath} = options;
+        const {values, length, grid, borderColor, valueColor,bottomTopPatt, lateralPath} = options;
         let cols: string = values.map(
             (value: string, index: number) => {
                 const colLength = grid[index];
                 return LogHelper.addSpaces(value, colLength);
             }
         ).join();
-        cols = LogHelper.encloseColor(cols, borderColor);
+        cols = LogHelper.encloseColor(cols, valueColor);
         cols = LogHelper.encloseMargin(cols, lateralPath, borderColor);
         const border = LogHelper.generateBorder(bottomTopPatt, length);
         return cols + border + '\n';
