@@ -62,7 +62,7 @@ export class DataBaseService {
     }
 
     formatLogs(): string {
-        return LogHelper.buildLogTable(this._logs).join();
+        return LogHelper.buildLogTable(this._logs).join('');
     }
 
 }
