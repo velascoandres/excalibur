@@ -33,18 +33,18 @@ export class LogHelper {
     static generateRowFormat(
         options: RowOptions,
     ) {
-        const {value, borderColor, bottomTopPatt, lateralPath} = options;
+        const {length, value, borderColor, bottomTopPatt, lateralPath} = options;
         let rowFormat = LogHelper.addSpaces(value, length);
         rowFormat = LogHelper.encloseColor(rowFormat, borderColor);
-        rowFormat = LogHelper.encloseMargin(rowFormat, bottomTopPatt, borderColor);
-        const border = LogHelper.generateBorder(lateralPath, length);
-        return border + '\n' + rowFormat + '\n';
+        rowFormat = LogHelper.encloseMargin(rowFormat, lateralPath, borderColor);
+        const border = LogHelper.generateBorder(bottomTopPatt, length);
+        return '\n' + border + '\n' + rowFormat + '\n' + border + '\n';
     }
 
     static generateGrid(
         options: GridOptions,
     ) {
-        const {values, grid, borderColor, bottomTopPatt, lateralPath} = options;
+        const {values, length, grid, borderColor, bottomTopPatt, lateralPath} = options;
         let cols: string = values.map(
             (value: string, index: number) => {
                 const colLength = grid[index];
@@ -52,8 +52,8 @@ export class LogHelper {
             }
         ).join();
         cols = LogHelper.encloseColor(cols, borderColor);
-        cols = LogHelper.encloseMargin(cols, bottomTopPatt, borderColor);
-        const border = LogHelper.generateBorder(lateralPath, length);
+        cols = LogHelper.encloseMargin(cols, lateralPath, borderColor);
+        const border = LogHelper.generateBorder(bottomTopPatt, length);
         return cols + border + '\n';
     }
 

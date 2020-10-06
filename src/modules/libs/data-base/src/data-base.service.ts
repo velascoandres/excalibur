@@ -4,7 +4,6 @@ import {BULKS_CONFIG, ENV_CONFIG} from './constants/inject-keys';
 import {LogInterface} from './interfaces/log.interface';
 import {DataBaseHelper} from './utils/data-base-helper';
 import {LogHelper} from './utils/log-helper';
-import {COLORS} from './constants/colors';
 
 @Injectable()
 export class DataBaseService {
@@ -62,7 +61,7 @@ export class DataBaseService {
         return this._logs;
     }
 
-    private formatLogs(): string {
+    formatLogs(): string {
         return LogHelper.buildLogTable(this._logs).join();
     }
 
