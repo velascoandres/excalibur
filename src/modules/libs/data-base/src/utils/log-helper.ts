@@ -65,7 +65,7 @@ export class LogHelper {
                 return acc;
             }, ''
         );
-        return COLORS.fgYellow + errors + COLORS.reset + border + '\n';
+        return COLORS.fgYellow + errors + COLORS.reset + '\n' + border + '\n';
     }
 
     static generateGrid(
