@@ -11,7 +11,7 @@ export class ValidateException<T = any> {
             (errorValidation: ValidationResponse<T>) => {
                 const {errors, parsedData} = errorValidation;
                 return {
-                    parsedData,
+                    parsedData: JSON.stringify(parsedData),
                     errors: errors.toString(),
                 };
             }

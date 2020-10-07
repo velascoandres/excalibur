@@ -61,8 +61,8 @@ export class DataBaseService {
         return this._logs;
     }
 
-    showSummary(): void {
-        const {logs, errorsLog} = LogHelper.buildLogTable(this._logs);
+    showSummary(bordered: boolean = true): void {
+        const {logs, errorsLog} = LogHelper.buildLogTable(this._logs, bordered);
         console.info(logs);
         if (errorsLog.length) {
             console.error('\nErrors: \n' + errorsLog);

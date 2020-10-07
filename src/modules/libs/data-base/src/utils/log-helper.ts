@@ -22,12 +22,12 @@ export class LogHelper {
         return `${color}${patt} ${value} ${patt}${COLORS.reset}`;
     }
 
-    static generateBorder(patt: string, lenght: number) {
+    static generateBorder(patt: string, lenght: number, color: COLORS = COLORS.fgWhite): string {
         let response = patt;
         for (let i = 0; i < lenght; i++) {
             response = response + patt;
         }
-        return response;
+        return LogHelper.encloseColor(response, color);
     }
 
 
@@ -38,7 +38,7 @@ export class LogHelper {
         let rowFormat = LogHelper.addSpaces(value, length);
         rowFormat = LogHelper.encloseColor(rowFormat, valueColor);
         rowFormat = LogHelper.encloseMargin(rowFormat, lateralPath, borderColor);
-        const border = LogHelper.generateBorder(bottomTopPatt, length + 5);
+        const border = LogHelper.generateBorder(bottomTopPatt, length + 5, borderColor);
         return '\n' + border + '\n' + rowFormat + '\n' + border + '\n';
     }
 
@@ -53,10 +53,18 @@ export class LogHelper {
                     const value = error[key as keyof BulkErrors];
                     if (value instanceof Array) {
                         const validationErrors: ValidationResponse<any>[] = error[key];
-                        const errorParseado = validationErrors.map((err) => {
-                            return `\nValidationError:\n  Data: ${JSON.stringify(err.parsedData)}\n  Errors:\n${err.errors}\n`;
-                        }).join('');
-                        acc = acc + errorParseado;
+                        const parsedError = validationErrors.map(
+                            (err) => {
+                                return LogHelper.formatError(
+                                    {
+                                        type: key,
+                                        data: JSON.stringify(err.parsedData),
+                                        errors: err.errors,
+                                    },
+                                );
+                            },
+                        ).join('');
+                        acc = acc + parsedError;
                     }
                 } else {
                     const value = error[key as keyof BulkErrors];
@@ -66,6 +74,20 @@ export class LogHelper {
             }, ''
         );
         return COLORS.fgYellow + errors + COLORS.reset + '\n' + border + '\n';
+    }
+
+    static formatError(
+        errorDetail: {
+            type: string;
+            data: any;
+            errors: any;
+        }
+    ): string {
+        const {type, data, errors} = errorDetail;
+        const title = LogHelper.encloseColor(type, COLORS.fgRed);
+        const dataColored = LogHelper.encloseColor(data, COLORS.fgYellow);
+        const error = LogHelper.encloseColor(errors, COLORS.fgYellow);
+        return [title, dataColored, error].join('\n');
     }
 
     static generateGrid(
@@ -84,7 +106,9 @@ export class LogHelper {
         return cols + '\n' + border + '\n';
     }
 
-    static buildLogTable(logs: LogInterface[]) {
+    static buildLogTable(logs: LogInterface[], showMargin: boolean = true) {
+        const marginTopBottom = showMargin ? '=' : '';
+        const marginLateral = showMargin ? '||' : '';
         const orderedLogs = logs.sort(
             (a: LogInterface, b: LogInterface) => {
                 const after = a.connection;
@@ -100,11 +124,12 @@ export class LogHelper {
         );
         return orderedLogs.reduce(
             (
-                acc: { errorsLog: string[]; logs: string },
+                acc: { errorsLog: string; logs: string },
                 log: LogInterface,
                 index: number,
                 arr: LogInterface[],
             ) => {
+                let currentError: string = '';
                 let showConecction = true;
                 if (index) {
                     const previousValue: LogInterface = arr[index - 1];
@@ -123,23 +148,20 @@ export class LogHelper {
                         ],
                         grid: GRIDS,
                         length: ROW_LENGTH,
-                        lateralPath: '||',
+                        lateralPath: marginLateral,
                         borderColor: COLORS.fgWhite,
-                        bottomTopPatt: '=',
+                        bottomTopPatt: marginTopBottom,
                         valueColor: errors ? COLORS.fgRed : COLORS.fgGreen,
                     }
                 );
-                if (errors) {
-                    acc.errorsLog.push(LogHelper.formatErrors(errors));
-                }
                 if (showConecction) {
                     const connectionHeader = LogHelper.generateRowFormat(
                         {
                             value: log.connection,
                             length: ROW_LENGTH,
-                            lateralPath: '||',
+                            lateralPath: marginLateral,
                             borderColor: COLORS.fgWhite,
-                            bottomTopPatt: '=',
+                            bottomTopPatt: marginTopBottom,
                             valueColor: COLORS.fgYellow,
                         },
                     );
@@ -148,18 +170,46 @@ export class LogHelper {
                             values: ['Order', 'Entity', 'Created', 'Status'],
                             grid: GRIDS,
                             length: ROW_LENGTH,
-                            lateralPath: '||',
+                            lateralPath: marginLateral,
                             borderColor: COLORS.fgWhite,
-                            bottomTopPatt: '=',
+                            bottomTopPatt: marginTopBottom,
                             valueColor: COLORS.fgBlue,
                         }
                     );
+                    if (errors) {
+                        const errorHeader = LogHelper.generateRowFormat(
+                            {
+                                value: log.connection,
+                                length: ROW_LENGTH,
+                                lateralPath: marginLateral,
+                                borderColor: COLORS.fgRed,
+                                bottomTopPatt: marginTopBottom,
+                                valueColor: COLORS.fgYellow,
+                            },
+                        );
+                        currentError += errorHeader + currentError;
+                    }
                     acc.logs += connectionHeader + headers + row;
                 } else {
                     acc.logs += row;
                 }
+                if (errors) {
+                    const formatError = LogHelper.formatErrors(errors);
+                    const entityError = LogHelper.generateRowFormat(
+                        {
+                            value: entityName,
+                            length: ROW_LENGTH,
+                            lateralPath: '  ',
+                            borderColor: COLORS.fgRed,
+                            bottomTopPatt: marginTopBottom,
+                            valueColor: COLORS.fgYellow,
+                        },
+                    );
+                    currentError += entityError + formatError;
+                }
+                acc.errorsLog += currentError;
                 return acc;
-            }, {errorsLog: [], logs: ''}
+            }, {errorsLog: '', logs: ''}
         );
     }
 }
