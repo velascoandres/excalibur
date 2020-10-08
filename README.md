@@ -1005,16 +1005,6 @@ import {
     providers: [AppService],
 })
 export class AppModule {
-    constructor(
-        private readonly _dataBaseService: DataBaseService,
-    ) {
-        this.createBulkData();
-    }
-
-    async createBulkData() {
-        await this._dataBaseService.insertData();
-        this._dataBaseService.showSummary();
-    }
 }
 ```
 
@@ -1032,7 +1022,7 @@ import {DataBaseModule} from '@pimba/excalibur/lib';
             {
                 dtoClassValidation: UserCreateDTO,
                 pathDev: '/src/modules/users/bulks/development/users.json',
-                pathProd: '/src/modules/users/bulks/production/users.json',
+                pathProd: '/dist/modules/users/bulks/production/users.json',
                 aliasName: 'users',
                 creationOrder: 1,
                 entity: UserEntity,
@@ -1053,9 +1043,71 @@ export class UsersModule {
 * entity: Entity Class.
 * connection: Database connection name.
 
+> You can use `js` files instead `json` files. 
+
+It is a fact that json files are not taken into account when building the project with the typescript transpiler. 
+However, you can use multiple npm packages to handle this like [cpy](https://www.npmjs.com/package/cp).
+
+To create start massive insertion just use the `DataBaseService` on the `AppModule`
+```typescript
+export class AppModule {
+    constructor(
+        private readonly _dataBaseService: DataBaseService,
+    ) {
+        this.createBulkData();
+    }
+
+    async createBulkData() {
+        await this._dataBaseService.insertData();
+        // Show the insertion logs on console
+        this._dataBaseService.showSummary();
+    }
+}
+```
+```
+
+
 ### Logs
 
+```text
+============================================================================
+|| mongo_connection                                                       ||
+============================================================================
+|| Order   Entity                                      Created     Status ||
+============================================================================
+|| 1       geo_locations                               37          OK     ||
+============================================================================
 
+============================================================================
+|| default                                                                ||
+============================================================================
+|| Order   Entity                                      Created     Status ||
+============================================================================
+|| 1       Users                                       0           FAIL   ||
+============================================================================
+|| 2       Roles                                       6           OK     ||
+============================================================================
+
+Errors: 
+
+=============================================================================
+|| default                                                                 ||
+=============================================================================
+
+=============================================================================
+   Usuarios                                                                                               
+=============================================================================
+validationError
+"{\"name\":\"Lilian\",\"lastname\":\"Holloway\",\"address\":\"Highlawn Avenue\",
+\"password\":\"123\",}"
+An instance of ProductoCrearDto has failed the validation:
+ - property name has failed the following constraints: isNotEmpty, isAlpha 
+,An instance of ProductoCrearDto has failed the validation:
+ - property description has failed the following constraints: isNotEmpty 
+,An instance of ProductoCrearDto has failed the validation:
+ - property category has failed the following constraints: isNotEmpty, isNumber 
+
+```
 
 
 ## Special Thanks
