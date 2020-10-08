@@ -978,7 +978,6 @@ Just import the `DataBaseModule`, it can handle multiple connections, just type
 the name of the database as the key with its respective connection settings as the value.
 
 ```typescript
-import {MODULOS} from './constantes/arreglo_modulos';
 import {DataBaseModule, DataBaseService} from '@pimba/excalibur/lib';
 import {
     OTHER_MYSQL_CONNECTION_CONFIG, 
@@ -1063,7 +1062,6 @@ export class AppModule {
         this._dataBaseService.showSummary();
     }
 }
-```
 ```
 
 
