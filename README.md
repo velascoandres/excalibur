@@ -29,7 +29,9 @@ Excalibur is a set of functions and classes api plus several modules for `Nest.j
 
 7. [Email Module](#email)
 
-8. [Special Thanks](#special-thanks)
+8. [Data Base Module](#data-base-module)
+
+9. [Special Thanks](#special-thanks)
 
 ## Install:
 
@@ -941,6 +943,120 @@ export class SomeController  {
     }
 }
 ```
+## Data Base Module
+
+With the database module you can configure multiple connections
+ and massively insert data for testing or production.
+
+### Config connections
+A connection can be defined through a constant or through some other configuration module:
+
+```typescript
+const MYSQL_CONNECTION_CONFIG: TypeOrmModuleOptions = {
+    type: 'mysql',
+    host: 'localhost',
+    port: 30501,
+    username: 'username',
+    password: '1234',
+    database: 'test',
+    name: 'defaul',
+    synchronize: true,
+    retryDelay: 40000,
+    retryAttempts: 3,
+    connectTimeout: 40000,
+    keepConnectionAlive: true,
+    dropSchema: true,
+    charset: 'utf8mb4',
+    timezone: 'local',
+    entities: [
+        ...entities,
+    ],
+}
+```
+
+Just import the `DataBaseModule`, it can handle multiple connections, just type
+the name of the database as the key with its respective connection settings as the value.
+
+```typescript
+import {MODULOS} from './constantes/arreglo_modulos';
+import {DataBaseModule, DataBaseService} from '@pimba/excalibur/lib';
+import {
+    OTHER_MYSQL_CONNECTION_CONFIG, 
+    MONGODB_CONNECTION_CONFIG,
+    MYSQL_CONNECTION_CONFIG
+ } from './config';
+
+
+@Module({
+    imports: [
+        DataBaseModule.forRoot(
+            {
+                conections: {
+                    mysql: MYSQL_CONNECTION_CONFIG,
+                    mongodb: MONGODB_CONNECTION_CONFIG,
+                    otherMysql: OTHER_MYSQL_CONNECTION_CONFIG
+                },
+                productionFlag: false,
+            }
+        ),
+        ...MODULES,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
+})
+export class AppModule {
+    constructor(
+        private readonly _dataBaseService: DataBaseService,
+    ) {
+        this.createBulkData();
+    }
+
+    async createBulkData() {
+        await this._dataBaseService.insertData();
+        this._dataBaseService.showSummary();
+    }
+}
+```
+
+### Create BulkData
+To insert bulk data either for development or production, the module can be used to set the way the data will be created.
+
+```typescript
+import {Module} from '@nestjs/common';
+import {DataBaseModule} from '@pimba/excalibur/lib';
+
+@Module({
+    imports: [
+        DataBaseModule
+          .forBulkData(
+            {
+                dtoClassValidation: UserCreateDTO,
+                pathDev: '/src/modules/users/bulks/development/users.json',
+                pathProd: '/src/modules/users/bulks/production/users.json',
+                aliasName: 'users',
+                creationOrder: 1,
+                entity: UserEntity,
+            },
+        ),
+        TypeOrmModule.forFeature([UserEntity]),
+    ],
+})
+export class UsersModule {
+}
+```
+
+* dtoClassValidation: DTO Class for validation
+* pathDev: Path of the file with the data for development
+* pathProd: Path of the file with the data for production
+* aliasName: Alias for the entity (show on logs).
+* creationOrder: Order in which the data will be created, this is necessary if the data depends on other data (foreing key). The order can be repeated in other modules.
+* entity: Entity Class.
+* connection: Database connection name.
+
+### Logs
+
+
+
 
 ## Special Thanks
 
