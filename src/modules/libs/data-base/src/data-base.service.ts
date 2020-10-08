@@ -28,20 +28,22 @@ export class DataBaseService {
                 entityName: name,
                 connection,
             };
-            const filePath = this.productionFlag ? bulk.pathProd : bulk.pathDev;
-            const DtoClass = bulk.dtoClassValidation;
-            let totalCreated: number = 0;
-            try {
-                totalCreated = await DataBaseHelper
-                    .insertData(
-                        filePath,
-                        DtoClass,
-                        entity,
-                        connection,
-                    );
-                currentLog.created = totalCreated;
-            } catch (error) {
-                currentLog.errors = error.toString();
+            const filePath = this.productionFlag ? bulk.pathProd : bulk.pathDev
+            if (filePath) {
+                const DtoClass = bulk.dtoClassValidation;
+                let totalCreated: number = 0;
+                try {
+                    totalCreated = await DataBaseHelper
+                        .insertData(
+                            filePath,
+                            DtoClass,
+                            entity,
+                            connection,
+                        );
+                    currentLog.created = totalCreated;
+                } catch (error) {
+                    currentLog.errors = error.toString();
+                }
             }
             this.saveLog(currentLog);
         }

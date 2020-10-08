@@ -58,7 +58,7 @@ export class DataBaseHelper {
 
     static async insertData<T = any, D = (new() => any)>(
         path: string,
-        dtoClass: D,
+        dtoClass: D | undefined,
         entity: ObjectType<T>,
         connection: string = 'default',
     ): Promise<number> {
@@ -89,15 +89,20 @@ export class DataBaseHelper {
         }
         // validate Files
         let parsedData: D[] = [];
-        try {
-            parsedData = await DataBaseHelper.validateMassive(dtoClass, records);
-        } catch (error) {
-            throw new CreateBulkException(
-                {
-                    validationError: error.toString(),
-                }
-            );
+        if (dtoClass) {
+            try {
+                parsedData = await DataBaseHelper.validateMassive(dtoClass, records);
+            } catch (error) {
+                throw new CreateBulkException(
+                    {
+                        validationError: error.toString(),
+                    }
+                );
+            }
+        } else {
+            parsedData = records;
         }
+
         // insert data
         try {
             const createdData = await repository.save(parsedData);
