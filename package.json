@@ -1,6 +1,6 @@
 {
   "name": "@pimba/excalibur",
-  "version": "0.0.32-test",
+  "version": "0.1.0",
   "autor": "gordon_freeman",
   "description": "API of functions and classes for NestJS",
   "main": "lib/index.js",
@@ -32,7 +32,10 @@
     "api-rest",
     "api",
     "rest",
-    "google cloud vision"
+    "google cloud vision",
+    "bulk",
+    "data-base",
+    "transactions"
   ],
   "author": "gordon_freeman",
   "license": "MIT",
