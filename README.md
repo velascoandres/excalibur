@@ -1048,13 +1048,20 @@ It is a fact that json files are not taken into account when building the projec
 However, you can use multiple npm packages to handle this like [cpy](https://www.npmjs.com/package/cp).
 
 To create start massive insertion just use the `DataBaseService` on the `AppModule`
+
+In this example, the massive insertion is handle on `onModuleInit` method: 
+
 ```typescript
-export class AppModule {
+export class AppModule implements OnModuleInit {
     constructor(
         private readonly _dataBaseService: DataBaseService,
     ) {
-        this.createBulkData();
     }
+    
+    onModuleInit(): any {
+        this.createData();
+    }
+
 
     async createBulkData() {
         await this._dataBaseService.insertData();
@@ -1062,9 +1069,7 @@ export class AppModule {
         this._dataBaseService.showSummary();
     }
 }
-```
-
-
+``` 
 ### Logs
 
 ```text

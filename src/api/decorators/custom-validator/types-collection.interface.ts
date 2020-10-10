@@ -10,7 +10,7 @@ export interface TypesCollectionInterface {
     [k: string]: ValidationFunction;
 }
 
-export type TypesValidator = Array<keyof TypesCollectionInterface>;
+export type TypesValidator = Record<string, ValidationFunction>;
 
 export type TypesCollectionArguments<T = TypesCollectionInterface> = {
     [k in keyof T]: HasMap | ValidationArguments;
