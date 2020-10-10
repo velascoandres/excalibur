@@ -1105,7 +1105,7 @@ validationError
 \"password\":\"123\",}"
 An instance of ProductoCrearDto has failed the validation:
  - property name has failed the following constraints: isNotEmpty, isAlpha 
-,An instance of ProductoCrearDto has failed the validation:
+,An instance of UserCreateDTO has failed the validation:
  - property description has failed the following constraints: isNotEmpty 
 ,An instance of ProductoCrearDto has failed the validation:
  - property category has failed the following constraints: isNotEmpty, isNumber 
