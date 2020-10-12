@@ -7,6 +7,7 @@ export interface PrimaryRow {
     borderColor: COLORS;
     bottomTopPatt: string;
     lateralPath: string;
+    isLast?: boolean;
 }
 
 export interface RowOptions extends PrimaryRow {

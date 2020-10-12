@@ -23,14 +23,30 @@ export class LogHelper {
     }
 
     static encloseMargin(value: string, patt: string, color: COLORS = COLORS.bgWhite) {
-        return `${color}${patt} ${value} ${patt}${COLORS.reset}`;
+        return `${color}${patt} ${value} ${COLORS.reset}${patt}`;
     }
 
-    static generateBorder(patt: string, lenght: number, color: COLORS = COLORS.fgWhite): string {
-        let response = patt;
-        for (let i = 0; i < lenght; i++) {
+    static generateBorder(patt: string, lenght: number, color: COLORS = COLORS.fgWhite, type?: 'mid' | 'top' | 'bot'): string {
+        const mid = ['╠', '╣'];
+        const top = ['╔', '╗'];
+        const bot = ['╚', '╝'];
+        let corner = ['═', '═'];
+        switch (type) {
+            case 'bot':
+                corner = bot;
+                break;
+            case 'top':
+                corner = top;
+                break;
+            case 'mid':
+                corner = mid;
+                break;
+        }
+        let response: string = patt;
+        for (let i = 0; i < lenght - 2; i++) {
             response = response + patt;
         }
+        response = corner[0] + response + corner[1];
         return LogHelper.encloseColor(response, color);
     }
 
@@ -42,15 +58,16 @@ export class LogHelper {
         let rowFormat = LogHelper.addSpaces(value, length);
         rowFormat = LogHelper.encloseColor(rowFormat, valueColor);
         rowFormat = LogHelper.encloseMargin(rowFormat, lateralPath, borderColor);
-        const border = LogHelper.generateBorder(bottomTopPatt, length + 5, borderColor);
-        return '\n' + border + '\n' + rowFormat + '\n' + border + '\n';
+        const topBorder = LogHelper.generateBorder(bottomTopPatt, length + 3, borderColor, 'top');
+        const midBorder = LogHelper.generateBorder(bottomTopPatt, length + 3, borderColor, 'mid');
+        return '\n' + topBorder + '\n' + rowFormat + '\n' + midBorder + '\n';
     }
 
     static formatErrors(
         error: Partial<BulkErrors>,
     ) {
         const keys = Object.keys(error);
-        const border = LogHelper.generateBorder('=', LogHelper.rowLength + 5);
+        const border = LogHelper.generateBorder('═', LogHelper.rowLength + 3);
         const errors = keys.reduce(
             (acc: string, key: string) => {
                 if (key === 'validationError') {
@@ -97,7 +114,7 @@ export class LogHelper {
     static generateGrid(
         options: GridOptions,
     ) {
-        const {values, length, grid, borderColor, valueColor, bottomTopPatt, lateralPath} = options;
+        const {values, length, grid, borderColor, valueColor, bottomTopPatt, lateralPath, isLast} = options;
         let cols: string = values.map(
             (value: string, index: number) => {
                 const colLength = grid[index];
@@ -106,7 +123,7 @@ export class LogHelper {
         ).join('');
         cols = LogHelper.encloseColor(cols, valueColor);
         cols = LogHelper.encloseMargin(cols, lateralPath, borderColor);
-        const border = LogHelper.generateBorder(bottomTopPatt, length + 5);
+        const border = LogHelper.generateBorder(bottomTopPatt, length + 3, COLORS.fgWhite, isLast ? 'bot' : 'mid');
         return cols + '\n' + border + '\n';
     }
 
@@ -126,8 +143,8 @@ export class LogHelper {
     }
 
     static buildLogTable(logs: LogInterface[], showMargin: boolean = true) {
-        const marginTopBottom = showMargin ? '=' : '';
-        const marginLateral = showMargin ? '||' : '';
+        const marginTopBottom = showMargin ? '═' : '';
+        const marginLateral = showMargin ? '║' : '';
         LogHelper.setGrids(logs);
         const orderedLogs = logs.sort(
             (a: LogInterface, b: LogInterface) => {
@@ -149,12 +166,20 @@ export class LogHelper {
                 index: number,
                 arr: LogInterface[],
             ) => {
+                const isLast = index === (arr.length - 1);
                 let currentError: string = '';
                 let showConecction = true;
+                let isLastForConnection = false;
                 if (index) {
                     const previousValue: LogInterface = arr[index - 1];
                     if (previousValue.connection === log.connection) {
                         showConecction = false;
+                    }
+                }
+                if (index < arr.length - 1) {
+                    const nextValue: LogInterface = arr[index + 1];
+                    if (nextValue.connection !== log.connection) {
+                        isLastForConnection = true;
                     }
                 }
                 const {creationOrder, created, entityName, errors} = log;
@@ -172,6 +197,7 @@ export class LogHelper {
                         borderColor: COLORS.fgWhite,
                         bottomTopPatt: marginTopBottom,
                         valueColor: errors ? COLORS.fgRed : COLORS.fgGreen,
+                        isLast: isLast || isLastForConnection,
                     }
                 );
                 if (showConecction) {
