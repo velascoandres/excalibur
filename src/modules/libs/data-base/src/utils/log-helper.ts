@@ -5,6 +5,10 @@ import {GRIDS, ROW_LENGTH} from '../constants/grid';
 import {ValidationResponse} from '../interfaces/validation.response';
 
 export class LogHelper {
+
+    static rowLength: number = ROW_LENGTH;
+    static grids: number[] = GRIDS;
+
     static addSpaces(value: string, spaces: number) {
         const total = spaces - value.length;
         let response = value;
@@ -46,7 +50,7 @@ export class LogHelper {
         error: Partial<BulkErrors>,
     ) {
         const keys = Object.keys(error);
-        const border = LogHelper.generateBorder('=', ROW_LENGTH + 5);
+        const border = LogHelper.generateBorder('=', LogHelper.rowLength + 5);
         const errors = keys.reduce(
             (acc: string, key: string) => {
                 if (key === 'validationError') {
@@ -106,9 +110,25 @@ export class LogHelper {
         return cols + '\n' + border + '\n';
     }
 
+
+    static setGrids(logs: LogInterface[]) {
+        const orderedLogs = logs.sort(
+            (a: LogInterface, b: LogInterface) => {
+                const after = a.entityName.length;
+                const before = b.entityName.length;
+                return before - after;
+            },
+        );
+        const log = orderedLogs[0];
+        const entityLength = log.entityName.length;
+        LogHelper.grids[1] = entityLength + 5;
+        LogHelper.rowLength = LogHelper.grids.reduce((a, b) => a + b, 0);
+    }
+
     static buildLogTable(logs: LogInterface[], showMargin: boolean = true) {
         const marginTopBottom = showMargin ? '=' : '';
         const marginLateral = showMargin ? '||' : '';
+        LogHelper.setGrids(logs);
         const orderedLogs = logs.sort(
             (a: LogInterface, b: LogInterface) => {
                 const after = a.connection;
@@ -146,8 +166,8 @@ export class LogHelper {
                             created ? created.toString() : '0',
                             errors ? 'FAIL' : 'OK',
                         ],
-                        grid: GRIDS,
-                        length: ROW_LENGTH,
+                        grid: LogHelper.grids,
+                        length: LogHelper.rowLength,
                         lateralPath: marginLateral,
                         borderColor: COLORS.fgWhite,
                         bottomTopPatt: marginTopBottom,
@@ -158,7 +178,7 @@ export class LogHelper {
                     const connectionHeader = LogHelper.generateRowFormat(
                         {
                             value: log.connection,
-                            length: ROW_LENGTH,
+                            length: LogHelper.rowLength,
                             lateralPath: marginLateral,
                             borderColor: COLORS.fgWhite,
                             bottomTopPatt: marginTopBottom,
@@ -168,8 +188,8 @@ export class LogHelper {
                     const headers = LogHelper.generateGrid(
                         {
                             values: ['Order', 'Entity', 'Created', 'Status'],
-                            grid: GRIDS,
-                            length: ROW_LENGTH,
+                            grid: LogHelper.grids,
+                            length: LogHelper.rowLength,
                             lateralPath: marginLateral,
                             borderColor: COLORS.fgWhite,
                             bottomTopPatt: marginTopBottom,
@@ -180,7 +200,7 @@ export class LogHelper {
                         const errorHeader = LogHelper.generateRowFormat(
                             {
                                 value: log.connection,
-                                length: ROW_LENGTH,
+                                length: LogHelper.rowLength,
                                 lateralPath: marginLateral,
                                 borderColor: COLORS.fgRed,
                                 bottomTopPatt: marginTopBottom,
@@ -198,7 +218,7 @@ export class LogHelper {
                     const entityError = LogHelper.generateRowFormat(
                         {
                             value: entityName,
-                            length: ROW_LENGTH,
+                            length: LogHelper.rowLength,
                             lateralPath: '  ',
                             borderColor: COLORS.fgRed,
                             bottomTopPatt: marginTopBottom,
