@@ -23,7 +23,7 @@ export class LogHelper {
     }
 
     static encloseMargin(value: string, patt: string, color: COLORS = COLORS.bgWhite) {
-        return `${color}${patt} ${value} ${COLORS.reset}${patt}`;
+        return `${color}${patt}${COLORS.reset} ${value} ${color}${patt}${COLORS.reset}`;
     }
 
     static generateBorder(patt: string, lenght: number, color: COLORS = COLORS.fgWhite, type?: 'mid' | 'top' | 'bot'): string {
