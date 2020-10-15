@@ -27,7 +27,6 @@ export function buildWhereWithjoin<T>(
         const subQueryObject = attributeValue;
         // Armamos el select
         const selectAttrs = attributesSimplesAndComplexObject.selectAttrs;
-        console.log(attributesSimplesAndComplexObject);
         // Armamos las condiciones
         const simpleQueryConditions = attributesSimplesAndComplexObject.simpleQueries.reduce(
             (acumulator: PureWhereInterface[], subAttribute: string) => {

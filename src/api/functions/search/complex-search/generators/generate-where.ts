@@ -55,8 +55,7 @@ export function generateWhere<T>(
                 parametros: {},
             }
         );
-        // console.log(acc);
-        acc.where = '( ' + acc.where + ' )';
+        acc.where = `( ${acc.where}  )`;
         query = generateWhereQuery(
             query,
             acc,
