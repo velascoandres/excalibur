@@ -86,15 +86,25 @@ export class LogHelper {
                             },
                         ).join('');
                         acc = acc + parsedError;
+                    } else {
+                        acc = acc + LogHelper.otherError(error, key as keyof BulkErrors);
                     }
                 } else {
-                    const value = error[key as keyof BulkErrors];
-                    acc = acc + value;
+                    acc = acc + LogHelper.otherError(error, key as keyof BulkErrors);
                 }
                 return acc;
             }, ''
         );
         return COLORS.fgYellow + errors + COLORS.reset + '\n' + border + '\n';
+    }
+
+    static otherError(error: Partial<BulkErrors>, key: keyof BulkErrors) {
+        const rawError = error[key];
+        return LogHelper.formatError({
+            type: key,
+            data: '',
+            errors: rawError,
+        });
     }
 
     static formatError(
@@ -148,8 +158,8 @@ export class LogHelper {
         LogHelper.setGrids(logs);
         const orderedLogs = logs.sort(
             (a: LogInterface, b: LogInterface) => {
-                const after = a.connection;
-                const before = b.connection;
+                const after = a.connection.length + a.creationOrder;
+                const before = b.connection.length + b.creationOrder;
                 if (after > before) {
                     return 1;
                 }
