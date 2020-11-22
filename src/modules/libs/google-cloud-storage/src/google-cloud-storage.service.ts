@@ -21,20 +21,22 @@ export class GoogleCloudStorageService {
         return this.storage.bucket(bucketName);
     }
 
-    generateFileNameGC(perRequestOptions?: Partial<GoogleCloudStoragePerRequestOptions>): string {
-        const fileUniqueName = uuidV4();
+    generateFileNameGC(perRequestOptions?: Partial<GoogleCloudStoragePerRequestOptions>, uploadWithName?: string,
+    ): string {
+        const fileName = uploadWithName ? uploadWithName : uuidV4();
         if (perRequestOptions && perRequestOptions.prefix) {
             const prefix = perRequestOptions.prefix;
-            return join(prefix, fileUniqueName);
+            return join(prefix, fileName);
         }
-        return fileUniqueName;
+        return fileName;
     }
 
     async upload(
-        metadataArchivo: UploadedFileMetadata,
+        fileMetadata: UploadedFileMetadata,
         perRequestOptions?: Partial<GoogleCloudStoragePerRequestOptions>,
+        uploadWithName?: string,
     ): Promise<string> {
-        const googleCloudFileName: string = this.generateFileNameGC(perRequestOptions);
+        const googleCloudFileName: string = uploadWithName ? uploadWithName : this.generateFileNameGC(perRequestOptions, uploadWithName);
         const formatedFileToUpload: File = this.getbucket.file(googleCloudFileName);
         // sobrescribir las opciones globales con las opciones de la peticion
         perRequestOptions = {
@@ -49,7 +51,7 @@ export class GoogleCloudStorageService {
             ...writeStreamOptions,
         };
 
-        const contentType = metadataArchivo.mimetype;
+        const contentType = fileMetadata.mimetype;
 
         if (contentType) {
             streamOptions.metadata = {contentType};
@@ -63,7 +65,7 @@ export class GoogleCloudStorageService {
                     this.getStorageUrl(googleCloudFileName, perRequestOptions),
                     ),
                 )
-                .end(metadataArchivo.buffer);
+                .end(fileMetadata.buffer);
         });
     }
 
@@ -79,6 +81,7 @@ export class GoogleCloudStorageService {
         return GOOGLE_CLOUD_STORAGE_URI + join(bucketName, fileName);
     }
 }
+
 /*
 This file is a partial modification of the following project:
 Full project source: https://github.com/Aginix/nestjs-gcloud-storage
