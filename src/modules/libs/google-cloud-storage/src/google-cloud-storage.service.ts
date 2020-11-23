@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@nestjs/common';
+import {ForbiddenException, Inject, Injectable} from '@nestjs/common';
 import {GOOGLE_CLOUD_STORAGE_MODULE_OPTIONS, GOOGLE_CLOUD_STORAGE_URI} from './constants';
 import {GoogleCloudStorageOptions, GoogleCloudStoragePerRequestOptions, UploadedFileMetadata} from './interfaces';
 import {Bucket, CreateWriteStreamOptions, Storage} from '@google-cloud/storage';
@@ -21,7 +21,7 @@ export class GoogleCloudStorageService {
         return this.storage.bucket(bucketName);
     }
 
-    generateFileNameGC(perRequestOptions?: Partial<GoogleCloudStoragePerRequestOptions>, uploadWithName?: string,
+    protected generateFileNameGC(perRequestOptions?: Partial<GoogleCloudStoragePerRequestOptions>, uploadWithName?: string,
     ): string {
         const fileName = uploadWithName ? uploadWithName : uuidV4();
         if (perRequestOptions && perRequestOptions.prefix) {
@@ -36,7 +36,7 @@ export class GoogleCloudStorageService {
         perRequestOptions?: Partial<GoogleCloudStoragePerRequestOptions>,
         uploadWithName?: string,
     ): Promise<string> {
-        const googleCloudFileName: string = uploadWithName ? uploadWithName : this.generateFileNameGC(perRequestOptions, uploadWithName);
+        const googleCloudFileName: string = this.generateFileNameGC(perRequestOptions, uploadWithName);
         const formatedFileToUpload: File = this.getbucket.file(googleCloudFileName);
         // sobrescribir las opciones globales con las opciones de la peticion
         perRequestOptions = {
@@ -46,11 +46,11 @@ export class GoogleCloudStorageService {
 
         const writeStreamOptions = perRequestOptions && perRequestOptions.writeStreamOptions;
 
+
         const streamOptions: CreateWriteStreamOptions = {
             predefinedAcl: 'publicRead',
             ...writeStreamOptions,
         };
-
         const contentType = fileMetadata.mimetype;
 
         if (contentType) {
