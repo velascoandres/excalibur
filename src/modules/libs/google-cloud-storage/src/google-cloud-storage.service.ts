@@ -1,8 +1,8 @@
-import {ForbiddenException, Inject, Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 import {GOOGLE_CLOUD_STORAGE_MODULE_OPTIONS, GOOGLE_CLOUD_STORAGE_URI} from './constants';
 import {GoogleCloudStorageOptions, GoogleCloudStoragePerRequestOptions, UploadedFileMetadata} from './interfaces';
 import {Bucket, CreateWriteStreamOptions, Storage} from '@google-cloud/storage';
-import {join} from 'path';
+import * as path from 'path';
 import {v4 as uuidV4} from 'uuid';
 import {File} from '@google-cloud/storage/build/src/file';
 
@@ -26,7 +26,7 @@ export class GoogleCloudStorageService {
         const fileName = uploadWithName ? uploadWithName : uuidV4();
         if (perRequestOptions && perRequestOptions.prefix) {
             const prefix = perRequestOptions.prefix;
-            return join(prefix, fileName);
+            return path.posix.join(prefix, fileName);
         }
         return fileName;
     }
@@ -75,10 +75,10 @@ export class GoogleCloudStorageService {
         perRequestOptions?: Partial<GoogleCloudStoragePerRequestOptions>,
     ) {
         if (perRequestOptions && perRequestOptions.storageBaseUri) {
-            return join(perRequestOptions.storageBaseUri, fileName);
+            return path.posix.join(perRequestOptions.storageBaseUri, fileName);
         }
         const bucketName = perRequestOptions && perRequestOptions.bucketDefaultName ? perRequestOptions.bucketDefaultName : '';
-        return GOOGLE_CLOUD_STORAGE_URI + join(bucketName, fileName);
+        return GOOGLE_CLOUD_STORAGE_URI + path.posix.join(bucketName, fileName);
     }
 }
 
