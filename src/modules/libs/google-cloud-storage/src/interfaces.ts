@@ -9,6 +9,7 @@ export interface GoogleCloudStorageOptions extends StorageOptions {
 export interface GoogleCloudStoragePerRequestOptions extends GoogleCloudStorageOptions {
     writeStreamOptions?: CreateWriteStreamOptions;
     prefix?: string;
+    uploadAs?: string;
 }
 
 export type AsyncFactory = (...args: any[]) => Promise<GoogleCloudStorageOptions> | GoogleCloudStorageOptions;
