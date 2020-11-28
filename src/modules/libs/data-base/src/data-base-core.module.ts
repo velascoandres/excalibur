@@ -49,8 +49,17 @@ export class DataBaseCoreModule {
     }
 
     private static buildDependencies(connOptions: TypeOrmModuleOptions[]): DynamicModule[] {
-        const dependencies = connOptions.map(
-            options => TypeOrmModule.forRoot(options),
+        // Validate if options is not empty before register module
+        const dependencies = connOptions.reduce(
+            (deps: DynamicModule[], options: TypeOrmModuleOptions) => {
+                const configIsNotEmpty = Object.keys(options).length > 0;
+                if (configIsNotEmpty) {
+                    deps.push(
+                        TypeOrmModule.forRoot(options),
+                    );
+                }
+                return deps;
+            }, [],
         );
         return [
             ...dependencies,
