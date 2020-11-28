@@ -30,6 +30,12 @@ export interface UploadedFileMetadata {
     size: string;
     storageUrl?: string;
 }
+
+
+export interface DownladedFile {
+    filename: string;
+    buffer: Buffer;
+}
 /*
 This file is a partial modification of the following project:
 Full project source: https://github.com/Aginix/nestjs-gcloud-storage

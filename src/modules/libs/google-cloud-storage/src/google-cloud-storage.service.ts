@@ -1,6 +1,11 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {GOOGLE_CLOUD_STORAGE_MODULE_OPTIONS, GOOGLE_CLOUD_STORAGE_URI} from './constants';
-import {GoogleCloudStorageOptions, GoogleCloudStoragePerRequestOptions, UploadedFileMetadata} from './interfaces';
+import {
+    DownladedFile,
+    GoogleCloudStorageOptions,
+    GoogleCloudStoragePerRequestOptions,
+    UploadedFileMetadata
+} from './interfaces';
 import {
     Bucket,
     CreateWriteStreamOptions,
@@ -96,8 +101,23 @@ export class GoogleCloudStorageService {
         return this.bucket.file(filename).download(options);
     }
 
-    downloadFiles(query?: GetFilesOptions): Promise<GetFilesResponse> {
+    getFiles(query?: GetFilesOptions): Promise<GetFilesResponse> {
         return this.bucket.getFiles(query);
+    }
+
+    async downloadFiles(query?: GetFilesOptions): Promise<DownladedFile[]> {
+        const [files] = await this.bucket.getFiles(query);
+        const downloadedFiles: DownladedFile[] = [];
+        for (const file of files) {
+            const [buffer] = await file.download();
+            downloadedFiles.push(
+                {
+                    filename: file.name,
+                    buffer,
+                }
+            );
+        }
+        return downloadedFiles;
     }
 
     deleteFile(options?: DeleteOptions): Promise<[r.Response]> {
