@@ -19,4 +19,5 @@ export interface CrudConfig extends  CrudMethodsInterface{
     findAll?: CrudMethodOptions;
     deleteOne?: CrudMethodOptions;
     findOneById?: CrudMethodOptions;
+    createMany?: CrudMethodOptions;
 }
