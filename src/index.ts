@@ -39,7 +39,7 @@ export {DecoratorHelper} from './api/shared-utils/decorator-helper';
 export {CrudInterceptors} from './api/decorators/crud-interceptors/crud-interceptors';
 export {CrudHeaders} from './api/decorators/crud-headers/crud-headers';
 export {ExcaliburAuth} from './api/interfaces/excalibur.auth';
-export {CrudController} from './api/api-principal/controllers/crud-controller';
+export {CrudController} from './api/api-principal/mixins/crud-controller';
 // MODULES ************************************************************
 export * from './modules/libs/google-cloud-storage/src/index';
 export * from './modules/libs/firebase/src/index';

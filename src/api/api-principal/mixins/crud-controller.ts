@@ -1,4 +1,4 @@
-import {ControllerCrudMehods, FindFullQuery, PrincipalService} from '../../..';
+import {ControllerCrudMehods, FindFullQuery, PrincipalService} from '../../../index';
 import {DeepPartial, ObjectLiteral} from 'typeorm';
 import {Body, Delete, Get, Param, Post, Put, Query, UseGuards} from '@nestjs/common';
 import {
@@ -6,47 +6,21 @@ import {
 } from '@nestjs/swagger';
 import {CrudConfig} from '../../decorators/crud-api/interfaces/interfaces-types';
 import {DefaultGuard} from '../guards/default.guard';
+import {AbstractController} from './abstract-controller';
+import {CrudControllerUtils} from './utils';
 
-
-export type Constructor = new (...args: any[]) => {};
-
-export abstract class AbstractController<T = any> implements ControllerCrudMehods<T> {
-
-    protected constructor(
-        readonly _service: PrincipalService<T>,
-    ) {
-    }
-
-    createMany(newRecords: DeepPartial<T>[]
-    ): any {
-    }
-
-    createOne(newRecord: DeepPartial<T>): any {
-    }
-
-    deleteOne(id: number): any {
-    }
-
-    findAll(searchCriteria: ObjectLiteral): any {
-    }
-
-    findOneById(id: number): any {
-    }
-
-    updateOne(recordToUpdate: DeepPartial<T>, id: number): any {
-    }
-}
 
 export function CrudController<T>(options: CrudConfig): typeof AbstractController {
 
 
     // Guards
-    const createOneGuards = options?.createOne?.guards ? options.createOne.guards : [new DefaultGuard()];
-    const deleteOneGuards = options?.deleteOne?.guards ? options.deleteOne.guards : [new DefaultGuard()];
-    const updateOneGuards = options?.updateOne?.guards ? options.updateOne.guards : [new DefaultGuard()];
-    const createManyGuards = options?.createMany?.guards ? options.createMany.guards : [new DefaultGuard()];
-    const findOneByIdGuards = options?.findOneById?.guards ? options.findOneById.guards : [new DefaultGuard()];
-    const findAll = options?.findAll?.guards ? options.findAll.guards : [new DefaultGuard()];
+    const guards = CrudControllerUtils.getGuards(options);
+
+    // Interceptors
+
+    // Headers
+
+    // Swagger
 
     class BaseController extends AbstractController<T> {
 
@@ -58,7 +32,7 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
 
         @Post()
         @UseGuards(
-            ...createManyGuards,
+            ...guards.createMany,
         )
         createMany(
             @Body('records') newRecords: DeepPartial<T>[]): any {
@@ -67,7 +41,7 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
 
         @Post()
         @UseGuards(
-            ...createOneGuards
+            ...guards.createOne
         )
         createOne(
             @Body() newRecord: DeepPartial<T>): any {
@@ -76,7 +50,7 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
 
         @Delete(':id')
         @UseGuards(
-            ...deleteOneGuards
+            ...guards.deleteOne
         )
         deleteOne(
             @Param('id') id: number,
@@ -86,7 +60,7 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
 
         @Get()
         @UseGuards(
-            ...findAll,
+            ...guards.findAll,
         )
         @ApiOkResponse()
         async findAll(
@@ -146,7 +120,7 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
 
         @Get(':id')
         @UseGuards(
-            ...findOneByIdGuards
+            ...guards.findOneById
         )
         findOneById(
             @Param('id') id: number,
@@ -156,7 +130,7 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
 
         @Put(':id')
         @UseGuards(
-            ...updateOneGuards
+            ...guards.updateOne
         )
         updateOne(
             @Body() recordToUpdate: DeepPartial<T>,
