@@ -1,24 +1,18 @@
-import { ControllerCrudMehods, CrudApiDocConfig, FindFullQuery, PrincipalService } from '../../..';
-import { DeepPartial, ObjectLiteral } from 'typeorm';
-import { Body, Delete, Get, HttpStatus, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import {ControllerCrudMehods, FindFullQuery, PrincipalService} from '../../..';
+import {DeepPartial, ObjectLiteral} from 'typeorm';
+import {Body, Delete, Get, Param, Post, Put, Query, UseGuards} from '@nestjs/common';
 import {
-    ApiBadRequestResponse,
-    ApiCreatedResponse,
-    ApiInternalServerErrorResponse, ApiOkResponse,
-    ApiUnauthorizedResponse
+    ApiOkResponse,
 } from '@nestjs/swagger';
-import { GenericFindResponse } from './generic-find.response';
-import { ApiResponseOptions } from '@nestjs/swagger/dist/decorators/api-response.decorator';
-import { CrudConfig } from '../../decorators/crud-api/interfaces/interfaces-types';
-import { CanActivate } from '@nestjs/common/interfaces/features/can-activate.interface';
-import { DefaultGuard } from '../guards/default.guard';
+import {CrudConfig} from '../../decorators/crud-api/interfaces/interfaces-types';
+import {DefaultGuard} from '../guards/default.guard';
 
 
 export type Constructor = new (...args: any[]) => {};
 
 export abstract class AbstractController<T = any> implements ControllerCrudMehods<T> {
 
-    constructor(
+    protected constructor(
         readonly _service: PrincipalService<T>,
     ) {
     }
@@ -44,7 +38,6 @@ export abstract class AbstractController<T = any> implements ControllerCrudMehod
 }
 
 export function CrudController<T>(options: CrudConfig): typeof AbstractController {
-
 
 
     // Guards
@@ -110,7 +103,7 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
                     skip = query.skip ? query.skip : 0;
                     take = query.take ? query.take : 10;
                 } else {
-                    query = { where: {}, skip: 0, take: 10 };
+                    query = {where: {}, skip: 0, take: 10};
                     result = await this._service.findAll({} as FindFullQuery);
                 }
                 const total = +result[1];
@@ -121,7 +114,7 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
                     const isNotLimit = rest >= take;
                     const nextSkip = skip + take;
                     const nextTake = isNotLimit ? take : rest;
-                    const partialQuery: Partial<FindFullQuery> = { ...query };
+                    const partialQuery: Partial<FindFullQuery> = {...query};
                     partialQuery.skip = nextSkip;
                     partialQuery.take = nextTake;
                     if (query.where) {
@@ -144,7 +137,7 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
                 );
                 result = await this._service.findAll();
                 return {
-                    nextQuery: { skip: 10, take },
+                    nextQuery: {skip: 10, take},
                     data: result[0],
                     total: result[1],
                 };
