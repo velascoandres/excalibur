@@ -28,6 +28,11 @@ export class DecoratorHelper {
         const findAllOptions = options.findAll;
         const deleteOneOptions = options.deleteOne;
         const findOneByIdOptions = options.findOneById;
+        const createManyOptions = options.createMany;
+        if (createManyOptions) {
+            SwaggerHelper.buildApiBody(createManyOptions, API_METHODS_NAMES_OBJECT.createMany, target);
+            SwaggerMakers.setHeadersResponses(createManyOptions, API_METHODS_NAMES_OBJECT.createMany, target);
+        }
         if (createOneOptions) {
             SwaggerHelper.buildApiBody(createOneOptions, API_METHODS_NAMES_OBJECT.createOne, target);
             SwaggerMakers.setHeadersResponses(createOneOptions, API_METHODS_NAMES_OBJECT.createOne, target);

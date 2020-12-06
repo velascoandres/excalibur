@@ -1,27 +1,10 @@
-import {ControllerCrudMehods, FindFullQuery, PrincipalService} from '../../../index';
-import {DeepPartial, ObjectLiteral} from 'typeorm';
-import {Body, Delete, Get, Param, Post, Put, Query, UseGuards} from '@nestjs/common';
-import {
-    ApiOkResponse,
-} from '@nestjs/swagger';
-import {CrudConfig} from '../../decorators/crud-api/interfaces/interfaces-types';
-import {DefaultGuard} from '../guards/default.guard';
+import {FindFullQuery, PrincipalService} from '../../..';
+import {DeepPartial} from 'typeorm';
+import {Body, Delete, Get, Param, Post, Put, Query} from '@nestjs/common';
 import {AbstractController} from './abstract-controller';
-import {CrudControllerUtils} from './utils';
 
 
-export function CrudController<T>(options: CrudConfig): typeof AbstractController {
-
-
-    // Guards
-    const guards = CrudControllerUtils.getGuards(options);
-
-    // Interceptors
-
-    // Headers
-
-    // Swagger
-
+export function CrudController<T>(): typeof AbstractController {
     class BaseController extends AbstractController<T> {
 
         constructor(
@@ -31,27 +14,18 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
         }
 
         @Post()
-        @UseGuards(
-            ...guards.createMany,
-        )
         createMany(
             @Body('records') newRecords: DeepPartial<T>[]): any {
             return this._service.createMany(newRecords);
         }
 
         @Post()
-        @UseGuards(
-            ...guards.createOne
-        )
         createOne(
             @Body() newRecord: DeepPartial<T>): any {
             return this._service.createOne(newRecord);
         }
 
         @Delete(':id')
-        @UseGuards(
-            ...guards.deleteOne
-        )
         deleteOne(
             @Param('id') id: number,
         ): any {
@@ -59,10 +33,6 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
         }
 
         @Get()
-        @UseGuards(
-            ...guards.findAll,
-        )
-        @ApiOkResponse()
         async findAll(
             @Query('query') searchCriteria: any,
         ) {
@@ -119,9 +89,6 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
         }
 
         @Get(':id')
-        @UseGuards(
-            ...guards.findOneById
-        )
         findOneById(
             @Param('id') id: number,
         ): any {
@@ -129,9 +96,6 @@ export function CrudController<T>(options: CrudConfig): typeof AbstractControlle
         }
 
         @Put(':id')
-        @UseGuards(
-            ...guards.updateOne
-        )
         updateOne(
             @Body() recordToUpdate: DeepPartial<T>,
             @Param('id') id: number

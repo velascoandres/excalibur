@@ -16,7 +16,6 @@ export const DEFAULT_HEADER_OPTIONS: Partial<ApiHeaderOptions> = {
 };
 
 
-
 export const API_METHODS_NAMES_OBJECT: MetodosApi = {
     createOne: 'createOne',
     updateOne: 'updateOne',
@@ -24,4 +23,5 @@ export const API_METHODS_NAMES_OBJECT: MetodosApi = {
     findOneById: 'findOneById',
     findAll: 'findAll',
     createMany: 'createMany',
-}
+};
+
