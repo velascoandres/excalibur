@@ -175,11 +175,13 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
         @Get(':id')
         async findOneById(
             @Param('id') id: number,
-        ): Promise<T> {
+            @Response() response: any,
+        ) {
             const isIdValid = this.validateId(id);
             if (isIdValid) {
                 try {
-                    return this._service.findOneById(Number(id),);
+                    const fetchedRow = await this._service.findOneById(Number(id),);
+                    response.status(HttpStatus.OK).send(fetchedRow);
                 } catch (error) {
                     console.error(
                         {
@@ -188,10 +190,10 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
                             data: {id},
                         },
                     );
-                    throw new InternalServerErrorException({message: 'Server Error'});
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
                 }
             } else {
-                throw new BadRequestException({message: 'Invalid Id'});
+                response.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid Id' });
             }
         }
 
