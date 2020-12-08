@@ -51,16 +51,17 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
 
         @Post()
         async createOne(
-            @Body() newRecord: DeepPartial<T>, @Response() response: any,
-        ){
+            @Body() newRecord: DeepPartial<T>,
+            @Response() response: any,
+        ) {
             const entityDto = plainToClass(dtoConfig.createDtoType, newRecord) as object;
             const validationErrors = await validate(entityDto);
             if (validationErrors.length > 0) {
                 console.error(validationErrors);
-                response.status(HttpStatus.BAD_REQUEST).send({ message: 'Bad Request' });
+                response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
             } else {
                 try {
-                    const recordCreated =  this._service.createOne(newRecord);
+                    const recordCreated = this._service.createOne(newRecord);
                     response.status(HttpStatus.OK).send(recordCreated);
                 } catch (error) {
                     console.error(
@@ -70,7 +71,7 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
                             data: {record: newRecord},
                         }
                     );
-                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
                 }
             }
         }
@@ -78,16 +79,18 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
         @Delete(':id')
         async deleteOne(
             @Param('id') id: number,
-        ): Promise<T> {
+            @Response() response: any,
+        ) {
             const isIdValid = this.validateId(id);
             if (isIdValid) {
                 try {
                     await this._service.findOneById(id);
                 } catch (error) {
-                    throw new NotFoundException({message: 'Record not found'});
+                    response.status(HttpStatus.NOT_FOUND).send({message: 'Record not found'});
                 }
                 try {
-                    return await this._service.deleteOne(id);
+                    const deletedRecord = await this._service.deleteOne(id);
+                    response.status(HttpStatus.OK).send(deletedRecord);
                 } catch (error) {
                     console.error(
                         {
@@ -96,10 +99,10 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
                             data: {id},
                         },
                     );
-                    throw new InternalServerErrorException({message: 'Server Error'});
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
                 }
             } else {
-                throw new BadRequestException({message: 'Invalid Id'});
+                response.status(HttpStatus.BAD_REQUEST).send({message: 'Invalid Id'});
             }
         }
 
