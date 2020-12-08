@@ -199,22 +199,24 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
         async updateOne(
             @Body() recordToUpdate: DeepPartial<T>,
             @Param('id') id: number,
-        ): Promise<T> {
+            @Response() response: any,
+        ) {
             const isValidId = this.validateId(id);
             if (isValidId) {
                 const dtoEntity = plainToClass(dtoConfig.updateDtoType, recordToUpdate) as object;
                 const validationErrors = await validate(dtoEntity);
                 if (validationErrors.length > 0) {
                     console.error(validationErrors);
-                    throw new BadRequestException({message: 'Bad Request'});
+                    response.status(HttpStatus.BAD_REQUEST).send({ message: 'Bad Request' });
                 } else {
                     try {
                         await this._service.findOneById(id);
                     } catch (error) {
-                        throw new NotFoundException({message: 'Record not found'});
+                        response.status(HttpStatus.NOT_FOUND).send({ message: 'Record not found' });
                     }
                     try {
-                        return this._service.updateOne(id, recordToUpdate);
+                        const updatedRow =  await this._service.updateOne(id, recordToUpdate);
+                        response.status(HttpStatus.OK).send(updatedRow);
                     } catch (error) {
                         console.error(
                             {
@@ -223,12 +225,12 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
                                 data: {id, datosActualizar: recordToUpdate},
                             }
                         );
-                        throw new InternalServerErrorException({message: 'Server Error'});
+                        response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
                     }
 
                 }
             } else {
-                throw new BadRequestException({message: 'Invalid Id'});
+                response.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid Id' });
             }
         }
 
