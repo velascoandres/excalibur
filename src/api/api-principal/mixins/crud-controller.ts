@@ -26,16 +26,20 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
             super(_service);
         }
 
-        @Post('bulk')
+        @Post('create-many')
         async createMany(
-            @Body('records') newRecords: DeepPartial<T>[]): Promise<T[]> {
+            @Body('records') newRecords: DeepPartial<T>[],
+            @Response() response: any,
+        ) {
             const validationErrors = await validateMany(newRecords, dtoConfig.createDtoType);
             if (validationErrors.length > 0) {
                 console.error(validationErrors);
-                throw new BadRequestException('Bad Request');
+                response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
             } else {
                 try {
-                    return this._service.createMany(newRecords);
+                    const createdRows = await this._service.createMany(newRecords);
+                    response.status(HttpStatus.OK).send(createdRows);
+
                 } catch (error) {
                     console.error(
                         {
@@ -44,7 +48,7 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
                             data: {records: newRecords},
                         }
                     );
-                    throw new InternalServerErrorException('Server Error');
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({message: 'Server Error'});
                 }
             }
         }
@@ -61,7 +65,7 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
                 response.status(HttpStatus.BAD_REQUEST).send({message: 'Bad Request'});
             } else {
                 try {
-                    const recordCreated = this._service.createOne(newRecord);
+                    const recordCreated = await this._service.createOne(newRecord);
                     response.status(HttpStatus.OK).send(recordCreated);
                 } catch (error) {
                     console.error(
@@ -109,7 +113,8 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
         @Get()
         async findAll(
             @Query('query') searchCriteria: any,
-        ): Promise<{ nextQuery: any; data: T[]; total: number }> {
+            @Response() response: any,
+        ) {
             let result: [T[], number];
             let skip = 0;
             let take = 10;
@@ -142,11 +147,13 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
                     }
                     nextQuery = partialQuery;
                 }
-                return {
+                const queryResponse = {
                     nextQuery,
                     data,
                     total: totalRecords,
                 };
+                response.setHeader('Content-Type', 'application/json');
+                response.status(HttpStatus.OK).json(queryResponse);
             } catch (error) {
                 console.error(
                     {
@@ -156,11 +163,12 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): ty
                     },
                 );
                 result = await this._service.findAll();
-                return {
+                const defaultQueryResponse =  {
                     nextQuery: {skip: 10, take},
                     data: result[0],
                     total: result[1],
                 };
+                response.status(HttpStatus.OK).json(defaultQueryResponse);
             }
         }
 
