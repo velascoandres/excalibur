@@ -5,6 +5,7 @@ import { DeepPartial, ObjectLiteral } from 'typeorm';
 export interface DtoConfig {
     createDtoType: any;
     updateDtoType: any;
+    idParamDtoType?: any;
 }
 
 export interface DtoConfigInterface extends DtoConfig {
