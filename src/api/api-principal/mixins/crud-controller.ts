@@ -4,12 +4,12 @@ import {
     BadRequestException,
     Body,
     Delete,
-    Get,
+    Get, HttpStatus,
     InternalServerErrorException, NotFoundException,
     Param,
     Post,
     Put,
-    Query
+    Query, Response
 } from '@nestjs/common';
 import {AbstractController} from './abstract-controller';
 import {validateMany} from '../../shared-utils/validate-many';
@@ -17,10 +17,7 @@ import {plainToClass} from 'class-transformer';
 import {validate} from 'class-validator';
 
 
-export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig = {
-    createDtoType: BaseDTO,
-    updateDtoType: BaseDTO
-}): typeof AbstractController {
+export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig): typeof AbstractController {
     class BaseController extends AbstractController<T> {
 
         constructor(
@@ -29,7 +26,7 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig = {
             super(_service);
         }
 
-        @Post()
+        @Post('bulk')
         async createMany(
             @Body('records') newRecords: DeepPartial<T>[]): Promise<T[]> {
             const validationErrors = await validateMany(newRecords, dtoConfig.createDtoType);
@@ -54,15 +51,17 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig = {
 
         @Post()
         async createOne(
-            @Body() newRecord: DeepPartial<T>): Promise<T> {
+            @Body() newRecord: DeepPartial<T>, @Response() response: any,
+        ){
             const entityDto = plainToClass(dtoConfig.createDtoType, newRecord) as object;
             const validationErrors = await validate(entityDto);
             if (validationErrors.length > 0) {
                 console.error(validationErrors);
-                throw new BadRequestException('Bad Request');
+                response.status(HttpStatus.BAD_REQUEST).send({ message: 'Bad Request' });
             } else {
                 try {
-                    return this._service.createOne(newRecord);
+                    const recordCreated =  this._service.createOne(newRecord);
+                    response.status(HttpStatus.OK).send(recordCreated);
                 } catch (error) {
                     console.error(
                         {
@@ -71,7 +70,7 @@ export function CrudController<T>(dtoConfig: DtoConfigInterface | DtoConfig = {
                             data: {record: newRecord},
                         }
                     );
-                    throw new InternalServerErrorException('Server Error');
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
                 }
             }
         }

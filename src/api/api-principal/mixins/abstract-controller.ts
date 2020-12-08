@@ -8,22 +8,21 @@ export abstract class AbstractController<T = any> implements ControllerCrudMehod
     ) {
     }
 
-    createMany(newRecords: DeepPartial<T>[]
-    ): any {
+    createMany(newRecords: DeepPartial<T>[], ...args: any[]): any {
     }
 
-    createOne(newRecord: DeepPartial<T>): any {
+    createOne(newRecord: DeepPartial<T>, ...args: any[]): any {
     }
 
-    deleteOne(id: number): any {
+    deleteOne(id: number, ...args: any[]): any {
     }
 
-    findAll(searchCriteria: ObjectLiteral): any {
+    findAll(searchCriteria: ObjectLiteral, ...args: any[]): any {
     }
 
-    findOneById(id: number): any {
+    findOneById(id: number, ...args: any[]): any {
     }
 
-    updateOne(recordToUpdate: DeepPartial<T>, id: number): any {
+    updateOne(recordToUpdate: DeepPartial<T>, id: number, ...args: any[]): any {
     }
 }
