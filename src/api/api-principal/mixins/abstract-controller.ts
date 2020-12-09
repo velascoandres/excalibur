@@ -23,6 +23,6 @@ export abstract class AbstractController<T = any> implements ControllerCrudMehod
     findOneById(id: number, ...args: any[]): any {
     }
 
-    updateOne(recordToUpdate: DeepPartial<T>, id: number, ...args: any[]): any {
+    updateOne(...args: any[]): any {
     }
 }

@@ -221,8 +221,8 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
 
         @Put(':id')
         async updateOne(
-            @Body(...updateOnePipes as PipeTransform[]) recordToUpdate: DeepPartial<T>,
             @Param(...findOnePipes as PipeTransform[]) params: any,
+            @Body(...updateOnePipes as PipeTransform[]) recordToUpdate: DeepPartial<T>,
         ) {
             try {
                 await this._service.findOneById(params.id);
