@@ -220,9 +220,8 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
         }
 
         @Put(':id')
-        @UsePipes(...updateOnePipes)
         async updateOne(
-            @Body() recordToUpdate: DeepPartial<T>,
+            @Body(...updateOnePipes as PipeTransform[]) recordToUpdate: DeepPartial<T>,
             @Param(...findOnePipes as PipeTransform[]) params: any,
         ) {
             try {

@@ -18,7 +18,7 @@ export class DefaultValidationPipe implements PipeTransform {
             console.error(validationErrors);
             throw new BadRequestException({message: 'Invalid payload'});
         }
-        return entityDto;
+        return value;
     }
 
     protected toValidate(metatype: Function): boolean {
