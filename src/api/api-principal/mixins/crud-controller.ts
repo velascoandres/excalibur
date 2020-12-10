@@ -27,21 +27,33 @@ export interface CrudOptions {
     useMongo?: boolean;
     dtoConfig: DtoConfigInterface | DtoConfig;
     pipesConfig?: Partial<Record<CrudMethod, CrudMethodPipes>>;
+    disableErrorMessages?: boolean;
+}
+
+export interface PipesFromConfigOptions {
+    options: CrudOptions;
+    methodName: CrudMethod;
+    dto: any;
+    isId: boolean;
+    disableErrorMessages: boolean;
 }
 
 
 export function getPipesFromConfig(
-    options: CrudOptions,
-    methodName: CrudMethod,
-    dto: any,
-    mixWith: (PipeTransform | Function)[] = []
+    pipesFromConfigOptions: PipesFromConfigOptions
 ): (PipeTransform | Function)[] {
     let methodPipes: (PipeTransform | Function)[] = [
-        ...mixWith,
-        new DefaultValidationPipe(dto)
+        new DefaultValidationPipe(
+            pipesFromConfigOptions.dto,
+            pipesFromConfigOptions.isId,
+            pipesFromConfigOptions.disableErrorMessages,
+        ),
     ];
-    if (options.pipesConfig?.[methodName]?.pipes) {
-        const pipeConfig = options.pipesConfig[methodName];
+    if (pipesFromConfigOptions.options.pipesConfig?.[pipesFromConfigOptions.methodName]?.pipes) {
+
+        const pipeConfigObjet: Partial<Record<CrudMethod, CrudMethodPipes>> = pipesFromConfigOptions.options.pipesConfig;
+        const methodName: CrudMethod = pipesFromConfigOptions.methodName;
+        const pipeConfig = pipeConfigObjet[methodName];
         const pipes = pipeConfig!.pipes;
         if (pipeConfig?.overrideDefault) {
             methodPipes = pipes;
@@ -62,11 +74,53 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
     const updateDto = options.dtoConfig.updateDtoType;
     const idParamDto = options.useMongo ? DefaultMongoParamDto : DefaultParamDto;
 
-    const createOnePipes = getPipesFromConfig(options, 'createOne', createDto);
-    const findOnePipes = getPipesFromConfig(options, 'findOneById', idParamDto);
-    const updateOnePipes = getPipesFromConfig(options, 'updateOne', updateDto);
-    const createManyPipes = getPipesFromConfig(options, 'createMany', createDto);
-    const deleteOnePipes = getPipesFromConfig(options, 'deleteOne', idParamDto);
+    const disableErrorMessages: boolean = !!options.disableErrorMessages;
+
+    const createOnePipes = getPipesFromConfig(
+        {
+            options,
+            methodName: 'createOne',
+            dto: createDto,
+            isId: false,
+            disableErrorMessages
+        }
+    );
+    const findOnePipes = getPipesFromConfig(
+        {
+            options,
+            methodName: 'findOneById',
+            dto: idParamDto,
+            isId: true,
+            disableErrorMessages
+        }
+    );
+    const updateOnePipes = getPipesFromConfig(
+        {
+            options,
+            methodName: 'updateOne',
+            dto: updateDto,
+            isId: false,
+            disableErrorMessages
+        }
+    );
+    const createManyPipes = getPipesFromConfig(
+        {
+            options,
+            methodName: 'createMany',
+            dto: createDto,
+            isId: false,
+            disableErrorMessages
+        }
+    );
+    const deleteOnePipes = getPipesFromConfig(
+        {
+            options,
+            methodName: 'deleteOne',
+            dto: idParamDto,
+            isId: true,
+            disableErrorMessages
+        }
+    );
 
 
     class BaseController extends AbstractController<T> {
