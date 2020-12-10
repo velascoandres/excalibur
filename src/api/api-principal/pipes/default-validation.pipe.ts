@@ -5,7 +5,11 @@ import {BaseDTO} from '../schemas/base-dto';
 
 export class DefaultValidationPipe implements PipeTransform {
 
-    constructor(protected dto: typeof BaseDTO | (new () => any)) {
+    constructor(
+        protected dto: typeof BaseDTO | (new () => any),
+        protected showErrors: boolean = true,
+        protected validateId?: boolean,
+    ) {
     }
 
     async transform(value: any, metadata: ArgumentMetadata): Promise<any> {
@@ -16,7 +20,13 @@ export class DefaultValidationPipe implements PipeTransform {
         const validationErrors = await validate(entityDto);
         if (validationErrors.length > 0) {
             console.error(validationErrors);
-            throw new BadRequestException({message: 'Invalid payload'});
+            const message: string = this.validateId ? 'Invalid id' : 'Invalid payload';
+            const errorMessage = {
+                message,
+                errors: validationErrors,
+            };
+            if (!this.showErrors) delete errorMessage.errors;
+            throw new BadRequestException(errorMessage);
         }
         return value;
     }
