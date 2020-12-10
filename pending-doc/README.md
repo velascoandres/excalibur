@@ -1,13 +1,11 @@
-
-
 <p align="center">
     <img  src="https://raw.githubusercontent.com/velascoandres/excalibur/master/logo/sword.png"></img>
     <h1 align="center">Excalibur</h1>
 </p>
 
-Excalibur is a set of functions and classes api plus several modules for `Nest.js`.
+Excalibur is a set of functions and classes api plus several modules for `Nest.js` .
 
-<img src="https://img.shields.io/npm/dm/@pimba/excalibur"></img>
+<img src="https://img.shields.io/npm/dt/@pimba/excalibur"></img>
 <img src="https://img.shields.io/npm/v/@pimba/excalibur"></img>
 <img src="https://img.shields.io/github/languages/top/velascoandres/excalibur"></img>
 <img src="https://img.shields.io/github/languages/code-size/velascoandres/excalibur"></img>
@@ -15,54 +13,60 @@ Excalibur is a set of functions and classes api plus several modules for `Nest.j
 <img src="https://img.shields.io/github/stars/velascoandres/excalibur"></img>
 <img src="https://img.shields.io/github/issues/velascoandres/excalibur"></img>
 
-
 ## Index
 
 1. [Installation](#install)
-2. [API-REST](#api-rest)
+
+2. [REST-API](#rest-api)
+
 3. [Decorators](#decorators)
+   
+   3.1 [Swagger](#swagger)
 
-    3.1 [Swagger](#swagger)
+   3.2 [Guards](#guards)
 
-    3.2 [Guards](#guards)
+   3.3 [Interceptors](#interceptors)
 
-    3.3 [Interceptors](#interceptors)
+   3.4 [Headers](#headers)
 
-    3.4 [Headers](#headers)
+   3.5 [CrudApi](#crudapi)
 
-    3.5 [CrudApi](#crudapi)
 
 4. [Google Cloud Storage](#google-cloud-storage)
 
-5. [Firebase Authentification](#firebase-authentification)
+5.  [Google Cloud Vision](#google-cloud-vision)
 
-6. [Email Module](#email)
+6. [Firebase Admin Authentification](#firebase-admin-authentification)
 
-7. [Special Thanks](#special-thanks)
+7. [Email Module](#email)
 
+8. [Data Base Module](#data-base-module)
+
+9. [Special Thanks](#special-thanks)
 
 ## Install:
 
 ```shell script
 npm i @pimba/excalibur
-```
 
+``` 
 
-## API REST 
+## REST API
 
-One of the strongest features of this library is to implement an API-REST quickly. To do this, you must 
+One of the strongest features of this library is to implement an API-REST quickly. To do this, you must
 first consider implementing the following classes:
 
 * Entity
 * Service
 * DTO
 * Controller
- 
- 
+
+
+
+
 #### Create entity class with extends from `AbstractEntity`
 
 If you want the entity has an auntoincremental id column, createdAt, updatedAt columns.
-
 
 ```typescript
 import {AbstractEntity} from '@pimba/excalibur/lib';
@@ -71,15 +75,17 @@ import {AbstractEntity} from '@pimba/excalibur/lib';
 export class ProductEntity extends AbstractEntity {
   
 }
-``` 
- 
-#### Create a service class which extends from `PrincipalService`
+```
+
+
+
+#### Create a service class which extends from `AbstractService`
 
 ```typescript
-import {PrincipalService} from '@pimba/excalibur/lib';
+import {AbstractService} from '@pimba/excalibur/lib';
 
 @Injectable()
-export class ProductService extends PrincipalService<ProductEntity> {
+export class ProductService extends AbstractService<ProductEntity> {
   constructor(
     @InjectRepository(ProductEntity)
     private readonly _productRepository: Repository<ProductEntity>,
@@ -89,10 +95,10 @@ export class ProductService extends PrincipalService<ProductEntity> {
 }
 ```
 
+
 #### Create a DTO class for update and create:
 
-
-It is optional to extend from `BaseDTO`, This class allows to validate that the fields: `id`, `createdAt` and `updatedAt` should not be empty
+It is optional to extend from `BaseDTO` , This class allows to validate that the fields: `id` , `createdAt` and `updatedAt` should not be empty
 
 ```typescript
 import {BaseDTO} from '@pimba/excalibur/lib';
@@ -111,43 +117,54 @@ export class ProductCreateDto extends BaseDTO{
 
 ### Puting it all together
 
+
+
+
 ```typescript
-import {PrincipalCrudController} from '@pimba/excalibur/lib';
+import {CrudController, CrudOptions} from '@pimba/excalibur/lib';
+
+const options: CrudOptions = {
+    dtoConfig: {
+        createDtoType: ProductCreateDto,
+        updateDtoType: ProductUpdateDto,
+    },
+}
+
 
 @Controller('product')
-export class ProductController extends PrincipalCrudController<ProductEntity> {
+export class ProductController extends CrudController<ProductEntity>(options) {
     constructor(private readonly _productService: ProductService) {
         super(
             _productService,
-            {
-                createDtoType: ProductCreateDto,
-                updateDtoType: ProductEditDto,
-            }
         );
     }
 }
 ```
 
+
 ### API-REST ENPOINTS:
-For  a `controllerPrefix` given on the `Controller` decorator. The following 
+
+For  a `controllerPrefix` given on the `Controller` decorator. The following
 set of routes will be generated.
 
 | HTTP METHOD | PATH  | Controller and Service method |
 | --------- | ------ | ----------------------------- |
-|  POST  | `<controllerPrefix>`  | createOne              |
+|  POST  | `<controllerPrefix>` | createOne              |
+|  POST  | `<controllerPrefix>` /create-many  | createMany              |
 |  PUT | `/<controllerPrefix>/<id:number>` |  updateOne |
 |  GET | `/<controllerPrefix>/<id:number>` | findOne  | 
-| GET  | `/<controllerPrefix>?query=<find-query>`  | findAll |
-| DELETE |  `/<controllerPrefix>/<id:number>` | deleteOne |
+| GET  | `/<controllerPrefix>?query=<find-query>` | findAll |
+| DELETE | `/<controllerPrefix>/<id:number>` | deleteOne |
+
 
 ###  Find  Query
 
-
 #### SQL Data Bases
-For SQL DB you can make a search criteria, that complies 
+
+For SQL DB you can make a search criteria, that complies
 with the following scheme:
 
-```text
+``` text
    {
     "where": {
          // Entity attributes and relations
@@ -158,14 +175,14 @@ with the following scheme:
 ```
 
 For example:
-The `product entity` has a relation `many to one` with `category entity`, so lets make 
-the following search: 
-Products that have a price `greater than or equal` to `10` or `less than` 2 and that the name of the product category 
-can be `snacks`, `drinks` or that the same name of the category includes `"sna"`.
+The `product entity` has a relation `many to one` with `category entity` , so lets make
+the following search:
+Products that have a price `greater than or equal` to `10` or `less than` 2 and that the name of the product category
+can be `snacks` , `drinks` or that the same name of the category includes `"sna"` .
 
-`Find-Query`: 
+`Find-Query` :
 
-```json
+``` json
    {
     "where": {
         "price": [
@@ -191,23 +208,21 @@ can be `snacks`, `drinks` or that the same name of the category includes `"sna"`
   }  
 ```
 
+> On `like` operator with the wildcar `%` , you should use `%25` instead of `%`
+> cause some problems with browsers and `http clients`
+> as `Postman` .
 
-
-
-> On `like` operator with the wildcar `%`, you should use `%25` instead of `%` 
->cause some problems with browsers and `http clients`
-> as `Postman`.
 #### Examples
 
 > Browser or client side
 
-```text
+``` text
 http://localhost:3000/product?query={"where":{"name":{"$like":"%25choco%25"},"category":{}}}
 ```
 
 Results:
 
-```json
+``` json
 {
     "nextQuery": null,
     "data": [
@@ -253,10 +268,10 @@ Results:
 ```
 
 > If you are working on backend side you could use the widlcard `%` without problems.
-> Also you could use any [wildcard](https://www.w3schools.com/sql/sql_wildcards.asp) on `like` operator according your 
->data base.
+> Also you could use any [wildcard](https://www.w3schools.com/sql/sql_wildcards.asp) on `like` operator according your
+> data base.
 
-```typescript
+``` typescript
 const query = {
     where: {
         id: { $like: '%chocho%' },
@@ -282,21 +297,19 @@ const filterProducts = searchResponse[0];
 const totalFecthed = searchResponse[1]; // All filtered records in the Data Base
 ```
 
-> For scape characters on `like` operator: use  `\\`
+> For scape characters on `like` operator: use `\\`
 
-
-```text
+``` text
 percentCode: {"$like": "%25\\%25%25"}} // Client side
 percentCode: {"$like": "%\\%%"}} // Backend side
 ```
 
-
 ### Or operator
-You can make a query with `OR` operator using the keyword `"$or"` as `"true"`
 
+You can make a query with `OR` operator using the keyword `"$or"` as `"true"`
 For example: Get products with a price of `7` or name includes `"choco"`
 
-```json
+``` json
    {
     "where": {
         "price": {"$eq": 7, "$or": true},
@@ -306,24 +319,23 @@ For example: Get products with a price of `7` or name includes `"choco"`
 ```
 
 ##### Putting it all together
- 
+
+
 `GET /product?query={"where":{.......}}`
 
-
 ##### Find Query Object
-
 
 ###### Operators
 
 | Operator |   keyword  |  Example |
 |  ------  |  -----  | --- |
-| Like  |  `$like` | "$like": "%sns%"    |
-| iLike  |  `$ilike` (PostgreSQL) | "$ilike": "%sns%"    |
-|  `> ` | `$gt`  | "$gt": 20 |
-| `>=`  | `$gte` |  "$gte": 20 |
-| `<` |  `$lt` |  "$lt": 20 |
-| `<=` |  `$lte` |  "$lte": 20 |
-| `=` |  `$eq` |  "$eq": 20 |
+| Like  | `$like` | "$like": "%sns%"    |
+| iLike  | `$ilike` (PostgreSQL) | "$ilike": "%sns%"    |
+| `> ` | `$gt` | "$gt": 20 |
+| `>=` | `$gte` |  "$gte": 20 |
+| `<` | `$lt` |  "$lt": 20 |
+| `<=` | `$lte` |  "$lte": 20 |
+| `=` | `$eq` |  "$eq": 20 |
 | `!=` | `$ne` |   "$ne": 20 |
 | Between | `$btw` | "$btw": [A, B]  |
 | In | `$in` | "$in": [A, B, ...] |
@@ -333,21 +345,23 @@ For example: Get products with a price of `7` or name includes `"choco"`
 > if your are using MongoDB, you must use the query operators for mongo, check the [documentation](https://docs.mongodb.com/manual/reference/operator/query/)
 
 ##### Join Relations
-The join relations could be many levels as you want, you need to write the 
-`ManyToOne`, `OneToMany`, `OneToOne`, relationship name in your `Find Query Object` like the previous example.
- 
+
+The join relations could be many levels as you want, you need to write the
+`ManyToOne` , `OneToMany` , `OneToOne` , relationship name in your `Find Query Object` like the previous example.
 
 
-If the join is of the `inner` type it is not necessary to put the keyword `"$join": "inner"`, only if you want to use a join of the type "left" (`" $join ":" left"`)
-
+If the join is of the `inner` type it is not necessary to put the keyword `"$join": "inner"` , only if you want to use a join of the type "left" ( `" $join ":" left"` )
 
 ##### Pagination
-The pagination by default is `skip: 0` and `take: 10`.
+
+The pagination by default is `skip: 0` and `take: 10` .
 
 ##### Order By
-The order by criteria by default with respect the entity `id` is `DESC`: 
- 
-```text
+
+The order by criteria by default with respect the entity `id` is `DESC` :
+
+
+``` text
    {
     "where": {
          
@@ -358,12 +372,125 @@ The order by criteria by default with respect the entity `id` is `DESC`:
   }  
 ```
 
+
+##### Select columns
+
+In order to get records with an specific set of columns, you could make use of `$sel` operator:
+
+For example: Get products with a bigger than `7` and only retrieves the name of the filtered products.
+
+``` json
+   {
+    "where": {
+        "$sel": ["name"],
+        "price": {"$gt": 7}
+    }
+  }  
+```
+
+Also, you could use the `$sel` operator on queries with joins.
+
+
+> All columns that are retrieved will always include the id column
+
+
+For example: the following query retrieves products with name and its supermarket with only name and address.
+
+``` typescript
+const query = {
+    where: {
+        $sel: ["name"],
+        category: {
+            name: 'candy',
+        },
+        supermaket: { // Select address and name
+            $sel: ["name", "address"], 
+        },         
+    },
+    skip: 0,
+    take: 30, 
+}
+
+```
+
+#### Working with transactions
+
+The `AbstractService` class has the following methods in order to perform transactions:
+
+* findAllWithTransaction
+
+* findOneWithTransaction
+
+* createOneWithTransaction
+
+* createManyWithTransaction
+
+* updateOneWithTransaction
+
+* deleteOneWithTransaction
+
+* deleteManyByIdsWithTransaction
+
+Example:
+
+```typescript
+import {EntityManager, getManager, Repository} from 'typeorm';
+import {AbstractService} from '@pimba/excalibur/lib'; 
+import {getManager} from 'typeorm';
+import {FindFullQuery} from '@pimba/excalibur/lib';
+import {TransactionResponse} from '@pimba/excalibur/lib';
+
+@Injectable()
+export class ProductService extends AbstractService<ProductEntity> {
+  constructor(
+    @InjectRepository(ProductEntity)
+    private readonly _productRepository: Repository<ProductEntity>,
+  ) {
+    super(_productRepository);
+  }
+    
+  async deleteByCategory(categoryId: number): Promise<ProductEntity[]> {
+          return await getManager()
+              .transaction(
+                  'SERIALIZABLE',
+                  async (entityManager: EntityManager) => {
+
+                      // Define the find condition  
+                      const finQuery: FindFullQuery = {
+                          where: {
+                              category: {
+                                  id: categoryId,
+                              }
+                          }
+                      };
+                      const findResponse = await this.findAllWithTransaction(entityManager, finQuery);
+                     
+                      // Update the entityManager for the next operation
+                      entityManager = findResponse.entityManager;
+                      const [productsToDelete, totalFetched] = findResponse.response;
+  
+                      // Get only the ids
+                      const ids = productsToDelete.map(product => product.id);
+                      
+                      // Get only the deleted rows  
+                      const {response} = await this
+                          .deleteManyByIdsWithTransaction(entityManager, ids);
+  
+                      return response;
+                  }
+              );
+      }
+    
+}
+```
+
 ### MongoDB
 
-
 #### Entity (Optional)
+
 If you want the entity has an ObjectId, updatedAt columns, you need to extends from `AbstractMongoEntity`
-```typescript
+
+``` typescript
 import {AbstractMongoEntity} from '@pimba/excalibur/lib';
 
 @Entity('post')
@@ -372,10 +499,13 @@ export class PostEntity extends AbstractMongoEntity{
 }
 ```
 
-#### DTO 
-It is optional to extend from `BaseMongoDTO`. This class allows to validate that the fields: `id`, `createdAt` and `updatedAt` should not be empty
 
-```typescript
+
+#### DTO
+
+It is optional to extend from `BaseMongoDTO` . This class allows to validate that the fields: `id` , `createdAt` and `updatedAt` should not be empty
+
+``` typescript
 import {BaseMongoDTO} from '@pimba/excalibur/lib';
 
 export class Post extends BaseMongoDTO{
@@ -384,9 +514,10 @@ export class Post extends BaseMongoDTO{
 ```
 
 #### Service
+
 The service class must extends from `AbstractMongoService`
 
-```typescript
+``` typescript
 import {AbstractMongoService} from '@pimba/excalibur/lib';
 
 @Injectable()
@@ -411,32 +542,33 @@ export class PostService extends AbstractMongoService<PostEntity> {
 
 #### Controller
 
-```typescript
-import {ApiMongoController} from '@pimba/excalibur/lib';
+``` typescript
+import {CrudController, CrudOptions} from '@pimba/excalibur/lib';
+
+const options: CrudOptions = {
+    useMongo: true,
+    dtoConfig: {
+        createDtoType: PostCreateDto,
+        updateDtoType: PostCreateDto,
+    },
+}
 
 @Controller('post')
-export class PostController extends ApiMongoController<postEntity> {
-    constructor(
-        private readonly _postService: PostService
-    ) {
+export class PostController extends CrudController<PostEntity>(options) {
+    constructor(private readonly _postService: PostService) {
         super(
             _postService,
-            {
-                createDtoType: PostCreateDto,
-                updateDtoType: PostUpdateDto,
-            }
         );
     }
 }
 ```
-
 ## Decorators
 
 ### Swagger
 For Document the API-REST paths on swagger, you need to make use of `CrudDoc` decorator or `CrudApi` decorator.
 
-Example: 
-For every CRUD method you should make a configuration. The follwing example shows a configuration object: 
+Example:
+For every CRUD method you should make a configuration. The follwing example shows a configuration object:
 
 In another file (if you want), make the configuration as a constant.
 
@@ -502,7 +634,9 @@ import {CrudDoc} from '@pimba/excalibur/lib';
      PRODUCT_SWAGGER_CONFIG,
 )
 @Controller('product')
-export class ProductController
+export class ProductController extends CrudController<PostEntity>(options){
+    
+}
 ```
 
 
@@ -521,7 +655,9 @@ import {CrudGuards} from '@pimba/excalibur/lib';
      }
 )
 @Controller('product')
-export class ProductController
+export class ProductController extends CrudController<PostEntity>(options) {
+    
+}
 ```
 
 ### Interceptors
@@ -540,7 +676,9 @@ import {CrudInterceptors} from '@pimba/excalibur/lib';
      }
 )
 @Controller('product')
-export class ProductController
+export class ProductController extends CrudController<PostEntity>(options) {
+    
+}
 ```
 
 ### Headers
@@ -561,7 +699,9 @@ import {CrudHeaders} from '@pimba/excalibur/lib';
      }
 )
 @Controller('product')
-export class ProductController
+export class ProductController extends CrudController<PostEntity>(options) {
+    
+}
 ```
 
 ### CrudApi
@@ -594,14 +734,16 @@ import {CrudApi} from '@pimba/excalibur/lib';
     },
 )
 @Controller('product')
-export class ProductController
+export class ProductController extends CrudController<PostEntity>(options) {
+    
+}
 ```
 
 ## Google Cloud Storage
 
-
 Import the module with your bucket name.
-```typescript
+
+``` typescript
 
 import { GoogleCloudStorageModule } from '@pimba/excalibur/lib';
 
@@ -614,12 +756,12 @@ import { GoogleCloudStorageModule } from '@pimba/excalibur/lib';
 export class SomeModule {
 }
 ```
-> Don't forget to export your google-cloud credentials before start the server.
 
+> Don't forget to export your google-cloud credentials before start the server.
 
 Inject the google-cloud-service in your controller
 
-```typescript
+``` typescript
 import { GoogleCloudStorageService } from '@pimba/excalibur/lib';
 
 @Controller('some')
@@ -633,7 +775,8 @@ export class SomeController {
 ```
 
 Use the service to store a file
-```typescript
+
+``` typescript
     @Post('upload-picture')
     @UseInterceptors(
         FileInterceptor('picture'),
@@ -651,15 +794,14 @@ Use the service to store a file
 
 ### GoogleCloudStorageFileInterceptor
 
-You can use the `GoogleCloudStorageFileInterceptor` to store a file 
+You can use the `GoogleCloudStorageFileInterceptor` to store a file
 using a specific folder/prefix name.
 
-```typescript
+``` typescript
 import { GoogleCloudStorageFileInterceptor } from '@pimba/excalibur/lib';
 ```
 
-
-```typescript
+``` typescript
     @Post('upload-picture')
     @UseInterceptors(
         GoogleCloudStorageFileInterceptor(
@@ -677,12 +819,82 @@ import { GoogleCloudStorageFileInterceptor } from '@pimba/excalibur/lib';
     }
 ```
 
-## Firebase Authentification
+## Google Cloud Vision
 
+Import module: `GoogleCloudVisionApiModule` :
+
+``` typescript
+import { GoogleCloudVisionApiModule } from '@pimba/excalibur/lib';
+ 
+@Module({
+    imports: [
+        GoogleCloudVisionApiModule,
+    ],
+})
+export class SomeModule {
+}
+```
+
+> Don't forget to export your google-cloud credentials before start the server.
+
+Inject the `GoogleCloudVisionApiService` in your controller
+
+``` typescript
+import { GoogleCloudVisionApiService } from '@pimba/excalibur/lib';
+ 
+@Controller('some')
+export class SomeController {
+ 
+    constructor(
+        private readonly _googleCloudVisionApiService: GoogleCloudVisionApiService,
+    ) {
+    }
+
+    @Get('inspect-image')
+      @UseInterceptors(
+        FileInterceptor('image'),
+      )
+      async inspectImage(
+        @UploadedFile() imageFile,
+      ) {
+        // Fecth the file and get it's buffer.  
+        const imageBuffer = imageFile.buffer;
+        // Invoke the respective service methods
+        const text = await this._googleCloudVisionApiService.detectText(imageBuffer);
+        const faces = await this._googleCloudVisionApiService.detectFaces(imageBuffer);
+        const explictContent = await this._googleCloudVisionApiService.detectExplicitContent(imageBuffer);
+        const objects = await this._googleCloudVisionApiService.detectMultipleObjects(imageBuffer);
+        const properties = await this._googleCloudVisionApiService.detectProperties(imageBuffer);
+        return {
+          text,
+          faces,
+          explictContent,
+          objects,
+          properties,
+        };
+      }
+    }
+```
+
+### Service Methods
+
+| Method Name | Description | Parameters  |
+| --------- | ------ | ----- |
+| detectLabels | Detects labels that are in the image  |  image-url or buffer |
+| detectFaces |  Detects faces that are in the image  |   image-url or buffer |
+| detectProperties |  Gets the more representative properties from the image such as the most relevant colors  |   image-url or buffer |
+| detectLandMarks |  Detects places such as names of buildings, monuments, among other things.  |  image-url or buffer |
+| detectLogos |  Detects all logos that are in the image  |  image-url or buffer |
+| detectExplicitContent |  Detect some type of explicit content in the image such as violence, racism, etc.  | image-url or buffer |
+| detectMultipleObjects | Detects all objects that are in the image with their respective ubication polygon coordinates |  image-url or buffer |
+| detectText |  Detects all text contained in the image |  image-url or buffer |
+| detectHandwrittenText | Detects get handwritten text in an image  |  image-url or buffer |
+
+## Firebase Admin Authentification
 
 Import the module with your projectID.
 
-```typescript
+``` typescript
 import { FirebaseModule } from '@pimba/excalibur/lib';
 
 @Module({
@@ -701,12 +913,10 @@ export class SomeModule {
 
 > If you want use `admin.credential.applicationDefault()` just don't forget to export your Firebase credentials before start the server.
 
-
 Inject the firebase-service in your controller
 
-```typescript
+``` typescript
 import { FirebaseAdminAuthService } from '@pimba/excalibur/lib';
-
 
 @Controller('some')
 export class SomeController {
@@ -718,8 +928,9 @@ export class SomeController {
 }
 ```
 
-Use the service: 
-```typescript
+Use the service:
+
+``` typescript
     @Post('register-user')
     async registerUser(
         @Body() user: {
@@ -739,14 +950,15 @@ Use the service:
         );
     }
 
-
 ```
 
 ## Email
+
 The library uses [nodemailer](https://nodemailer.com/about/) to provide a module for sending emails.
 
 Import the module with the transports options:
-```typescript
+
+``` typescript
 import {EmailModule} from '@pimba/excalibur/lib';
 
 @Module(
@@ -775,9 +987,9 @@ export class SomeModule {
 
 > If your want to know more about nodemailer please check its [documentation](!https://nodemailer.com/about/)
 
-In order to send emails, your need to inject the service: 
+In order to send emails, your need to inject the service:
 
-```typescript
+``` typescript
 @Controller('some-controller')
 export class SomeController  {
     constructor(
@@ -800,7 +1012,176 @@ export class SomeController  {
     }
 }
 ```
+## Data Base Module
+
+With the database module you can configure multiple connections
+and massively insert data for testing or production.
+
+### Config connections
+A connection can be defined through a constant or through some other configuration module:
+
+```typescript
+const MYSQL_CONNECTION_CONFIG: TypeOrmModuleOptions = {
+    type: 'mysql',
+    host: 'localhost',
+    port: 30501,
+    username: 'username',
+    password: '1234',
+    database: 'test',
+    name: 'defaul',
+    synchronize: true,
+    retryDelay: 40000,
+    retryAttempts: 3,
+    connectTimeout: 40000,
+    keepConnectionAlive: true,
+    dropSchema: true,
+    charset: 'utf8mb4',
+    timezone: 'local',
+    entities: [
+        ...entities,
+    ],
+}
+```
+
+Just import the `DataBaseModule`, it can handle multiple connections, just type
+the name of the database as the key with its respective connection settings as the value.
+
+```typescript
+import {DataBaseModule, DataBaseService} from '@pimba/excalibur/lib';
+import {
+    OTHER_MYSQL_CONNECTION_CONFIG, 
+    MONGODB_CONNECTION_CONFIG,
+    MYSQL_CONNECTION_CONFIG
+ } from './config';
+
+
+@Module({
+    imports: [
+        DataBaseModule.forRoot(
+            {
+                conections: {
+                    mysql: MYSQL_CONNECTION_CONFIG,
+                    mongodb: MONGODB_CONNECTION_CONFIG,
+                    otherMysql: OTHER_MYSQL_CONNECTION_CONFIG
+                },
+                productionFlag: false,
+            }
+        ),
+        ...MODULES,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
+})
+export class AppModule {
+}
+```
+
+### Create BulkData
+To insert bulk data either for development or production, the module can be used to set the way the data will be created.
+
+```typescript
+import {Module} from '@nestjs/common';
+import {DataBaseModule} from '@pimba/excalibur/lib';
+
+@Module({
+    imports: [
+        DataBaseModule
+          .forBulkData(
+            {
+                dtoClassValidation: UserCreateDTO,
+                pathDev: '/src/modules/users/bulks/development/users.json',
+                pathProd: '/dist/modules/users/bulks/production/users.json',
+                aliasName: 'users',
+                creationOrder: 1,
+                entity: UserEntity,
+            },
+        ),
+        TypeOrmModule.forFeature([UserEntity]),
+    ],
+})
+export class UsersModule {
+}
+```
+
+* dtoClassValidation: DTO Class for validation
+* pathDev: Path of the file with the data for development
+* pathProd: Path of the file with the data for production
+* aliasName: Alias for the entity (show on logs).
+* creationOrder: Order in which the data will be created, this is necessary if the data depends on other data (foreing key). The order can be repeated in other modules.
+* entity: Entity Class.
+* connection: Database connection name.
+
+> You can use `js` files instead `json` files.
+
+It is a fact that json files are not taken into account when building the project with the typescript transpiler.
+However, you can use multiple npm packages to handle this like [cpy](https://www.npmjs.com/package/cp).
+
+To create start massive insertion just use the `DataBaseService` on the `AppModule`
+
+In this example, the massive insertion is handle on `onModuleInit` method:
+
+```typescript
+export class AppModule implements OnModuleInit {
+    constructor(
+        private readonly _dataBaseService: DataBaseService,
+    ) {
+    }
+    
+    onModuleInit(): any {
+        this.createData();
+    }
+
+
+    async createBulkData() {
+        await this._dataBaseService.insertData();
+        // Show the insertion logs on console
+        this._dataBaseService.showSummary();
+    }
+}
+``` 
+### Logs
+
+```text
+============================================================================
+|| mongo_connection                                                       ||
+============================================================================
+|| Order   Entity                                      Created     Status ||
+============================================================================
+|| 1       geo_locations                               37          OK     ||
+============================================================================
+
+============================================================================
+|| default                                                                ||
+============================================================================
+|| Order   Entity                                      Created     Status ||
+============================================================================
+|| 1       Users                                       0           FAIL   ||
+============================================================================
+|| 2       Roles                                       6           OK     ||
+============================================================================
+
+Errors: 
+
+=============================================================================
+|| default                                                                 ||
+=============================================================================
+
+=============================================================================
+   Usuarios                                                                                               
+=============================================================================
+validationError
+"{\"name\":\"Lilian\",\"lastname\":\"Holloway\",\"address\":\"Highlawn Avenue\",
+\"password\":\"123\",}"
+An instance of ProductoCrearDto has failed the validation:
+ - property name has failed the following constraints: isNotEmpty, isAlpha 
+,An instance of UserCreateDTO has failed the validation:
+ - property description has failed the following constraints: isNotEmpty 
+,An instance of ProductoCrearDto has failed the validation:
+ - property category has failed the following constraints: isNotEmpty, isNumber 
+
+```
+
 
 ## Special Thanks
-The modules for google-cloud-storage and firebase were based on the [Aginix Technologies](https://github.com/Aginix) libraries
 
+The modules for google-cloud-storage and firebase were based on the [Aginix Technologies](https://github.com/Aginix) libraries
