@@ -118,8 +118,6 @@ export class ProductCreateDto extends BaseDTO{
 ### Puting it all together
 
 
-
-
 ```typescript
 import {CrudController, CrudOptions} from '@pimba/excalibur/lib';
 
@@ -1142,42 +1140,42 @@ export class AppModule implements OnModuleInit {
 ### Logs
 
 ```text
-============================================================================
-|| mongo_connection                                                       ||
-============================================================================
-|| Order   Entity                                      Created     Status ||
-============================================================================
-|| 1       geo_locations                               37          OK     ||
-============================================================================
+╔═══════════════════════════════════════════════════════╗
+║ default                                               ║
+╠═══════════════════════════════════════════════════════╣
+║ Order   Entity                     Created     Status ║
+╠═══════════════════════════════════════════════════════╣
+║ 1       Categories                 12          OK     ║
+╠═══════════════════════════════════════════════════════╣
+║ 1       Users                      90          OK     ║
+╠═══════════════════════════════════════════════════════╣
+║ 2       roles                      6           OK     ║
+╠═══════════════════════════════════════════════════════╣
+║ 4       products                   0           FAIL   ║
+╚═══════════════════════════════════════════════════════╝
 
-============================================================================
-|| default                                                                ||
-============================================================================
-|| Order   Entity                                      Created     Status ||
-============================================================================
-|| 1       Users                                       0           FAIL   ||
-============================================================================
-|| 2       Roles                                       6           OK     ||
-============================================================================
+╔═══════════════════════════════════════════════════════╗
+║ mongo_conn                                            ║
+╠═══════════════════════════════════════════════════════╣
+║ Order   Entity                     Created     Status ║
+╠═══════════════════════════════════════════════════════╣
+║ 1       geo_locations              37          OK     ║
+╚═══════════════════════════════════════════════════════╝
+
 
 Errors: 
 
-=============================================================================
-|| default                                                                 ||
-=============================================================================
+Errors: 
 
-=============================================================================
-   Usuarios                                                                                               
-=============================================================================
+╔═══════════════════════════════════════════════════════╗
+   products                                          
+╠═══════════════════════════════════════════════════════╣
 validationError
-"{\"name\":\"Lilian\",\"lastname\":\"Holloway\",\"address\":\"Highlawn Avenue\",
-\"password\":\"123\",}"
+"{\"name\":\"apple\",\"description\":\"Mollit sint proident irure eiusmod mollit occaecat.\",\"category\":6,\"price\":\"10.47\"}"
 An instance of ProductoCrearDto has failed the validation:
- - property name has failed the following constraints: isNotEmpty, isAlpha 
-,An instance of UserCreateDTO has failed the validation:
- - property description has failed the following constraints: isNotEmpty 
-,An instance of ProductoCrearDto has failed the validation:
- - property category has failed the following constraints: isNotEmpty, isNumber 
+ - property description has failed the following constraints: isAlpha 
+validationError
+
 
 ```
 

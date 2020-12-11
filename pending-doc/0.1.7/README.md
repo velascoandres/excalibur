@@ -19,17 +19,7 @@ Excalibur is a set of functions and classes api plus several modules for `Nest.j
 
 2. [REST-API](#rest-api)
 
-3. [Decorators](#decorators)
-
-   3.1 [Swagger](#swagger)
-
-   3.2 [Guards](#guards)
-
-   3.3 [Interceptors](#interceptors)
-
-   3.4 [Headers](#headers)
-
-   3.5 [CrudApi](#crudapi)
+3. [Security](#security)
 
 4. [Google Cloud Storage](#google-cloud-storage)
 
@@ -80,7 +70,7 @@ export class ProductEntity extends AbstractEntity {
 
 #### Create a service class which extends from `AbstractService`
 
-```typescript
+``` typescript
 import {AbstractService} from '@pimba/excalibur/lib';
 
 @Injectable()
@@ -99,7 +89,7 @@ export class ProductService extends AbstractService<ProductEntity> {
 
 It is optional to extend from `BaseDTO` , This class allows to validate that the fields: `id` , `createdAt` and `updatedAt` should not be empty
 
-```typescript
+``` typescript
 import {BaseDTO} from '@pimba/excalibur/lib';
 
 export class ProductCreateDto extends BaseDTO{
@@ -116,23 +106,18 @@ export class ProductCreateDto extends BaseDTO{
 
 ### Puting it all together
 
-
-```typescript
-import {CrudController, CrudOptions} from '@pimba/excalibur/lib';
-
-const options: CrudOptions = {
-    dtoConfig: {
-        createDtoType: ProductCreateDto,
-        updateDtoType: ProductUpdateDto,
-    },
-}
-
+``` typescript
+import {ApiController} from '@pimba/excalibur/lib';
 
 @Controller('product')
-export class ProductController extends CrudController<ProductEntity>(options) {
+export class ProductController extends ApiController<ProductEntity> {
     constructor(private readonly _productService: ProductService) {
         super(
             _productService,
+            {
+                createDtoType: ProductCreateDto,
+                updateDtoType: ProductEditDto,
+            }
         );
     }
 }
@@ -540,199 +525,148 @@ export class PostService extends AbstractMongoService<PostEntity> {
 #### Controller
 
 ``` typescript
-import {CrudController, CrudOptions} from '@pimba/excalibur/lib';
-
-const options: CrudOptions = {
-    useMongo: true,
-    dtoConfig: {
-        createDtoType: PostCreateDto,
-        updateDtoType: PostCreateDto,
-    },
-}
+import {ApiMongoController} from '@pimba/excalibur/lib';
 
 @Controller('post')
-export class PostController extends CrudController<PostEntity>(options) {
-    constructor(private readonly _postService: PostService) {
+export class PostController extends ApiMongoController<postEntity> {
+    constructor(
+        private readonly _postService: PostService
+    ) {
         super(
             _postService,
+            {
+                createDtoType: PostCreateDto,
+                updateDtoType: PostUpdateDto,
+            }
         );
     }
 }
 ```
-## Decorators
+newRecords
+## Security
 
-### Swagger
-For Document the API-REST paths on swagger, you need to make use of `CrudDoc` decorator or `CrudApi` decorator.
+In order to protect the access to the generic REST-API, you can use a class that implements the `ExcaliburAuth`
+interface:
 
-Example:
-For every CRUD method you should make a configuration. The follwing example shows a configuration object:
+`
 
-In another file (if you want), make the configuration as a constant.
+``` typescript
+import {Observable} from 'rxjs';
+import {ExcaliburAuth} from '@pimba/excalibur/lib';
+import {PrincipalCrudController} from '@pimba/excalibur/lib';
 
-```typescript
-export const PRODUCT_SWAGGER_CONFIG: CrudApiConfig = {
-    createOne: { // MethodName
-        apiBody: {
-            type: ProductCrearDto
-        },
-        headers: [
-            {
-                name: 'X-MyHeader',
-                description: 'Custom header',
-            },
-        ],
-        responses: [
-            {
-                type: ProductCreateDto,
-                status: HttpStatus.CREATED,
-                description: 'Created Product'
-            },
-            {
-                status: HttpStatus.BAD_REQUEST,
-                description: 'Data not valid',
-            }
-        ]
-    },
-    updateOne: {
-        apiBody: {
-            type: ProductUpdateDto,
-        },
-        responses: [
-            {
-                type: ProductCreateDto,
-                status: HttpStatus.OK,
-                description: 'Updated product'
-            }
-        ]
-    },
-    findAll: {
-        headers: [
-            {
-                name: 'X-MyHeader',
-                description: 'Custom header',
-            },
-        ],
-        responses: [
-            {
-                type: ProductFindResponse,
-                status: HttpStatus.OK,
-                description: 'Fetched Products'
-            }
-        ]
+@Injectable()
+export class ProductAuthorization implements ExcaliburAuth {
+
+  
+    createOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
+       // Your strategy to give authorization  
+       return of(true);
+    }
+
+    deleteOneAuth(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
+         return of(true);
+    }
+
+    findAllAuth(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
+         return of(true);
+    }
+
+    findOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
+         return of(true);
+    }
+
+    findOneByIdAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
+         return of(true);
+    }
+
+    updateOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
+         return of(true);
+    }
+}
+````
+
+For each method of the REST API an authorization strategy should be implemented.  The parameters of each method
+are the request, the response and the reference to the controller (this last one is if you need to make use of a
+controller attribute).
+
+You can make use of any service inside the class, lets look the following example.
+
+``` typescript
+import {map} from 'rxjs/operators';
+import {from, Observable} from 'rxjs';
+import {ExcaliburAuth} from '@pimba/excalibur/lib'; 
+import {PrincipalCrudController} from '@pimba/excalibur/lib'; 
+import {Injectable} from '@nestjs/common';
+
+@Injectable()
+export class ProductAuthorization implements ExcaliburAuth {
+
+    constructor(
+            private readonly authentificationService: AuthentificationService,
+        ) {
+    }
+  
+    createOneAuht(req: any, res: any, controller: PrincipalCrudController): Observable<boolean> {
+       const user = req.body.user;
+       const permissionsResponse$ = from(this.authentificationService.canCreateProduct(user));
+        return permissionsResponse$
+            .pipe(
+                map(
+                    (permissionsResponse: boolean) => permissionsResponse,
+                )
+        );
     }
 }
 ```
 
-```typescript
-import {CrudDoc} from '@pimba/excalibur/lib';
+After that, declare this class on its respective module as a provider.
 
 
-@CrudDoc(
-     PRODUCT_SWAGGER_CONFIG,
-)
-@Controller('product')
-export class ProductController extends CrudController<PostEntity>(options){
-    
+
+``` typescript
+import {AuthentificationModule} from '../authentification/authentification.module';
+import {ProductAuthorization} from './security/product.auth';
+
+@Module({
+    imports: [
+        AuthentificationModule,
+    ],
+    providers: [
+        ProductoService,
+        ProductAuthorization,
+    ],
+    controllers: [
+        ProductoController
+    ],
+    exports: [
+        ProductoService,
+    ],
+})
+export class ProductoModule {
 }
 ```
 
+Declare this class on the controller as an attribute.
 
-### GUARDS
-For Guards for every `Crud Method` you need to make use of `CrudGuards` or `CrudApi` decorator.
+> By default, the `ApiController class` has a generic Authorization class.
 
-Example:
-```typescript
-import {CrudGuards} from '@pimba/excalibur/lib';
-
-@CrudGuards(
-     {
-         findAll: [ProductoFindAllGuard,]
-         updateOne: [ProductUpdaeOneGuard],
-         ...othersCrudMethod
-     }
-)
+``` typescript
 @Controller('product')
-export class ProductController extends CrudController<PostEntity>(options) {
-    
-}
-```
-
-### Interceptors
-
-For Interceptors for every `Crud Method` you need to make use of `CrudInterceptors` or `CrudApi` decorator.
-
-Example:
-```typescript
-import {CrudInterceptors} from '@pimba/excalibur/lib';
-
-
-@CrudInterceptors(
-     {
-         findAll: [ProductFindallInterceptor,]
-         ...othersCrudMethod
-     }
-)
-@Controller('product')
-export class ProductController extends CrudController<PostEntity>(options) {
-    
-}
-```
-
-### Headers
-
-For Headers on `Crud Methods` you need to make use of `CrudHeaders` or `CrudApi` decorator.
-
-Example:
-```typescript
-import {CrudHeaders} from '@pimba/excalibur/lib';
-
-@CrudHeaders(
-     {
-         findAll: {
-              name: 'Custom Header',
-              value: ''
-         },
-         ...othersCrudMethod
-     }
-)
-@Controller('product')
-export class ProductController extends CrudController<PostEntity>(options) {
-    
-}
-```
-
-### CrudApi
-The `CrudApi` is a general decorator to put the configuration of swagger, guards, interceptors and headers for every
-Crud Method.
-
-Example:
-
-
-```typescript
-import {CrudApi} from '@pimba/excalibur/lib';
-
-@CrudApi(
-    {
-        findAll: {
-            guards: [ProductFindAllGuard,],
-            interceptors: [ProductFindallInterceptor],
-            documentation: PRODUCT_SWAGGER_CONFIG.findAll,
-            header: {
-                name: 'Custom Header',
-                value: ''
+export class ProductController extends ApiController<ProductEntity> {
+    constructor(
+        private readonly productService: ProductoService,
+        private readonly productAuthorization: ProductAuthorization,
+    ) {
+        super(
+            _productoService,
+            {
+                createDtoType: ProductCreateDto,
+                updateDtoType: ProductUpdateDto,
             },
-        },
-        createOne: {
-            documentation: PRODUCT_SWAGGER_CONFIG.createOne,
-        },
-        updateOne: {
-            documentation: PRODUCT_SWAGGER_CONFIG.updateOne,
-        }
-    },
-)
-@Controller('product')
-export class ProductController extends CrudController<PostEntity>(options) {
-    
+           productAuthorization,
+        );
+    }
 }
 ```
 
@@ -1139,42 +1073,42 @@ export class AppModule implements OnModuleInit {
 ### Logs
 
 ```text
-╔═══════════════════════════════════════════════════════╗
-║ default                                               ║
-╠═══════════════════════════════════════════════════════╣
-║ Order   Entity                     Created     Status ║
-╠═══════════════════════════════════════════════════════╣
-║ 1       Categories                 12          OK     ║
-╠═══════════════════════════════════════════════════════╣
-║ 1       Users                      90          OK     ║
-╠═══════════════════════════════════════════════════════╣
-║ 2       roles                      6           OK     ║
-╠═══════════════════════════════════════════════════════╣
-║ 4       products                   0           FAIL   ║
-╚═══════════════════════════════════════════════════════╝
+============================================================================
+|| mongo_connection                                                       ||
+============================================================================
+|| Order   Entity                                      Created     Status ||
+============================================================================
+|| 1       geo_locations                               37          OK     ||
+============================================================================
 
-╔═══════════════════════════════════════════════════════╗
-║ mongo_conn                                            ║
-╠═══════════════════════════════════════════════════════╣
-║ Order   Entity                     Created     Status ║
-╠═══════════════════════════════════════════════════════╣
-║ 1       geo_locations              37          OK     ║
-╚═══════════════════════════════════════════════════════╝
-
+============================================================================
+|| default                                                                ||
+============================================================================
+|| Order   Entity                                      Created     Status ||
+============================================================================
+|| 1       Users                                       0           FAIL   ||
+============================================================================
+|| 2       Roles                                       6           OK     ||
+============================================================================
 
 Errors: 
 
-Errors: 
+=============================================================================
+|| default                                                                 ||
+=============================================================================
 
-╔═══════════════════════════════════════════════════════╗
-   products                                          
-╠═══════════════════════════════════════════════════════╣
+=============================================================================
+   Usuarios                                                                                               
+=============================================================================
 validationError
-"{\"name\":\"apple\",\"description\":\"Mollit sint proident irure eiusmod mollit occaecat.\",\"category\":6,\"price\":\"10.47\"}"
+"{\"name\":\"Lilian\",\"lastname\":\"Holloway\",\"address\":\"Highlawn Avenue\",
+\"password\":\"123\",}"
 An instance of ProductoCrearDto has failed the validation:
- - property description has failed the following constraints: isAlpha 
-validationError
-
+ - property name has failed the following constraints: isNotEmpty, isAlpha 
+,An instance of UserCreateDTO has failed the validation:
+ - property description has failed the following constraints: isNotEmpty 
+,An instance of ProductoCrearDto has failed the validation:
+ - property category has failed the following constraints: isNotEmpty, isNumber 
 
 ```
 

@@ -23,10 +23,12 @@ export interface CrudMethodPipes {
     pipes: (PipeTransform | Function)[];
 }
 
+export type PipesConfig = Partial<Record<CrudMethod, CrudMethodPipes>>;
+
 export interface CrudOptions {
     useMongo?: boolean;
     dtoConfig: DtoConfigInterface | DtoConfig;
-    pipesConfig?: Partial<Record<CrudMethod, CrudMethodPipes>>;
+    pipesConfig?: PipesConfig;
     enableErrorMessages?: boolean;
 }
 

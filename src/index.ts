@@ -42,6 +42,7 @@ export {ExcaliburAuth} from './api/interfaces/excalibur.auth';
 export {CrudController} from './api/api-principal/mixins/crud-controller';
 export {CrudMethodPipes} from './api/api-principal/mixins/crud-controller';
 export {CrudOptions} from './api/api-principal/mixins/crud-controller';
+export {PipesConfig} from './api/api-principal/mixins/crud-controller';
 export {AbstractController} from './api/api-principal/mixins/abstract-controller';
 // MODULES ************************************************************
 export * from './modules/libs/google-cloud-storage/src/index';
