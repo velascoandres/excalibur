@@ -1,6 +1,6 @@
 {
   "name": "@pimba/excalibur",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "autor": "gordon_freeman",
   "description": "API of functions and classes for NestJS",
   "main": "lib/index.js",
@@ -46,13 +46,11 @@
   "devDependencies": {
     "@types/lodash": "^4.14.151",
     "tslint": "^6.1.2",
-    "typescript": "^3.9.2"
-  },
-  "peerDependencies": {
-    "@nestjs/common": "^7.5.5",
-    "@nestjs/core": "^7.5.5"
+    "typescript": "^3.9.2",
   },
   "dependencies": {
+    "@nestjs/common": "^7.5.5",
+    "@nestjs/core": "^7.5.5",
     "@google-cloud/storage": "^5.0.1",
     "@google-cloud/vision": "^2.1.1",
     "@nestjs/platform-express": "^7.5.5",
@@ -71,7 +69,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.5",
     "swagger-ui-express": "^4.1.4",
-    "typeorm": "^0.2.24",
+    "typeorm": "^0.2.29",
     "uuid": "^8.1.0"
   },
   "private": false
