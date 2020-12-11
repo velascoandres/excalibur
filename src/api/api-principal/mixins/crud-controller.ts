@@ -27,7 +27,7 @@ export interface CrudOptions {
     useMongo?: boolean;
     dtoConfig: DtoConfigInterface | DtoConfig;
     pipesConfig?: Partial<Record<CrudMethod, CrudMethodPipes>>;
-    disableErrorMessages?: boolean;
+    enableErrorMessages?: boolean;
 }
 
 export interface PipesFromConfigOptions {
@@ -35,7 +35,7 @@ export interface PipesFromConfigOptions {
     methodName: CrudMethod;
     dto: any;
     isId: boolean;
-    disableErrorMessages: boolean;
+    enableErrorMessages: boolean;
 }
 
 
@@ -45,8 +45,8 @@ export function getPipesFromConfig(
     let methodPipes: (PipeTransform | Function)[] = [
         new DefaultValidationPipe(
             pipesFromConfigOptions.dto,
+            pipesFromConfigOptions.enableErrorMessages,
             pipesFromConfigOptions.isId,
-            pipesFromConfigOptions.disableErrorMessages,
         ),
     ];
     if (pipesFromConfigOptions.options.pipesConfig?.[pipesFromConfigOptions.methodName]?.pipes) {
@@ -74,7 +74,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
     const updateDto = options.dtoConfig.updateDtoType;
     const idParamDto = options.useMongo ? DefaultMongoParamDto : DefaultParamDto;
 
-    const disableErrorMessages: boolean = !!options.disableErrorMessages;
+    const disableErrorMessages: boolean = !!options.enableErrorMessages;
 
     const createOnePipes = getPipesFromConfig(
         {
@@ -82,7 +82,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             methodName: 'createOne',
             dto: createDto,
             isId: false,
-            disableErrorMessages
+            enableErrorMessages: disableErrorMessages
         }
     );
     const findOnePipes = getPipesFromConfig(
@@ -91,7 +91,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             methodName: 'findOneById',
             dto: idParamDto,
             isId: true,
-            disableErrorMessages
+            enableErrorMessages: disableErrorMessages
         }
     );
     const updateOnePipes = getPipesFromConfig(
@@ -100,7 +100,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             methodName: 'updateOne',
             dto: updateDto,
             isId: false,
-            disableErrorMessages
+            enableErrorMessages: disableErrorMessages
         }
     );
     const createManyPipes = getPipesFromConfig(
@@ -109,7 +109,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             methodName: 'createMany',
             dto: createDto,
             isId: false,
-            disableErrorMessages
+            enableErrorMessages: disableErrorMessages
         }
     );
     const deleteOnePipes = getPipesFromConfig(
@@ -118,7 +118,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             methodName: 'deleteOne',
             dto: idParamDto,
             isId: true,
-            disableErrorMessages
+            enableErrorMessages: disableErrorMessages
         }
     );
 
@@ -133,7 +133,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
 
         @Post('create-many')
         @UsePipes(...createManyPipes)
-        async createMany(
+        createMany(
             @Body() newRecords: DeepPartial<T>[],
         ) {
             try {
@@ -152,7 +152,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
 
         @Post()
         @UsePipes(...createOnePipes)
-        async createOne(
+        createOne(
             @Body() newRecord: DeepPartial<T>,
         ) {
             try {
@@ -256,16 +256,16 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
         }
 
         @Get(':id')
-        async findOneById(
+        findOneById(
             @Param(...findOnePipes as PipeTransform[]) params: any,
         ) {
             try {
-                return this._service.findOneById(Number(params.id),);
+                return this._service.findOneById(params.id);
             } catch (error) {
                 console.error(
                     {
                         error,
-                        mensaje: 'Error on fetch results',
+                        mensaje: 'Error on fetch rows',
                         data: {id: params.id},
                     },
                 );

@@ -1,14 +1,16 @@
-import { DeepPartial, FindManyOptions, Repository } from 'typeorm';
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { findFull } from '../../..';
-import { FindFullQuery } from '../../..';
-import { ServiceCrudMethodsInterface } from '../../..';
+import {DeepPartial, FindManyOptions, Repository} from 'typeorm';
+import {InternalServerErrorException, NotFoundException} from '@nestjs/common';
+import {findFull} from '../../..';
+import {FindFullQuery} from '../../..';
+import {ServiceCrudMethodsInterface} from '../../..';
+import {EntityNotFoundError} from 'typeorm/error/EntityNotFoundError';
 
 export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInterface<Entity> {
     protected constructor(
         protected readonly _repository: Repository<Entity>,
     ) {
     }
+
     async createMany(record: DeepPartial<Entity>[]): Promise<Entity[]> {
         return await this._repository.save(record);
     }
@@ -27,12 +29,12 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
 
     async deleteOne(recordId: number): Promise<Entity> {
         try {
-            const recordToDelete = { ...await this._repository.findOne(+recordId) as Entity };
+            const recordToDelete = {...await this._repository.findOne(+recordId) as Entity};
             return await this._repository.remove(recordToDelete);
         } catch (error) {
             console.error({
-                error,
-            },
+                    error,
+                },
             );
             throw new InternalServerErrorException('Error on delete');
         }
@@ -43,7 +45,7 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
     ): Promise<[Entity[], number]> {
         const tieneParametros = parametros && Object.keys(parametros).length > 0;
         if (!tieneParametros) {
-            return await this._repository.findAndCount({ skip: 0, take: 10 });
+            return await this._repository.findAndCount({skip: 0, take: 10});
         } else {
             const tieneParametroWhere = parametros?.where !== undefined;
             const nombreTabla: string = this._repository.metadata.tableName;
@@ -68,7 +70,7 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
         } catch (error) {
             throw new InternalServerErrorException(
                 {
-                    message: 'Error on fecth document by id'
+                    message: 'Error on fecth document by params'
                 }
             );
         }
@@ -76,13 +78,21 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
 
     async findOneById(id: number): Promise<Entity> {
         try {
-            return await this._repository.findOne(id) as Entity;
+            return await this._repository.findOneOrFail(id) as Entity;
         } catch (error) {
+            if (error instanceof EntityNotFoundError) {
+                throw new NotFoundException(
+                    {
+                        message: 'Record Not found'
+                    }
+                );
+            }
             throw new InternalServerErrorException(
                 {
-                    message: 'Error on fecth document by id'
+                    message: 'Server error',
                 }
             );
+
         }
     }
 }

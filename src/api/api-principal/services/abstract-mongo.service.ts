@@ -4,11 +4,11 @@ import {
     InsertWriteOpResult,
     MongoRepository,
 } from 'typeorm';
-import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
-import { PrincipalService } from './principal.service';
-import { FindFullQuery, MongoIndexConfigInterface } from '../../..';
-import { BaseMongoDTO } from '../../..';
-import { PartialEntity } from '../../interfaces/service.crud.methods.interfaces';
+import {BadRequestException, InternalServerErrorException, NotFoundException} from '@nestjs/common';
+import {PrincipalService} from './principal.service';
+import {FindFullQuery, MongoIndexConfigInterface} from '../../..';
+import {BaseMongoDTO} from '../../..';
+import {PartialEntity} from '../../interfaces/service.crud.methods.interfaces';
 
 export abstract class AbstractMongoService<Entity> extends PrincipalService<Entity> {
     protected constructor(
@@ -52,19 +52,20 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
         if (optionsOrConditions) {
             return await this.mongoRepository.findAndCount(optionsOrConditions);
         } else {
-            return await this.mongoRepository.findAndCount({ skip: 0, take: 10 });
+            return await this.mongoRepository.findAndCount({skip: 0, take: 10});
         }
     }
 
     async findOneById(id: any): Promise<Entity> {
         try {
-            return await this.mongoRepository.findOne(
+            return await this.mongoRepository.findOneOrFail(
                 id,
             ) as Entity;
         } catch (error) {
-            throw new InternalServerErrorException(
+            console.log(error);
+            throw new NotFoundException(
                 {
-                    message: 'Error on fecth document by id'
+                    message: 'Record Not found'
                 }
             );
         }
@@ -77,8 +78,8 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
                 {
                     _id: ObjectId(id),
                 },
-                { $set: { ...row } },
-                { upsert: false, }
+                {$set: {...row}},
+                {upsert: false,}
             );
             return await this.mongoRepository.findOne(id) as Entity;
         } catch (error) {
@@ -98,7 +99,7 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
                 documents,
             );
         } catch (error) {
-            console.error({ error, });
+            console.error({error,});
             throw new InternalServerErrorException('Error on create many documents');
         }
         try {
@@ -112,7 +113,7 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
             };
             return (await this.findAll(query))[0];
         } catch (error) {
-            console.error({ error, });
+            console.error({error,});
             throw new InternalServerErrorException('Error on fecth the created documents');
         }
     }
@@ -124,7 +125,7 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
                 documents as DeepPartial<Entity>[],
             );
         } catch (error) {
-            console.error({ error, });
+            console.error({error,});
             throw new InternalServerErrorException('Error on updated many documents');
         }
     }
@@ -137,13 +138,13 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
             const deleteResponse: DeleteWriteOpResultObject = await this.mongoRepository.deleteMany(
                 {
                     where: {
-                        _id: { $in: [...formatIds] },
+                        _id: {$in: [...formatIds]},
                     },
                 }
             );
             return deleteResponse.deletedCount ? deleteResponse.deletedCount : 0;
         } catch (error) {
-            console.error({ error, });
+            console.error({error,});
             throw new InternalServerErrorException('Error on delte many documents');
         }
     }
