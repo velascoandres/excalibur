@@ -46,7 +46,7 @@
   "devDependencies": {
     "@types/lodash": "^4.14.151",
     "tslint": "^6.1.2",
-    "typescript": "^3.9.2",
+    "typescript": "^3.9.2"
   },
   "dependencies": {
     "@nestjs/common": "^7.5.5",
