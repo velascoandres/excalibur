@@ -1025,7 +1025,7 @@ const MYSQL_CONNECTION_CONFIG: TypeOrmModuleOptions = {
     username: 'username',
     password: '1234',
     database: 'test',
-    name: 'defaul',
+    name: 'default',
     synchronize: true,
     retryDelay: 40000,
     retryAttempts: 3,

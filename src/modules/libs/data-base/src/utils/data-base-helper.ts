@@ -1,4 +1,4 @@
-import {getManager, ObjectType, Repository} from 'typeorm';
+import {getConnection, getManager, ObjectType, Repository} from 'typeorm';
 import {join} from 'path';
 import {readFileSync} from 'fs';
 import {FileException} from '../exceptions/file-exception';
@@ -15,7 +15,7 @@ export class DataBaseHelper {
         connection: string = 'default',
     ): Repository<T> {
         try {
-            const manager = getManager(connection);
+            const manager = getConnection(connection);
             return manager.getRepository(entity);
         } catch (error) {
             throw new RepositoryException(
