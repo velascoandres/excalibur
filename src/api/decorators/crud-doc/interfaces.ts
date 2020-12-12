@@ -1,10 +1,10 @@
 import {
     ParameterObject,
-    RequestBodyObject,
+    RequestBodyObject, SchemaObject,
 } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import {Type} from '@nestjs/common';
 import {SwaggerEnumType} from '@nestjs/swagger/dist/types/swagger-enum.type';
-import {ApiBodyOptions, ApiHeaderOptions, ApiQueryOptions, ApiResponseOptions} from '@nestjs/swagger';
+import {ApiBodyOptions, ApiHeaderOptions, ApiParamOptions, ApiQueryOptions, ApiResponseOptions} from '@nestjs/swagger';
 import {CrudMethodsInterface} from '../../interfaces/crud-methods.interface';
 
 export type RequestBodyOptions = Omit<RequestBodyObject, 'content'>;
@@ -17,6 +17,17 @@ export interface ApiQueryMetadata extends ParameterOptions {
     enum?: SwaggerEnumType;
     enumName?: string;
 }
+
+export interface ApiParamMetadata extends ParameterOptions {
+    type?: Type<unknown> | Function | [Function] | string;
+    enum?: SwaggerEnumType;
+    enumName?: string;
+}
+
+export interface ApiParamSchemaHost extends ParameterOptions {
+    schema: SchemaObject;
+}
+
 
 export type CrudMethod = keyof (CrudMethodsInterface);
 
@@ -31,19 +42,34 @@ export interface ApiBodyMetadata extends RequestBodyOptions {
 }
 
 export interface CrudApiDocConfig extends  CrudMethodsInterface{
-    createOne?: CreateUpdateOneConfig;
-    updateOne?: CreateUpdateOneConfig;
+    createOne?: CreateOneConfig;
+    createMany?: CreateOneConfig;
+    updateOne?: UpdateOneConfig;
     findAll?: BaseConfig;
-    deleteOne?: BaseConfig;
-    findOneById? : BaseConfig;
+    deleteOne?: DeleteOneConfig;
+    findOneById? : FindOneByIdConfig;
 }
 
 export interface BaseConfig {
     headers?: ApiHeaderOptions[];
     responses?: ApiResponseOptions[];
     apiQuery?: ApiQueryOptions;
+    security?: any;
 }
 
-export interface CreateUpdateOneConfig extends BaseConfig {
+export interface DeleteOneConfig extends  BaseConfig {
+    param?: ApiParamOptions;
+}
+
+export interface FindOneByIdConfig extends  BaseConfig {
+    param?: ApiParamOptions;
+}
+
+export interface CreateOneConfig extends BaseConfig {
     apiBody: ApiBodyOptions;
+}
+
+export interface UpdateOneConfig extends BaseConfig {
+    apiBody: ApiBodyOptions;
+    param?: ApiParamOptions;
 }

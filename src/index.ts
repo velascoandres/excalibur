@@ -8,6 +8,10 @@ export {PrincipalAuthCrudValidation} from './api/api-principal/auth/principal.ab
 export {BaseDTO} from './api/api-principal/schemas/base-dto';
 export {CrudDoc} from './api/decorators/crud-doc/crud-doc';
 export {CrudApiDocConfig} from './api/decorators/crud-doc/interfaces';
+export {CreateOneConfig} from './api/decorators/crud-doc/interfaces';
+export {UpdateOneConfig} from './api/decorators/crud-doc/interfaces';
+export {DeleteOneConfig} from './api/decorators/crud-doc/interfaces';
+export {FindOneByIdConfig} from './api/decorators/crud-doc/interfaces';
 export {findFull} from './api/functions/search/complex-search/find-full.funcion';
 export {findFullTransaccion} from './api/functions/search/complex-search/find-full.transaction.function';
 export {

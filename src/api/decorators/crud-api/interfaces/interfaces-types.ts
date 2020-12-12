@@ -1,4 +1,10 @@
-import {BaseConfig, CreateUpdateOneConfig} from '../../crud-doc/interfaces';
+import {
+    BaseConfig,
+    CreateOneConfig,
+    DeleteOneConfig,
+    FindOneByIdConfig,
+    UpdateOneConfig
+} from '../../crud-doc/interfaces';
 import {CrudGuards} from '../../crud-guards/interfaces/crud-guards-interfaces-types';
 import {CrudMethodsInterface} from '../../../interfaces/crud-methods.interface';
 import {HeaderInterface} from '../../crud-headers/interfaces/header.interface';
@@ -8,7 +14,7 @@ export interface CrudMethodOptions {
     guards?: CrudGuards;
     interceptors?: CrudInterceptors;
     header?: HeaderInterface;
-    documentation?: BaseConfig | CreateUpdateOneConfig;
+    documentation?: BaseConfig | CreateOneConfig | UpdateOneConfig | DeleteOneConfig | FindOneByIdConfig;
 }
 
 export type CrudMethodOptionsKeys = keyof CrudMethodOptions;

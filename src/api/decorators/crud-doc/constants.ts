@@ -1,5 +1,5 @@
 import {ApiBodyMetadata, MetodosApi} from './interfaces';
-import {ApiHeaderOptions, ApiQueryOptions} from '@nestjs/swagger';
+import {ApiHeaderOptions, ApiParamOptions, ApiQueryOptions} from '@nestjs/swagger';
 
 export const DEFAULT_BODY_METADATA: ApiBodyMetadata = {
     type: String,
@@ -13,6 +13,12 @@ export const DEFAULT_QUERY_OPTIONS: ApiQueryOptions = {
 
 export const DEFAULT_HEADER_OPTIONS: Partial<ApiHeaderOptions> = {
     name: '',
+};
+
+
+export const DEFAULT_PARAM_OPTIONS: ApiParamOptions = {
+    name: '',
+    required: true
 };
 
 

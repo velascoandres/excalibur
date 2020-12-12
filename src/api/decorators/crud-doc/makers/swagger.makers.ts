@@ -1,13 +1,13 @@
 import {
     ApiBodyOptions,
-    ApiHeaderOptions,
+    ApiHeaderOptions, ApiParamOptions,
     ApiQueryOptions,
     ApiResponseMetadata,
     ApiResponseOptions
 } from '@nestjs/swagger';
-import {ParameterLocation} from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
+import {ParameterLocation, SchemaObject} from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import {isNil, omit} from 'lodash';
-import {DEFAULT_HEADER_OPTIONS, DEFAULT_QUERY_OPTIONS} from '../constants';
+import {DEFAULT_HEADER_OPTIONS, DEFAULT_PARAM_OPTIONS, DEFAULT_QUERY_OPTIONS} from '../constants';
 import {
     addEnumArraySchema, addEnumSchema,
     getEnumType,
@@ -16,7 +16,7 @@ import {
     isEnumDefined
 } from '@nestjs/swagger/dist/utils/enum.utils';
 import {getTypeIsArrayTuple} from '@nestjs/swagger/dist/decorators/helpers';
-import {ApiBodyMetadata, ApiQueryMetadata, BaseConfig, CrudMethod, Prototype} from '../interfaces';
+import {ApiBodyMetadata, ApiParamMetadata, ApiQueryMetadata, BaseConfig, CrudMethod, Prototype} from '../interfaces';
 import {SwagerDelegator} from '../delegators/swager.delegator';
 
 
@@ -44,6 +44,7 @@ export class SwaggerMakers {
         return param;
 
     }
+
     static makeApiResponse(
         options: ApiResponseOptions
     ) {
@@ -56,8 +57,9 @@ export class SwaggerMakers {
         (options as ApiResponseMetadata).isArray = isArray;
         options.description = options.description ? options.description : '';
 
-        return { [options.status as any]: omit(options, 'status') };
+        return {[options.status as any]: omit(options, 'status')};
     }
+
     static makeCustomApiBody(options: ApiBodyOptions) {
         const [type, isArray] = getTypeIsArrayTuple(
             (options as ApiBodyMetadata).type,
@@ -75,8 +77,34 @@ export class SwaggerMakers {
         } else if (isEnumDefined(options)) {
             addEnumSchema(param, options);
         }
-        return  param;
+        return param;
     }
+
+    static makeApiParam(
+        options: ApiParamOptions
+    ) {
+        const param: Record<string, any> = {
+            in: 'path',
+            ...omit(options, 'enum'),
+            name: isNil(options.name) ? DEFAULT_PARAM_OPTIONS.name : options.name,
+        };
+
+        const apiParamMetadata = options as ApiParamMetadata;
+        if (apiParamMetadata.enum) {
+            param.schema = param.schema || ({} as SchemaObject);
+
+            const paramSchema = param.schema as SchemaObject;
+            const enumValues = getEnumValues(apiParamMetadata.enum);
+            paramSchema.type = getEnumType(enumValues);
+            paramSchema.enum = enumValues;
+
+            if (apiParamMetadata.enumName) {
+                param.enumName = apiParamMetadata.enumName;
+            }
+        }
+        return param;
+    }
+
     static makeCustomApiQuery(
         options: ApiQueryOptions,
     ): ApiQueryMetadata & Record<string, any> {
@@ -102,6 +130,7 @@ export class SwaggerMakers {
         }
         return param;
     }
+
     static setApiHeaders(
         responsesConfigList: ApiHeaderOptions[] | undefined,
         target: Prototype,
@@ -113,6 +142,7 @@ export class SwaggerMakers {
             );
         }
     }
+
     static setApiResponses(
         responsesConfigList: ApiResponseOptions[] | undefined,
         target: Prototype,
@@ -124,6 +154,7 @@ export class SwaggerMakers {
             );
         }
     }
+
     static setHeadersResponses(options: BaseConfig, methodName: CrudMethod, target: any) {
         if (options.responses && options.responses.length > 0) {
             SwaggerMakers.setApiResponses(options.responses, target, methodName);

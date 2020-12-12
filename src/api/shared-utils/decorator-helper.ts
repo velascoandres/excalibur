@@ -39,6 +39,7 @@ export class DecoratorHelper {
         }
         if (updateOneOptions) {
             SwaggerHelper.buildApiBody(updateOneOptions, API_METHODS_NAMES_OBJECT.updateOne, target);
+            SwaggerHelper.buidlApiParameters(updateOneOptions, API_METHODS_NAMES_OBJECT.updateOne, target);
             SwaggerMakers.setHeadersResponses(updateOneOptions, API_METHODS_NAMES_OBJECT.updateOne, target);
         }
         if (findAllOptions) {
@@ -48,9 +49,12 @@ export class DecoratorHelper {
             SwaggerMakers.setHeadersResponses(findAllOptions, API_METHODS_NAMES_OBJECT.findAll, target);
         }
         if (deleteOneOptions) {
+
+            SwaggerHelper.buidlApiParameters(deleteOneOptions, API_METHODS_NAMES_OBJECT.deleteOne, target);
             SwaggerMakers.setHeadersResponses(deleteOneOptions, API_METHODS_NAMES_OBJECT.deleteOne, target);
         }
         if (findOneByIdOptions) {
+            SwaggerHelper.buidlApiParameters(findOneByIdOptions, API_METHODS_NAMES_OBJECT.findOneById, target);
             SwaggerMakers.setHeadersResponses(findOneByIdOptions, API_METHODS_NAMES_OBJECT.findOneById, target);
         }
         return target;
