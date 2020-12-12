@@ -30,6 +30,7 @@ export interface CrudOptions {
     dtoConfig: DtoConfigInterface | DtoConfig;
     pipesConfig?: PipesConfig;
     enableErrorMessages?: boolean;
+    mapIdWith?: string;
 }
 
 export interface PipesFromConfigOptions {
@@ -71,6 +72,9 @@ export function getPipesFromConfig(
 
 
 export function CrudController<T>(options: CrudOptions): typeof AbstractController {
+
+
+    const idProperty = options.mapIdWith ? options.mapIdWith : 'id';
 
     const createDto = options.dtoConfig.createDtoType;
     const updateDto = options.dtoConfig.updateDtoType;
@@ -171,12 +175,12 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             }
         }
 
-        @Delete(':id')
+        @Delete(`:${idProperty}`)
         async deleteOne(
             @Param(...deleteOnePipes as PipeTransform[]) params: any,
         ) {
             try {
-                await this._service.findOneById(params.id);
+                await this._service.findOneById(params[idProperty]);
             } catch (error) {
                 throw new NotFoundException({message: 'Record not found'});
             }
@@ -187,7 +191,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
                     {
                         error,
                         message: 'Error on delete',
-                        data: params.id,
+                        data: params[idProperty],
                     },
                 );
                 throw new InternalServerErrorException({message: 'Server Error'});
@@ -257,36 +261,36 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             }
         }
 
-        @Get(':id')
+        @Get(`:${idProperty}`)
         findOneById(
             @Param(...findOnePipes as PipeTransform[]) params: any,
         ) {
             try {
-                return this._service.findOneById(params.id);
+                return this._service.findOneById(params[idProperty]);
             } catch (error) {
                 console.error(
                     {
                         error,
                         mensaje: 'Error on fetch rows',
-                        data: {id: params.id},
+                        data: {[`${idProperty}`]: params[idProperty]},
                     },
                 );
                 throw new NotFoundException({message: 'Record not found'});
             }
         }
 
-        @Put(':id')
+        @Put(`:${idProperty}`)
         async updateOne(
             @Param(...findOnePipes as PipeTransform[]) params: any,
             @Body(...updateOnePipes as PipeTransform[]) recordToUpdate: DeepPartial<T>,
         ) {
             try {
-                await this._service.findOneById(params.id);
+                await this._service.findOneById(params[idProperty]);
             } catch (error) {
                 throw new NotFoundException({message: 'Record not found'});
             }
             try {
-                return await this._service.updateOne(params.id, recordToUpdate);
+                return await this._service.updateOne(params[idProperty], recordToUpdate);
             } catch (error) {
                 console.error(
                     {
