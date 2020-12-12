@@ -1,6 +1,6 @@
 import {
     DeepPartial,
-    DeleteWriteOpResultObject,
+    DeleteWriteOpResultObject, FindManyOptions,
     InsertWriteOpResult,
     MongoRepository,
 } from 'typeorm';
@@ -48,7 +48,7 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
         }
     }
 
-    async findAll(optionsOrConditions?: FindFullQuery): Promise<[Entity[], number]> {
+    async findAll(optionsOrConditions?: FindManyOptions | FindFullQuery): Promise<[Entity[], number]> {
         if (optionsOrConditions) {
             return await this.mongoRepository.findAndCount(optionsOrConditions);
         } else {
@@ -62,7 +62,7 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
                 id,
             ) as Entity;
         } catch (error) {
-            console.log(error);
+            console.error(error);
             throw new NotFoundException(
                 {
                     message: 'Record Not found'

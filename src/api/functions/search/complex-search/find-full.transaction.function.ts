@@ -1,4 +1,4 @@
-import {EntityManager, ObjectType, SelectQueryBuilder} from 'typeorm';
+import {EntityManager, SelectQueryBuilder} from 'typeorm';
 import {FindFullQuery} from './interfaces/find-full-query';
 import {InternalServerErrorException} from '@nestjs/common';
 import {searchRecords} from './search-functions/search-records';
