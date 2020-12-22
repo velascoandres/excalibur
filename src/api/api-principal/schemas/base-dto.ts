@@ -4,7 +4,7 @@ export class BaseDTO {
     @IsEmpty()
     id: number | undefined;
     @IsEmpty()
-    creaatedAt: string | undefined;
+    createdAt: string | undefined;
     @IsEmpty()
     updatedAt: string | undefined;
     constructor() {

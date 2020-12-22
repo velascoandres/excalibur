@@ -2,7 +2,7 @@ import {
     DeepPartial,
     DeleteWriteOpResultObject, FindManyOptions,
     InsertWriteOpResult,
-    MongoRepository,
+    MongoRepository, ObjectID,
 } from 'typeorm';
 import {BadRequestException, InternalServerErrorException, NotFoundException} from '@nestjs/common';
 import {PrincipalService} from './principal.service';
@@ -71,7 +71,7 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
         }
     }
 
-    async updateOne(id: string | number, row: PartialEntity<Entity>): Promise<Entity> {
+    async updateOne(id: string | number | ObjectID, row: PartialEntity<Entity>): Promise<Entity> {
         try {
             const ObjectId = require('mongodb').ObjectID;
             const res = await this.mongoRepository.updateOne(
