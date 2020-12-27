@@ -81,7 +81,7 @@ export class CrudFilterException implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
-        const {message, error} = exception.erroPayload;
+        const {message, error, data} = exception.erroPayload;
         let status = HttpStatus.INTERNAL_SERVER_ERROR;
         const isCreateException = exception instanceof CreateOneException;
         const isUpdateOneException = exception instanceof UpdateOneException;
@@ -98,12 +98,8 @@ export class CrudFilterException implements ExceptionFilter {
         const logger = new Logger();
         logger.error(message);
         if (this.debug) {
-            logger
-                .debug(
-                    error,
-                );
+            logger.debug(data, error);
         }
-        console.error(error);
         response
             .status(status)
             .json(
@@ -111,7 +107,6 @@ export class CrudFilterException implements ExceptionFilter {
                     message,
                     statusCode: status,
                     timestamp: new Date().toISOString(),
-                    path: request.url,
                 },
             );
     }

@@ -8,7 +8,7 @@ import {
     DeleteOneException,
     FindAllException,
     FindOneByIdException, FindOneException,
-    UpdateOneException
+    UpdateOneException,
 } from '../exceptions/crud-exception.filter';
 
 export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInterface<Entity> {
