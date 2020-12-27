@@ -25,7 +25,9 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
                 {
                     error,
                     message: 'Error on create many',
-                    data: records,
+                    data: {
+                        records,
+                    },
                 },
             );
         }

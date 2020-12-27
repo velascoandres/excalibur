@@ -4,11 +4,18 @@ import {
     InsertWriteOpResult,
     MongoRepository, ObjectID,
 } from 'typeorm';
-import {BadRequestException, InternalServerErrorException, NotFoundException} from '@nestjs/common';
+import {BadRequestException, InternalServerErrorException, Logger, NotFoundException} from '@nestjs/common';
 import {PrincipalService} from './principal.service';
 import {FindFullQuery, MongoIndexConfigInterface} from '../../..';
 import {BaseMongoDTO} from '../../..';
 import {PartialEntity} from '../../interfaces/service.crud.methods.interfaces';
+import {
+    CreateIndexException,
+    CreateManyException, CreateOneException,
+    DeleteManyException, DeleteOneException,
+    FindAllException, FindOneByIdException,
+    UpdateManyException, UpdateOneException
+} from '../exceptions/crud-exception.filter';
 
 export abstract class AbstractMongoService<Entity> extends PrincipalService<Entity> {
     protected constructor(
@@ -18,11 +25,15 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
         super(
             mongoRepository,
         );
+        const logger = new Logger();
         if (indexConfig) {
             this.createIndex(indexConfig).then(
-                indx => console.info('Index created: ', indx),
+                index => logger.log('Index created: ', index),
             ).catch(
-                err => console.error('error on create index', err),
+                (createIndxException: CreateIndexException) => {
+                    const {error, data} = createIndxException.errorPayload;
+                    logger.error(`Error on create index on: ${this.constructor.name}`, data, error);
+                },
             );
         }
     }
@@ -31,7 +42,15 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
         try {
             return this.mongoRepository.save(row as DeepPartial<Entity>);
         } catch (error) {
-            throw new InternalServerErrorException('Error on delete document');
+            throw new CreateOneException(
+                {
+                    error,
+                    message: 'Error on delete document',
+                    data: {
+                        document: row,
+                    },
+                }
+            );
         }
     }
 
@@ -44,15 +63,35 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
                 }
             )).value;
         } catch (error) {
-            throw new InternalServerErrorException('Error on delete document');
+            throw new DeleteOneException(
+                {
+                    error,
+                    message: 'Error on delete document',
+                    data: {
+                        id,
+                    },
+                },
+            );
         }
     }
 
     async findAll(optionsOrConditions?: FindManyOptions | FindFullQuery): Promise<[Entity[], number]> {
-        if (optionsOrConditions) {
-            return await this.mongoRepository.findAndCount(optionsOrConditions);
-        } else {
-            return await this.mongoRepository.findAndCount({skip: 0, take: 10});
+        try {
+            if (optionsOrConditions) {
+                return await this.mongoRepository.findAndCount(optionsOrConditions);
+            } else {
+                return await this.mongoRepository.findAndCount({skip: 0, take: 10});
+            }
+        } catch (error) {
+            throw  new FindAllException(
+                {
+                    error,
+                    message: 'Error on fetch documents',
+                    data: {
+                        query: optionsOrConditions,
+                    },
+                },
+            );
         }
     }
 
@@ -62,11 +101,14 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
                 id,
             ) as Entity;
         } catch (error) {
-            console.error(error);
-            throw new NotFoundException(
+            throw new FindOneByIdException(
                 {
-                    message: 'Record Not found'
-                }
+                    error,
+                    message: 'Record Not found',
+                    data: {
+                        id,
+                    },
+                },
             );
         }
     }
@@ -74,7 +116,7 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
     async updateOne(id: string | number | ObjectID, row: PartialEntity<Entity>): Promise<Entity> {
         try {
             const ObjectId = require('mongodb').ObjectID;
-            const res = await this.mongoRepository.updateOne(
+            const updateResponse = await this.mongoRepository.updateOne(
                 {
                     _id: ObjectId(id),
                 },
@@ -83,9 +125,14 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
             );
             return await this.mongoRepository.findOne(id) as Entity;
         } catch (error) {
-            throw new InternalServerErrorException(
+            throw new UpdateOneException(
                 {
-                    messague: 'Error on update'
+                    error,
+                    message: 'Error on update',
+                    data: {
+                        id,
+                        document: row,
+                    },
                 }
             );
         }
@@ -99,8 +146,15 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
                 documents,
             );
         } catch (error) {
-            console.error({error,});
-            throw new InternalServerErrorException('Error on create many documents');
+            throw new CreateManyException(
+                {
+                    error,
+                    message: 'Error on create many documents',
+                    data: {
+                        documents,
+                    },
+                },
+            );
         }
         try {
             ids = createdDocuments.insertedIds;
@@ -113,8 +167,15 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
             };
             return (await this.findAll(query))[0];
         } catch (error) {
-            console.error({error,});
-            throw new InternalServerErrorException('Error on fecth the created documents');
+            throw new FindAllException(
+                {
+                    error,
+                    message: 'Error on fecth the created documents',
+                    data: {
+                        created: documents,
+                    },
+                }
+            );
         }
     }
 
@@ -125,8 +186,15 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
                 documents as DeepPartial<Entity>[],
             );
         } catch (error) {
-            console.error({error,});
-            throw new InternalServerErrorException('Error on updated many documents');
+            throw new UpdateManyException(
+                {
+                    error,
+                    message: 'Error on updated many documents',
+                    data: {
+                        documents,
+                    }
+                },
+            );
         }
     }
 
@@ -144,8 +212,15 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
             );
             return deleteResponse.deletedCount ? deleteResponse.deletedCount : 0;
         } catch (error) {
-            console.error({error,});
-            throw new InternalServerErrorException('Error on delte many documents');
+            throw new DeleteManyException(
+                {
+                    error,
+                    message: 'Error on delte many documents',
+                    data: {
+                        ids,
+                    },
+                }
+            );
         }
     }
 
@@ -157,11 +232,15 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
                     config.options,
                 );
         } catch (error) {
-            console.error({
-                error,
-                mensaje: 'maybe the index already exist',
-            });
-            throw new BadRequestException(error);
+            throw new CreateIndexException(
+                {
+                    error,
+                    message: 'maybe the index already exist',
+                    data: {
+                        config,
+                    },
+                },
+            );
         }
     }
 

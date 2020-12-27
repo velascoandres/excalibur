@@ -15,61 +15,82 @@ export abstract class DataBaseException {
         this.payload = payload;
     }
 
-    get erroPayload() {
+    get errorPayload() {
         return this.payload;
     }
 }
 
 
 export class CreateOneException extends DataBaseException {
-    constructor(payload: any, status?: number) {
+    constructor(payload: IErrorPayload, status?: number) {
         super(payload);
     }
 }
 
 export class UpdateOneException extends DataBaseException {
-    constructor(payload: any, status?: number) {
+    constructor(payload: IErrorPayload, status?: number) {
+        super(payload);
+    }
+}
+
+export class UpdateManyException extends DataBaseException {
+    constructor(payload: IErrorPayload, status?: number) {
         super(payload);
     }
 }
 
 export class DeleteOneException extends DataBaseException {
-    constructor(payload: any, status?: number) {
+    constructor(payload: IErrorPayload, status?: number) {
+        super(payload);
+    }
+}
+
+export class DeleteManyException extends DataBaseException {
+    constructor(payload: IErrorPayload, status?: number) {
         super(payload);
     }
 }
 
 export class FindAllException extends DataBaseException {
-    constructor(payload: any, status?: number) {
+    constructor(payload: IErrorPayload, status?: number) {
         super(payload);
     }
 }
 
 export class FindOneByIdException extends DataBaseException {
-    constructor(payload: any, status?: number) {
+    constructor(payload: IErrorPayload, status?: number) {
         super(payload);
     }
 }
 
 export class FindOneException extends DataBaseException {
-    constructor(payload: any, status?: number) {
+    constructor(payload: IErrorPayload, status?: number) {
         super(payload);
     }
 }
 
 export class CreateManyException extends DataBaseException {
-    constructor(payload: any, status?: number) {
+    constructor(payload: IErrorPayload, status?: number) {
         super(payload);
     }
 }
 
 export class CreateIndexException extends DataBaseException {
-    constructor(payload: any, status?: number) {
+    constructor(payload: IErrorPayload, status?: number) {
         super(payload);
     }
 }
 
-@Catch(CreateOneException, UpdateOneException, DeleteOneException, FindAllException, FindOneByIdException, CreateManyException)
+@Catch(
+    CreateOneException,
+    UpdateOneException,
+    DeleteOneException,
+    FindAllException,
+    FindOneByIdException,
+    CreateManyException,
+    DeleteManyException,
+    UpdateManyException,
+)
 export class CrudFilterException implements ExceptionFilter {
     debug: boolean;
 
@@ -81,7 +102,7 @@ export class CrudFilterException implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
-        const {message, error, data} = exception.erroPayload;
+        const {message, error, data} = exception.errorPayload;
         let status = HttpStatus.INTERNAL_SERVER_ERROR;
         const isCreateException = exception instanceof CreateOneException;
         const isUpdateOneException = exception instanceof UpdateOneException;
@@ -89,10 +110,18 @@ export class CrudFilterException implements ExceptionFilter {
         const isFindAllException = exception instanceof FindAllException;
         const isFindOneByIdException = exception instanceof FindOneByIdException;
         const isCreateManyException = exception instanceof CreateManyException;
-        if (isCreateException || isUpdateOneException || isDeleteOneException || isCreateManyException) {
+        const isDeleteManyException = exception instanceof DeleteManyException;
+        const isUpdateManyException = exception instanceof UpdateManyException;
+
+        const isCreateError = isCreateException || isCreateManyException;
+        const isUpdateError = isUpdateOneException || isUpdateManyException;
+        const isDeleteError = isDeleteOneException || isDeleteManyException;
+        const isFindError = isFindOneByIdException || isFindAllException;
+
+        if (isCreateError || isUpdateError || isDeleteError) {
             status = HttpStatus.BAD_REQUEST;
         }
-        if (isFindAllException || isFindOneByIdException) {
+        if (isFindError) {
             status = HttpStatus.NOT_FOUND;
         }
         const logger = new Logger();
