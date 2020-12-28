@@ -1,21 +1,26 @@
 import {
     DeepPartial,
-    DeleteWriteOpResultObject, FindManyOptions,
+    DeleteWriteOpResultObject,
+    FindManyOptions,
     InsertWriteOpResult,
     MongoRepository, ObjectID,
 } from 'typeorm';
-import {BadRequestException, InternalServerErrorException, Logger, NotFoundException} from '@nestjs/common';
 import {PrincipalService} from './principal.service';
 import {FindFullQuery, MongoIndexConfigInterface} from '../../..';
 import {BaseMongoDTO} from '../../..';
 import {PartialEntity} from '../../interfaces/service.crud.methods.interfaces';
 import {
     CreateIndexException,
-    CreateManyException, CreateOneException,
-    DeleteManyException, DeleteOneException,
-    FindAllException, FindOneByIdException,
-    UpdateManyException, UpdateOneException
+    CreateManyException,
+    CreateOneException,
+    DeleteManyException,
+    DeleteOneException,
+    FindAllException,
+    FindOneByIdException,
+    UpdateManyException,
+    UpdateOneException
 } from '../exceptions/crud-exception.filter';
+import {LoggerService} from './logger.service';
 
 export abstract class AbstractMongoService<Entity> extends PrincipalService<Entity> {
     protected constructor(
@@ -25,14 +30,17 @@ export abstract class AbstractMongoService<Entity> extends PrincipalService<Enti
         super(
             mongoRepository,
         );
-        const logger = new Logger();
+        const logger = LoggerService.getInstance().logger;
         if (indexConfig) {
-            this.createIndex(indexConfig).then(
-                index => logger.log('Index created: ', index),
-            ).catch(
+            const className: string = this.constructor.name;
+            this
+                .createIndex(indexConfig)
+                .then(
+                    index => logger.verbose(`Index created: ${index}`, className),
+                ).catch(
                 (createIndxException: CreateIndexException) => {
                     const {error, data} = createIndxException.errorPayload;
-                    logger.error(`Error on create index on: ${this.constructor.name}`, data, error);
+                    logger.error(`Error on create index on: ${className}`, data, error);
                 },
             );
         }

@@ -1,5 +1,6 @@
 import {ArgumentsHost, Catch, ExceptionFilter, HttpStatus, Logger} from '@nestjs/common';
 import {Request, Response} from 'express';
+import {LoggerService} from '../services/logger.service';
 
 export interface IErrorPayload {
     error: any;
@@ -124,10 +125,14 @@ export class CrudFilterException implements ExceptionFilter {
         if (isFindError) {
             status = HttpStatus.NOT_FOUND;
         }
-        const logger = new Logger();
-        logger.error(message);
+        const path = request.route.path;
+        const method = request.method;
+        const context = `${method} ${path}`;
+        const logger = LoggerService.getInstance().logger;
+        logger.error(message, '', context);
         if (this.debug) {
-            logger.debug(data, error);
+            logger.debug(error, context);
+            logger.debug(data, context);
         }
         response
             .status(status)
