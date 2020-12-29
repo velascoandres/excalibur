@@ -1,5 +1,5 @@
 import {PureWhereInterface} from '../interfaces/pureWhereInterface';
-import {buildPureWhereWithOperator} from '../generators/build-pure-where-with-operator';
+import {buildPureWhereWithOperator, compressKey} from '../generators/build-pure-where-with-operator';
 import {ObjectLiteral} from 'typeorm';
 import {VerificatorHelper} from '../verificators-functions/verificator-helper';
 
@@ -7,11 +7,11 @@ export function reduceFunctionalWhereOr(
     entityName: string,
     attributeName: string,
 ): (ac: PureWhereInterface, val: any, index: number) => PureWhereInterface {
-    return (acumulator: PureWhereInterface, currentValue, localIndex: number) => {
+    return (accumulator: PureWhereInterface, currentValue, localIndex: number) => {
         let pureWhereLocal: PureWhereInterface;
-        // const esOperadorConsulta = esInterfazDeOperadorConsultaCompuesta(valorArreglo);
         const isComplexOperatorQuery = VerificatorHelper.isComplexOperatorObject(currentValue);
-        const strKeyLocalParameter = `attributeValue${localIndex}${entityName}${attributeName}`;
+        // const strKeyLocalParameter = `attributeValue${localIndex}${entityName}${attributeName}`;
+        const strKeyLocalParameter = compressKey(localIndex, entityName, attributeName);
         if (isComplexOperatorQuery) {
             pureWhereLocal = buildPureWhereWithOperator(
                 attributeName,
@@ -27,13 +27,13 @@ export function reduceFunctionalWhereOr(
                 parameters: localParameters,
             };
         }
-        acumulator.where = acumulator.where + ' ' + (localIndex > 0 ? 'or' : '') + ' ' + pureWhereLocal.where;
+        accumulator.where = accumulator.where + ' ' + (localIndex > 0 ? 'or' : '') + ' ' + pureWhereLocal.where;
         if (localIndex > 0) {
-            acumulator.parameters = {...acumulator.parameters, ...pureWhereLocal.parameters};
+            accumulator.parameters = {...accumulator.parameters, ...pureWhereLocal.parameters};
         } else {
-            acumulator.parameters = {...pureWhereLocal.parameters};
+            accumulator.parameters = {...pureWhereLocal.parameters};
         }
-        acumulator.conjunction = 'and';
-        return acumulator;
+        accumulator.conjunction = 'and';
+        return accumulator;
     };
 }

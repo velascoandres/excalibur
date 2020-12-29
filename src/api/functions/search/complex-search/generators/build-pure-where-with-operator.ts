@@ -10,8 +10,9 @@ export function buildPureWhereWithOperator(
     index: number = 1,
 ): PureWhereInterface | undefined {
     const operator: ComplexOperator = Object.keys(valueWithOperator)[0] as ComplexOperator;
-    const strParameterKey = `attributeValue${index}${entityName}${attribute}`;
-    const initialParameters: ObjectLiteral = {};
+    // const strParameterKey = `attributeValue${index}${entityName}${attribute}`;
+    const strParameterKey = compressKey(index, entityName, attribute);
+    const initialParameters: Record<string, PureWhereInterface> = {};
     // let conjuncion = 'and';
     // if (valorConOperador.conjuncion) {
     //     conjuncion = valorConOperador.conjuncion;
@@ -100,4 +101,8 @@ export function buildPureWhereWithOperator(
         default:
             return undefined;
     }
+}
+
+export function compressKey(index: number, entityName: string, attribute: string): string {
+    return `${index}${entityName.substring(0, 2)}${attribute}`;
 }
