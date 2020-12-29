@@ -2,6 +2,7 @@ import {ArgumentMetadata, BadRequestException, PipeTransform} from '@nestjs/comm
 import {plainToClass} from 'class-transformer';
 import {validate} from 'class-validator';
 import {BaseDTO} from '../schemas/base-dto';
+import {LoggerService} from '../services/logger.service';
 
 export class DefaultValidationPipe implements PipeTransform {
 
@@ -18,8 +19,11 @@ export class DefaultValidationPipe implements PipeTransform {
         }
         const entityDto = plainToClass(this.dto, value) as object;
         const validationErrors = await validate(entityDto);
+
+        const logger = LoggerService.getInstance().logger;
+
         if (validationErrors.length > 0) {
-            console.error(validationErrors);
+            logger.error(validationErrors, 'DefaultValidationPipe');
             const message: string = this.validateId ? 'Invalid id' : 'Invalid payload';
             const errorMessage = {
                 message,

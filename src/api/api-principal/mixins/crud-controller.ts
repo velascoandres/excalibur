@@ -3,12 +3,13 @@ import {DeepPartial} from 'typeorm';
 import {
     Body,
     Delete,
-    Get, HttpStatus,
-    InternalServerErrorException, NotFoundException,
+    Get,
     Param,
     Post,
     Put,
-    Query, Response, UsePipes
+    Query,
+    UseFilters,
+    UsePipes
 } from '@nestjs/common';
 import {AbstractController} from './abstract-controller';
 import {DefaultValidationPipe} from '../pipes/default-validation.pipe';
@@ -16,6 +17,8 @@ import {PipeTransform} from '@nestjs/common/interfaces';
 import {CrudMethod} from '../../decorators/crud-doc/interfaces';
 import {DefaultMongoParamDto} from '../schemas/default-mongo-param-dto';
 import {DefaultParamDto} from '../schemas/default-param-dto';
+import {CrudFilterException} from '../exceptions/crud-exception.filter';
+import {LoggerService} from '../services/logger.service';
 
 
 export interface CrudMethodPipes {
@@ -80,7 +83,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
     const updateDto = options.dtoConfig.updateDtoType;
     const idParamDto = options.useMongo ? DefaultMongoParamDto : DefaultParamDto;
 
-    const disableErrorMessages: boolean = !!options.enableErrorMessages;
+    const debug: boolean = !!options.enableErrorMessages;
 
     const createOnePipes = getPipesFromConfig(
         {
@@ -88,7 +91,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             methodName: 'createOne',
             dto: createDto,
             isId: false,
-            enableErrorMessages: disableErrorMessages
+            enableErrorMessages: debug
         }
     );
     const findOnePipes = getPipesFromConfig(
@@ -97,7 +100,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             methodName: 'findOneById',
             dto: idParamDto,
             isId: true,
-            enableErrorMessages: disableErrorMessages
+            enableErrorMessages: debug
         }
     );
     const updateOnePipes = getPipesFromConfig(
@@ -106,7 +109,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             methodName: 'updateOne',
             dto: updateDto,
             isId: false,
-            enableErrorMessages: disableErrorMessages
+            enableErrorMessages: debug
         }
     );
     const createManyPipes = getPipesFromConfig(
@@ -115,7 +118,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             methodName: 'createMany',
             dto: createDto,
             isId: false,
-            enableErrorMessages: disableErrorMessages
+            enableErrorMessages: debug
         }
     );
     const deleteOnePipes = getPipesFromConfig(
@@ -124,7 +127,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             methodName: 'deleteOne',
             dto: idParamDto,
             isId: true,
-            enableErrorMessages: disableErrorMessages
+            enableErrorMessages: debug
         }
     );
 
@@ -138,71 +141,36 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
         }
 
         @Post('create-many')
+        @UseFilters(new CrudFilterException(debug))
         @UsePipes(...createManyPipes)
         createMany(
             @Body() newRecords: DeepPartial<T>[],
         ) {
-            try {
-                return this._service.createMany(newRecords);
-            } catch (error) {
-                console.error(
-                    {
-                        error,
-                        message: 'Error on create',
-                        data: {records: newRecords},
-                    }
-                );
-                throw new InternalServerErrorException({message: 'Server Error'});
-            }
+            return this._service.createMany(newRecords);
         }
 
         @Post()
+        @UseFilters(new CrudFilterException(debug))
         @UsePipes(...createOnePipes)
         createOne(
             @Body() newRecord: DeepPartial<T>,
         ) {
-            try {
-                return this._service.createOne(newRecord);
-            } catch (error) {
-                console.error(
-                    {
-                        error,
-                        message: 'Error on create',
-                        data: {record: newRecord},
-                    }
-                );
-                throw new InternalServerErrorException({message: 'Server Error'});
-            }
+            return this._service.createOne(newRecord);
         }
 
         @Delete(`:${idProperty}`)
+        @UseFilters(new CrudFilterException(debug))
         async deleteOne(
             @Param(...deleteOnePipes as PipeTransform[]) params: any,
         ) {
-            try {
-                await this._service.findOneById(params[idProperty]);
-            } catch (error) {
-                throw new NotFoundException({message: 'Record not found'});
-            }
-            try {
-                return this._service.deleteOne(params.id);
-            } catch (error) {
-                console.error(
-                    {
-                        error,
-                        message: 'Error on delete',
-                        data: params[idProperty],
-                    },
-                );
-                throw new InternalServerErrorException({message: 'Server Error'});
-            }
-
+            await this._service.findOneById(params[idProperty]);
+            return this._service.deleteOne(params.id);
         }
 
         @Get()
+        @UseFilters(new CrudFilterException(debug))
         async findAll(
             @Query('query') searchCriteria: any,
-            @Response() response: any,
         ) {
             let result: [T[], number];
             let skip = 0;
@@ -236,71 +204,42 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
                     }
                     nextQuery = partialQuery;
                 }
-                const queryResponse = {
+                return {
                     nextQuery,
                     data,
                     total: totalRecords,
                 };
-                response.setHeader('Content-Type', 'application/json');
-                response.status(HttpStatus.OK).json(queryResponse);
             } catch (error) {
-                console.error(
-                    {
-                        error,
-                        message: 'Incorrect query params, bringing default query!',
-                        data: searchCriteria,
-                    },
+                const logger = LoggerService.getInstance().logger;
+                logger.warn(
+                    'Incorrect query params, bringing default query!',
+                    this.constructor.name,
                 );
                 result = await this._service.findAll();
-                const defaultQueryResponse = {
+                return {
                     nextQuery: {skip: 10, take},
                     data: result[0],
                     total: result[1],
                 };
-                response.status(HttpStatus.OK).json(defaultQueryResponse);
             }
         }
 
         @Get(`:${idProperty}`)
+        @UseFilters(new CrudFilterException(debug))
         findOneById(
             @Param(...findOnePipes as PipeTransform[]) params: any,
         ) {
-            try {
-                return this._service.findOneById(params[idProperty]);
-            } catch (error) {
-                console.error(
-                    {
-                        error,
-                        mensaje: 'Error on fetch rows',
-                        data: {[`${idProperty}`]: params[idProperty]},
-                    },
-                );
-                throw new NotFoundException({message: 'Record not found'});
-            }
+            return this._service.findOneById(params[idProperty]);
         }
 
         @Put(`:${idProperty}`)
+        @UseFilters(new CrudFilterException(debug))
         async updateOne(
             @Param(...findOnePipes as PipeTransform[]) params: any,
             @Body(...updateOnePipes as PipeTransform[]) recordToUpdate: DeepPartial<T>,
         ) {
-            try {
-                await this._service.findOneById(params[idProperty]);
-            } catch (error) {
-                throw new NotFoundException({message: 'Record not found'});
-            }
-            try {
-                return await this._service.updateOne(params[idProperty], recordToUpdate);
-            } catch (error) {
-                console.error(
-                    {
-                        error,
-                        message: 'Error al actualizar',
-                        data: {id: params, datosActualizar: recordToUpdate},
-                    }
-                );
-                throw new InternalServerErrorException({message: 'Server Error'});
-            }
+            await this._service.findOneById(params[idProperty]);
+            return await this._service.updateOne(params[idProperty], recordToUpdate);
         }
     }
 

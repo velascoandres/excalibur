@@ -1,6 +1,7 @@
 import {DefaultValidationPipe} from './default-validation.pipe';
 import {ArgumentMetadata, BadRequestException} from '@nestjs/common';
 import {validateMany} from '../../shared-utils/validate-many';
+import {LoggerService} from '../services/logger.service';
 
 export class DefaultManyValidationPipe extends DefaultValidationPipe {
 
@@ -9,8 +10,9 @@ export class DefaultManyValidationPipe extends DefaultValidationPipe {
             return value;
         }
         const validationErrors = await validateMany(value, this.dto);
+        const logger = LoggerService.getInstance().logger;
         if (validationErrors.length > 0) {
-            console.error(validationErrors);
+            logger.error(validationErrors, 'DefaultManyValidationPipe');
             throw new BadRequestException({message: 'Invalid payload'});
         }
         return value;
