@@ -86,7 +86,7 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
     }
 
     async findAll(
-        query?: FindFullQuery,
+        query?: FindFullQuery | FindManyOptions,
     ): Promise<[Entity[], number]> {
         try {
             const hasQuery = query && Object.keys(query).length > 0;
@@ -137,14 +137,14 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
         }
     }
 
-    async findOneById(id: number): Promise<Entity> {
+    async findOneById(id: number | string): Promise<Entity> {
         try {
             return await this._repository.findOneOrFail(id) as Entity;
         } catch (error) {
             throw new FindOneByIdException(
                 {
                     error,
-                    message: 'Error on fecth document by id',
+                    message: 'Error on fetch document by id',
                     data:{
                         id,
                     },
