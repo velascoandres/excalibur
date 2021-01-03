@@ -26,13 +26,13 @@ import {
 } from '@nestjs/swagger';
 import { FindFullQuery } from '../../..';
 import { GenericFindResponse } from './generic-find.response';
-import { ControllerCrudMehods, DtoConfigInterface } from '../../..';
+import { ControllerCrudMethods, DtoConfigInterface } from '../../..';
 import { DeepPartial, ObjectLiteral } from 'typeorm';
 import { Observable } from 'rxjs';
 import { ExcaliburAuth } from '../../..';
 import { validateMany } from '../../shared-utils/validate-many';
 
-export abstract class PrincipalCrudController<Entidad = any> implements ControllerCrudMehods<Entidad> {
+export abstract class PrincipalCrudController<Entidad = any> implements ControllerCrudMethods<Entidad> {
 
 
     protected constructor(

@@ -1,87 +1,22 @@
-import {DtoConfig, DtoConfigInterface, FindFullQuery, PrincipalService} from '../../..';
-import {DeepPartial} from 'typeorm';
-import {
-    Body,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    Query,
-    UseFilters,
-    UsePipes
-} from '@nestjs/common';
-import {AbstractController, AbstractMongooseController} from './abstract-controller';
-import {DefaultValidationPipe} from '../pipes/default-validation.pipe';
-import {PipeTransform} from '@nestjs/common/interfaces';
-import {CrudMethod} from '../../decorators/crud-doc/interfaces';
+import {AbstractMongooseController} from './abstract-controller';
 import {DefaultMongoParamDto} from '../schemas/default-mongo-param-dto';
-import {DefaultParamDto} from '../schemas/default-param-dto';
+import {Body, Delete, Get, Param, Post, Put, Query, UseFilters, UsePipes} from '@nestjs/common';
 import {CrudFilterException} from '../exceptions/crud-exception.filter';
+import {DeepPartial} from 'typeorm';
+import {PipeTransform} from '@nestjs/common/interfaces';
 import {LoggerService} from '../services/logger.service';
+import {getPipesFromConfig, MongooseCrudOptions} from './crud-controller';
+import {Document, FilterQuery} from 'mongoose';
+import {AbstractMongooseService} from '../services/abstract-mongoose.service';
 
-export interface CrudMethodPipes {
-    overrideDefault?: boolean;
-    pipes: (PipeTransform | Function)[];
-}
-
-export type PipesConfig = Partial<Record<CrudMethod, CrudMethodPipes>>;
-
-export interface CrudOptions {
-    useMongo?: boolean;
-    dtoConfig: DtoConfigInterface | DtoConfig;
-    pipesConfig?: PipesConfig;
-    enableErrorMessages?: boolean;
-    mapIdWith?: string;
-}
-
-export type MongooseCrudOptions = Omit<CrudOptions, 'useMongo'>;
-
-export interface PipesFromConfigOptions {
-    options: CrudOptions;
-    methodName: CrudMethod;
-    dto: any;
-    isId: boolean;
-    enableErrorMessages: boolean;
-}
-
-
-export function getPipesFromConfig(
-    pipesFromConfigOptions: PipesFromConfigOptions
-): (PipeTransform | Function)[] {
-    let methodPipes: (PipeTransform | Function)[] = [
-        new DefaultValidationPipe(
-            pipesFromConfigOptions.dto,
-            pipesFromConfigOptions.enableErrorMessages,
-            pipesFromConfigOptions.isId,
-        ),
-    ];
-    if (pipesFromConfigOptions.options.pipesConfig?.[pipesFromConfigOptions.methodName]?.pipes) {
-
-        const pipeConfigObjet: Partial<Record<CrudMethod, CrudMethodPipes>> = pipesFromConfigOptions.options.pipesConfig;
-        const methodName: CrudMethod = pipesFromConfigOptions.methodName;
-        const pipeConfig = pipeConfigObjet[methodName];
-        const pipes = pipeConfig!.pipes;
-        if (pipeConfig?.overrideDefault) {
-            methodPipes = pipes;
-        } else {
-            methodPipes = [
-                ...methodPipes,
-                ...pipes,
-            ];
-        }
-    }
-    return methodPipes;
-}
-
-export function CrudController<T>(options: CrudOptions): typeof AbstractController {
+export function CrudMongooseController<T extends Document>(options: MongooseCrudOptions): typeof AbstractMongooseController {
 
 
     const idProperty = options.mapIdWith ? options.mapIdWith : 'id';
 
     const createDto = options.dtoConfig.createDtoType;
     const updateDto = options.dtoConfig.updateDtoType;
-    const idParamDto = options.useMongo ? DefaultMongoParamDto : DefaultParamDto;
+    const idParamDto = DefaultMongoParamDto;
 
     const debug: boolean = !!options.enableErrorMessages;
 
@@ -131,28 +66,31 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
         }
     );
 
-    class BaseController extends AbstractController<T> {
+    class BaseController extends AbstractMongooseController<T> {
 
         constructor(
-            readonly _service: PrincipalService<T>,
+            readonly _service: AbstractMongooseService<T>,
         ) {
             super(_service);
         }
 
+        /*
         @Post('create-many')
         @UseFilters(new CrudFilterException(debug))
         @UsePipes(...createManyPipes)
         createMany(
-            @Body() newRecords: DeepPartial<T>[],
+            @Body() newRecords: Partial<T>[],
         ) {
             return this._service.createMany(newRecords);
         }
+
+        */
 
         @Post()
         @UseFilters(new CrudFilterException(debug))
         @UsePipes(...createOnePipes)
         createOne(
-            @Body() newRecord: DeepPartial<T>,
+            @Body() newRecord: Partial<T>,
         ) {
             return this._service.createOne(newRecord);
         }
@@ -175,7 +113,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
             let skip = 0;
             let take = 10;
             try {
-                let query: FindFullQuery;
+                let query: FilterQuery<any>;
                 if (searchCriteria) {
                     query = JSON.parse(searchCriteria);
                     result = await this._service.findAll(query);
@@ -183,7 +121,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
                     take = query.take ? query.take : 10;
                 } else {
                     query = {where: {}, skip: 0, take: 10};
-                    result = await this._service.findAll({} as FindFullQuery);
+                    result = await this._service.findAll({});
                 }
                 const totalRecords: number = +result[1];
                 const data: T[] = result[0];
@@ -194,7 +132,7 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
                     const isNotLimit = restingRecords >= take;
                     const nextSkip = skip + take;
                     const nextTake = isNotLimit ? take : restingRecords;
-                    const partialQuery: Partial<FindFullQuery> = {...query};
+                    const partialQuery: Partial<FilterQuery<any>> = {...query};
                     partialQuery.skip = nextSkip;
                     partialQuery.take = nextTake;
                     if (query.where) {

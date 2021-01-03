@@ -48,7 +48,7 @@ export abstract class PrincipalService<Entity> implements ServiceCrudMethodsInte
     }
 
     async updateOne(
-        id: number,
+        id: number | string,
         record: DeepPartial<Entity>,
     ): Promise<Entity> {
         try {

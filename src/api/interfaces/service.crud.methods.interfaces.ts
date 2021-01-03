@@ -23,9 +23,9 @@ export interface MongoServiceCrudMethodsInterface<T> extends ServiceCrudMethodsI
 export interface MongooseCrudMethodsInterface<T> extends CrudMethodsInterface {
     findAll: (filter: FilterQuery<T>, projection?: any | null, options?: QueryOptions | null) => Promise<[T[], number]>;
     updateOne: (id: string , row: T) => Promise<T>;
-    createOne: (row: T) => Promise<T>;
-    createMany?: (rows: T[]) => Promise<T[]>;
-    updateMany?: (rows: T[]) => Promise<T[]>;
+    createOne: (row: Partial<T>) => Promise<T>;
+    createMany?: (rows: Partial<T>[]) => Promise<T[]>;
+    updateMany?: (rows: Partial<T>[]) => Promise<T[]>;
     deleteOne: (id: string, ...args: any) => Promise<T>;
     findOneById: (id: string) => Promise<T>;
 }

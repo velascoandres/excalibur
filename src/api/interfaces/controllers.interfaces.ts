@@ -1,5 +1,5 @@
 import { BaseDTO, BaseMongoDTO } from '../..';
-import { DeepPartial, ObjectLiteral } from 'typeorm';
+import {DeepPartial, ObjectLiteral} from 'typeorm';
 
 
 export interface DtoConfig {
@@ -18,19 +18,19 @@ export interface DtoMongoConfigInterface extends DtoConfig {
     updateDtoType: typeof BaseMongoDTO | (new () => any);
 }
 
-export interface ControllerCrudMehods<T> {
+export interface ControllerCrudMethods<T> {
 
-    createOne(newRecord: DeepPartial<T>, req: any, response: any, ...args: any[]): any;
+    createOne(newRecord: DeepPartial<T> | Partial<T>, req: any, response: any, ...args: any[]): any;
 
-    updateOne(recordToUpdate: DeepPartial<T>, id: number, req: any, response: any, ...args: any[]): any;
+    updateOne(recordToUpdate: DeepPartial<T> | Partial<T>, id: number, req: any, response: any, ...args: any[]): any;
 
     deleteOne(id: number, req: any, response: any, ...args: any[]): any;
 
-    findAll(searchCriteria: ObjectLiteral, req: any, response: any, ...args: any[]): any;
+    findAll(searchCriteria: {[k in string]: any}, req: any, response: any, ...args: any[]): any;
 
     findOneById(id: number, req: any, response: any, ...args: any[]): any;
 
-    createMany(newRecords: DeepPartial<T>[], req: any, response: any, ...args: any[]): any;
+    createMany(newRecords: DeepPartial<T>[] | Partial<T>[], req: any, response: any, ...args: any[]): any;
 
 }
 
