@@ -30,7 +30,7 @@ export abstract class AbstractController<T = any> implements ControllerCrudMetho
 }
 
 
-export abstract class AbstractMongooseController<T extends Document> implements ControllerCrudMethods<T> {
+export abstract class AbstractMongooseController<T extends Document = any> implements ControllerCrudMethods<T> {
 
     protected constructor(
         readonly service: AbstractMongooseService<T>,

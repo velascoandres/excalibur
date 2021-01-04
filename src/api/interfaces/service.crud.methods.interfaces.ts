@@ -2,7 +2,7 @@ import { FindFullQuery, BaseDTO } from '../..';
 import { DeepPartial, FindManyOptions } from 'typeorm';
 import { MongodbIndexOptions } from 'typeorm/driver/mongodb/typings';
 import { CrudMethodsInterface } from './crud-methods.interface';
-import {FilterQuery, QueryOptions} from 'mongoose';
+import {FilterQuery} from 'mongoose';
 
 export interface ServiceCrudMethodsInterface<T> extends CrudMethodsInterface {
     createOne: (row: T) => Promise<T>;
@@ -21,7 +21,7 @@ export interface MongoServiceCrudMethodsInterface<T> extends ServiceCrudMethodsI
 }
 
 export interface MongooseCrudMethodsInterface<T> extends CrudMethodsInterface {
-    findAll: (filter: FilterQuery<T>, projection?: any | null, options?: QueryOptions | null) => Promise<[T[], number]>;
+    findAll: (filter: FilterQuery<T>, projection?: any | null, options?: any | null) => Promise<[T[], number]>;
     updateOne: (id: string , row: T) => Promise<T>;
     createOne: (row: Partial<T>) => Promise<T>;
     createMany?: (rows: Partial<T>[]) => Promise<T[]>;

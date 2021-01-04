@@ -116,12 +116,15 @@ export function CrudMongooseController<T extends Document>(options: MongooseCrud
                 let query: FilterQuery<any>;
                 if (searchCriteria) {
                     query = JSON.parse(searchCriteria);
-                    result = await this._service.findAll(query);
                     skip = query.skip ? query.skip : 0;
                     take = query.take ? query.take : 10;
+
+                    result = await this._service.findAll({
+                        ...query.where,
+                    }, null, {sort: {_id: -1}, limit: take, skip});
                 } else {
                     query = {where: {}, skip: 0, take: 10};
-                    result = await this._service.findAll({});
+                    result = await this._service.findAll({}, null,{sort: {_id: -1}, limit: take, skip});
                 }
                 const totalRecords: number = +result[1];
                 const data: T[] = result[0];
@@ -152,7 +155,11 @@ export function CrudMongooseController<T extends Document>(options: MongooseCrud
                     'Incorrect query params, bringing default query!',
                     this.constructor.name,
                 );
-                result = await this._service.findAll({});
+                result = await this._service.findAll(
+                    {},
+                    null,
+                    {sort: {_id: -1}, limit: take, skip},
+                );
                 return {
                     nextQuery: {skip: 10, take},
                     data: result[0],

@@ -1,4 +1,4 @@
-import {FilterQuery, Model, QueryOptions} from 'mongoose';
+import {FilterQuery, Model} from 'mongoose';
 import {Document} from 'mongoose';
 import {MongooseCrudMethodsInterface} from '../../interfaces/service.crud.methods.interfaces';
 import {
@@ -52,8 +52,10 @@ export abstract class AbstractMongooseService<T extends Document> implements Mon
 
     }
 
-    async findAll(filter: FilterQuery<T>, projection?: any | null, options?: QueryOptions | null): Promise<[T[], number]> {
+    async findAll(filter: FilterQuery<T>, projection?: any | null, options?: any | null): Promise<[T[], number]> {
         try {
+            const total = await this.abstractModel.countDocuments(filter);
+
             const promise = new Promise<[T[], number]>(
                 (resolve, reject) => {
                     this.abstractModel.find(
@@ -62,7 +64,7 @@ export abstract class AbstractMongooseService<T extends Document> implements Mon
                             if (err) {
                                 reject(err);
                             } else {
-                                resolve([docs, docs.length]);
+                                resolve([docs, total]);
                             }
                         },
                     );

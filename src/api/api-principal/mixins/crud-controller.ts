@@ -11,7 +11,7 @@ import {
     UseFilters,
     UsePipes
 } from '@nestjs/common';
-import {AbstractController, AbstractMongooseController} from './abstract-controller';
+import {AbstractController} from './abstract-controller';
 import {DefaultValidationPipe} from '../pipes/default-validation.pipe';
 import {PipeTransform} from '@nestjs/common/interfaces';
 import {CrudMethod} from '../../decorators/crud-doc/interfaces';
