@@ -1,6 +1,6 @@
 import {AbstractMongooseController} from './abstract-controller';
 import {DefaultMongoParamDto} from '../schemas/default-mongo-param-dto';
-import {Body, Delete, Get, Param, Post, Put, Query, UseFilters, UsePipes} from '@nestjs/common';
+import {Body, Delete, Get, mixin, Param, Post, Put, Query, Type, UseFilters, UsePipes} from '@nestjs/common';
 import {CrudFilterException} from '../exceptions/crud-exception.filter';
 import {DeepPartial} from 'typeorm';
 import {PipeTransform} from '@nestjs/common/interfaces';
@@ -9,7 +9,7 @@ import {getPipesFromConfig, MongooseCrudOptions} from './crud-controller';
 import {Document, FilterQuery} from 'mongoose';
 import {AbstractMongooseService} from '../services/abstract-mongoose.service';
 
-export function CrudMongooseController<T extends Document>(options: MongooseCrudOptions): typeof AbstractMongooseController {
+export function CrudMongooseController<T extends Document>(options: MongooseCrudOptions): Type<AbstractMongooseController<T>> {
 
 
     const idProperty = options.mapIdWith ? options.mapIdWith : 'id';
@@ -124,7 +124,7 @@ export function CrudMongooseController<T extends Document>(options: MongooseCrud
                     }, null, {sort: {_id: -1}, limit: take, skip});
                 } else {
                     query = {where: {}, skip: 0, take: 10};
-                    result = await this._service.findAll({}, null,{sort: {_id: -1}, limit: take, skip});
+                    result = await this._service.findAll({}, null, {sort: {_id: -1}, limit: take, skip});
                 }
                 const totalRecords: number = +result[1];
                 const data: T[] = result[0];
@@ -187,5 +187,5 @@ export function CrudMongooseController<T extends Document>(options: MongooseCrud
         }
     }
 
-    return BaseController as any;
+    return mixin(BaseController);
 }

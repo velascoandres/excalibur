@@ -3,7 +3,7 @@ import {DeepPartial, ObjectLiteral} from 'typeorm';
 import {Document} from 'mongoose';
 import {AbstractMongooseService} from '../services/abstract-mongoose.service';
 
-export abstract class AbstractController<T = any> implements ControllerCrudMethods<T> {
+export abstract class AbstractController<T> implements ControllerCrudMethods<T> {
 
     protected constructor(
         readonly service: PrincipalService<T>,
@@ -30,7 +30,7 @@ export abstract class AbstractController<T = any> implements ControllerCrudMetho
 }
 
 
-export abstract class AbstractMongooseController<T extends Document = any> implements ControllerCrudMethods<T> {
+export abstract class AbstractMongooseController<T extends Document> implements ControllerCrudMethods<T> {
 
     protected constructor(
         readonly service: AbstractMongooseService<T>,

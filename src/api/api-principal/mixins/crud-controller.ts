@@ -3,11 +3,11 @@ import {DeepPartial} from 'typeorm';
 import {
     Body,
     Delete,
-    Get,
+    Get, mixin,
     Param,
     Post,
     Put,
-    Query,
+    Query, Type,
     UseFilters,
     UsePipes
 } from '@nestjs/common';
@@ -74,7 +74,7 @@ export function getPipesFromConfig(
     return methodPipes;
 }
 
-export function CrudController<T>(options: CrudOptions): typeof AbstractController {
+export function CrudController<T>(options: CrudOptions): Type<AbstractController<T>> {
 
 
     const idProperty = options.mapIdWith ? options.mapIdWith : 'id';
@@ -242,5 +242,5 @@ export function CrudController<T>(options: CrudOptions): typeof AbstractControll
         }
     }
 
-    return BaseController as any;
+    return mixin(BaseController);
 }
