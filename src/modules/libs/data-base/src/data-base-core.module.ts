@@ -2,7 +2,7 @@ import {DataBaseConfig} from './interfaces/data-base-config.interface';
 import {TypeOrmModule, TypeOrmModuleOptions} from '@nestjs/typeorm';
 import {DynamicModule, Global, Module, Provider} from '@nestjs/common';
 import {ConfigStore} from './store/config.store';
-import {BULKS_CONFIG, ENV_CONFIG} from './constants/inject-keys';
+import {BULKS_CONFIG, BULKS_MONGOOSE_CONFIG, ENV_CONFIG} from './constants/inject-keys';
 import {DataBaseService} from './data-base.service';
 
 @Global()
@@ -19,6 +19,7 @@ import {DataBaseService} from './data-base.service';
 export class DataBaseCoreModule {
     static forRoot(config: DataBaseConfig): DynamicModule {
         const bulksConfig = ConfigStore.bulkDataConfigStore;
+        const bulksMoongoseConfig = ConfigStore.bulkDataMonggoseConfigStore;
         const productionFlagProvider: Provider = {
             useValue: config.productionFlag,
             provide: ENV_CONFIG,
@@ -26,6 +27,11 @@ export class DataBaseCoreModule {
         const bulksConfigProvider: Provider = {
             useValue: bulksConfig,
             provide: BULKS_CONFIG,
+        };
+
+        const bulksMongooseConfigProvider: Provider = {
+            useValue: bulksMoongoseConfig,
+            provide: BULKS_MONGOOSE_CONFIG,
         };
         const connectionOptios: TypeOrmModuleOptions[] = Object.values(config.conections);
         const dependencies = DataBaseCoreModule.buildDependencies(connectionOptios);
@@ -37,6 +43,7 @@ export class DataBaseCoreModule {
             providers: [
                 productionFlagProvider,
                 bulksConfigProvider,
+                bulksMongooseConfigProvider,
                 DataBaseService,
             ],
             exports: [

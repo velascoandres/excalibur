@@ -1,2 +1,3 @@
 export const BULKS_CONFIG = 'BULKS_CONFIG';
+export const BULKS_MONGOOSE_CONFIG = 'BULKS_MONGOOSE_CONFIG';
 export const ENV_CONFIG = 'ENV_CONFIG';

@@ -8,8 +8,11 @@ import {CreateBulkException} from '../exceptions/create-bulk-exception';
 import {ClassType} from 'class-transformer/ClassTransformer';
 import {RepositoryException} from '../exceptions/repository-exception';
 import {ValidationResponse} from '../interfaces/validation.response';
+import {Document, Schema} from 'mongoose';
+import mongoose from 'mongoose';
 
 export class DataBaseHelper {
+
     static getRepository<T>(
         entity: ObjectType<T>,
         connection: string = 'default',
@@ -75,7 +78,63 @@ export class DataBaseHelper {
             );
 
         }
+        // validate Files
+        const parsedData = await DataBaseHelper.getParsedData(path, dtoClass);
+        // insert data
+        try {
+            const createdData = await repository.save(parsedData);
+            return createdData.length;
+        } catch (error) {
+            throw new CreateBulkException(
+                {
+                    insertionError: error.toString(),
+                }
+            );
+        }
+    }
+
+    static async insertDataMongoose<T extends Document, D = (new() => any)>(
+        path: string,
+        dtoClass: D | undefined,
+        modelName: any,
+        schema: Schema,
+        connection: string = 'default',
+    ): Promise<number> {
+        // Get repository
         // Find file
+        const model = mongoose.connection.model(modelName, schema);
+        // const model = mongoose.model(modelName, schema, undefined, true);
+        const parsedData = await DataBaseHelper.getParsedData(path, dtoClass);
+        // insert data
+        try {
+            const promise = new Promise<[T[], number]>(
+                async (resolve, reject) => {
+                   await model.insertMany(
+                        parsedData,
+                        (err, docs: any[]) => {
+                            if (err) {
+                                console.error('x7e', err);
+                                reject(err);
+                            } else {
+                                console.error('x7e', docs);
+                                resolve([docs, docs.length]);
+                            }
+                        },
+                    );
+                }
+            );
+            const created = await promise;
+            return parsedData.length;
+        } catch (error) {
+            throw new CreateBulkException(
+                {
+                    insertionError: error.toString(),
+                }
+            );
+        }
+    }
+
+    private static async getParsedData<D>(path: string, dtoClass: D | undefined) {
         let records: D[] = [];
         // let status: boolean = true;
         try {
@@ -88,10 +147,9 @@ export class DataBaseHelper {
             );
         }
         // validate Files
-        let parsedData: D[] = [];
         if (dtoClass) {
             try {
-                parsedData = await DataBaseHelper.validateMassive(dtoClass, records);
+                return await DataBaseHelper.validateMassive(dtoClass, records);
             } catch (error) {
                 throw new CreateBulkException(
                     {
@@ -100,19 +158,7 @@ export class DataBaseHelper {
                 );
             }
         } else {
-            parsedData = records;
-        }
-
-        // insert data
-        try {
-            const createdData = await repository.save(parsedData);
-            return createdData.length;
-        } catch (error) {
-            throw new CreateBulkException(
-                {
-                    insertionError: error.toString(),
-                }
-            );
+            return records;
         }
     }
 }

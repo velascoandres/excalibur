@@ -1,7 +1,7 @@
 import {DynamicModule, Global, Module} from '@nestjs/common';
 import {DataBaseConfig} from './interfaces/data-base-config.interface';
 import {DataBaseCoreModule} from './data-base-core.module';
-import {BulkDataConfig} from './interfaces/bulk-data-config.interface';
+import {BulkDataConfig, BulkMongooseDataConfig} from './interfaces/bulk-data-config.interface';
 import {ConfigStore} from './store/config.store';
 
 @Global()
@@ -13,6 +13,13 @@ export class DataBaseModule {
 
     static forBulkData(config: BulkDataConfig): DynamicModule {
         ConfigStore.addBulkConfig(config);
+        return {
+            module: DataBaseModule,
+        };
+    }
+
+    static forMoongoseBulkData(config: BulkMongooseDataConfig): DynamicModule {
+        ConfigStore.addBulkMongooseConfig(config);
         return {
             module: DataBaseModule,
         };
