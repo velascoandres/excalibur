@@ -3,6 +3,7 @@ export {crearDatos} from './api/functions/files/load-test-data';
 export {borrarArhicvo} from './api/functions/files/delete-files';
 export {PrincipalCrudController} from './api/api-principal/controllers/principal-crud.controller';
 export {PrincipalService} from './api/api-principal/services/principal.service';
+export {AbstractMongooseService} from './api/api-principal/services/abstract-mongoose.service';
 export {AbstractEntity} from './api/api-principal/schemas/abstract-entity';
 export {PrincipalAuthCrudValidation} from './api/api-principal/auth/principal.abstract.auth.crud';
 export {BaseDTO} from './api/api-principal/schemas/base-dto';
@@ -44,10 +45,12 @@ export {CrudInterceptors} from './api/decorators/crud-interceptors/crud-intercep
 export {CrudHeaders} from './api/decorators/crud-headers/crud-headers';
 export {ExcaliburAuth} from './api/interfaces/excalibur.auth';
 export {CrudController} from './api/api-principal/mixins/crud-controller';
+export {CrudMongooseController} from './api/api-principal/mixins/crud-mongoose-controller';
 export {CrudMethodPipes} from './api/api-principal/mixins/crud-controller';
 export {CrudOptions} from './api/api-principal/mixins/crud-controller';
+export {MongooseCrudOptions} from './api/api-principal/mixins/crud-controller';
 export {PipesConfig} from './api/api-principal/mixins/crud-controller';
-export {AbstractController} from './api/api-principal/mixins/abstract-controller';
+export {AbstractController, AbstractMongooseController} from './api/api-principal/mixins/abstract-controller';
 // MODULES ************************************************************
 export * from './modules/libs/google-cloud-storage/src/index';
 export * from './modules/libs/firebase/src/index';

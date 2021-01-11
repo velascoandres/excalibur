@@ -1,10 +1,12 @@
-import {ControllerCrudMehods, PrincipalService} from '../../..';
+import {ControllerCrudMethods, PrincipalService} from '../../..';
 import {DeepPartial, ObjectLiteral} from 'typeorm';
+import {Document} from 'mongoose';
+import {AbstractMongooseService} from '../services/abstract-mongoose.service';
 
-export abstract class AbstractController<T = any> implements ControllerCrudMehods<T> {
+export abstract class AbstractController<T> implements ControllerCrudMethods<T> {
 
     protected constructor(
-        readonly _service: PrincipalService<T>,
+        readonly service: PrincipalService<T>,
     ) {
     }
 
@@ -12,6 +14,33 @@ export abstract class AbstractController<T = any> implements ControllerCrudMehod
     }
 
     createOne(newRecord: DeepPartial<T>, ...args: any[]): any {
+    }
+
+    deleteOne(id: number, ...args: any[]): any {
+    }
+
+    findAll(searchCriteria: ObjectLiteral, ...args: any[]): any {
+    }
+
+    findOneById(id: number, ...args: any[]): any {
+    }
+
+    updateOne(...args: any[]): any {
+    }
+}
+
+
+export abstract class AbstractMongooseController<T extends Document> implements ControllerCrudMethods<T> {
+
+    protected constructor(
+        readonly service: AbstractMongooseService<T>,
+    ) {
+    }
+
+    createMany(newRecords: Partial<T>[], ...args: any[]): any {
+    }
+
+    createOne(newRecord: Partial<T>, ...args: any[]): any {
     }
 
     deleteOne(id: number, ...args: any[]): any {
