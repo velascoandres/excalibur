@@ -35,7 +35,8 @@
     "google cloud vision",
     "bulk",
     "data-base",
-    "transactions"
+    "transactions",
+    "mongoose"
   ],
   "author": "gordon_freeman",
   "license": "MIT",

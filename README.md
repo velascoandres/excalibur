@@ -481,7 +481,7 @@ export class ProductService extends AbstractService<ProductEntity> {
 }
 ```
 
-### MongoDb (Typeorm)
+### MongoDb (TypeOrm)
 
 #### Entity (Optional)
 
@@ -586,7 +586,7 @@ export const MessageSchema = SchemaFactory.createForClass(MessageModel);
 
 #### Service
 
-The service class must extends from `AbstractMongoService`
+The service class must extends from `AbstractMongooseService`
 
 ```typescript
 import {AbstractMongooseService} from '@pimba/excalibur/lib';
@@ -619,9 +619,9 @@ const options: MongooseCrudOptions = {
 @Controller('message')
 export class MessageController extends CrudMongooseController<MessageDocument>(options) {
     constructor(
-      protected readonly MessageService: MessageService,
+      protected readonly messageService: MessageService,
     ) {
-        super(MessageService);
+        super(messageService);
     }
 }
 ```
