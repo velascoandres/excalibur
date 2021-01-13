@@ -213,13 +213,13 @@ can be `snacks` , `drinks` or that the same name of the category includes `"sna"
 
 > Browser or client side
 
-``` text
+```text
 http://localhost:3000/product?query={"where":{"name":{"$like":"%25choco%25"},"category":{}}}
 ```
 
 Results:
 
-``` json
+```json
 {
     "nextQuery": null,
     "data": [
@@ -268,7 +268,7 @@ Results:
 > Also you could use any [wildcard](https://www.w3schools.com/sql/sql_wildcards.asp) on `like` operator according your
 > data base.
 
-``` typescript
+```typescript
 const query = {
     where: {
         id: { $like: '%chocho%' },
@@ -306,7 +306,7 @@ percentCode: {"$like": "%\\%%"}} // Backend side
 You can make a query with `OR` operator using the keyword `"$or"` as `"true"`
 For example: Get products with a price of `7` or name includes `"choco"`
 
-``` json
+```json
    {
     "where": {
         "price": {"$eq": 7, "$or": true},
@@ -358,7 +358,7 @@ The pagination by default is `skip: 0` and `take: 10` .
 The order by criteria by default with respect the entity `id` is `DESC` :
 
 
-``` text
+```text
    {
     "where": {
          
@@ -376,7 +376,7 @@ In order to get records with an specific set of columns, you could make use of `
 
 For example: Get products with a bigger than `7` and only retrieves the name of the filtered products.
 
-``` json
+```json
    {
     "where": {
         "$sel": ["name"],
@@ -393,7 +393,7 @@ Also, you could use the `$sel` operator on queries with joins.
 
 For example: the following query retrieves products with name and its supermarket with only name and address.
 
-``` typescript
+```typescript
 const query = {
     where: {
         $sel: ["name"],
@@ -481,13 +481,13 @@ export class ProductService extends AbstractService<ProductEntity> {
 }
 ```
 
-### MongoDB
+### MongoDb (Typeorm)
 
 #### Entity (Optional)
 
 If you want the entity has an ObjectId, updatedAt columns, you need to extends from `AbstractMongoEntity`
 
-``` typescript
+```typescript
 import {AbstractMongoEntity} from '@pimba/excalibur/lib';
 
 @Entity('post')
@@ -514,7 +514,7 @@ export class Post extends BaseMongoDTO{
 
 The service class must extends from `AbstractMongoService`
 
-``` typescript
+```typescript
 import {AbstractMongoService} from '@pimba/excalibur/lib';
 
 @Injectable()
@@ -539,7 +539,7 @@ export class PostService extends AbstractMongoService<PostEntity> {
 
 #### Controller
 
-``` typescript
+```typescript
 import {CrudController, CrudOptions} from '@pimba/excalibur/lib';
 
 const options: CrudOptions = {
@@ -559,6 +559,73 @@ export class PostController extends CrudController<PostEntity>(options) {
     }
 }
 ```
+
+### MongoDb (Mongoose)
+
+#### Model & Document & Schema
+```typescript
+import { Document } from 'mongoose';
+import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
+
+export type MessageDocument = MessageModel & Document;
+
+@Schema()
+export class MessageModel {
+    @Prop()
+    content: string;
+
+    @Prop()
+    to: string;
+
+    @Prop()
+    from: string;
+}
+
+export const MessageSchema = SchemaFactory.createForClass(MessageModel);
+```
+
+#### Service
+
+The service class must extends from `AbstractMongoService`
+
+```typescript
+import {AbstractMongooseService} from '@pimba/excalibur/lib';
+
+@Injectable()
+export class MessageService extends AbstractMongooseService<MessageDocument> {
+   constructor(
+           @InjectModel(MessageModel.name)
+           private readonly _menssageModel: Model<MessageDocument>
+   ) {
+      super(_menssageModel);
+   }
+}
+```
+
+#### Controller
+
+```typescript
+import {Controller} from '@nestjs/common';
+import {CrudMongooseController, MongooseCrudOptions} from '@pimba/excalibur/lib';
+
+const options: MongooseCrudOptions = {
+    dtoConfig: {
+        createDtoType: MessageCreateDto,
+        updateDtoType: MessageCreateDto,
+    },
+    enableErrorMessages: true,
+};
+
+@Controller('message')
+export class MessageController extends CrudMongooseController<MessageDocument>(options) {
+    constructor(
+      protected readonly MessageService: MessageService,
+    ) {
+        super(MessageService);
+    }
+}
+```
+
 ## Decorators
 
 ### Swagger

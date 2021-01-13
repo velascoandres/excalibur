@@ -74,7 +74,7 @@ export function CrudMongooseController<T extends Document>(options: MongooseCrud
             super(_service);
         }
 
-        /*
+
         @Post('create-many')
         @UseFilters(new CrudFilterException(debug))
         @UsePipes(...createManyPipes)
@@ -84,7 +84,6 @@ export function CrudMongooseController<T extends Document>(options: MongooseCrud
             return this._service.createMany(newRecords);
         }
 
-        */
 
         @Post()
         @UseFilters(new CrudFilterException(debug))
