@@ -2,6 +2,7 @@ import {FilterQuery, Model} from 'mongoose';
 import {Document} from 'mongoose';
 import {MongooseCrudMethodsInterface} from '../../interfaces/service.crud.methods.interfaces';
 import {
+    CreateManyException,
     CreateOneException,
     DeleteOneException,
     FindAllException,
@@ -12,6 +13,22 @@ import {
 export abstract class AbstractMongooseService<T extends Document> implements MongooseCrudMethodsInterface<T> {
     protected constructor(
         protected abstractModel: Model<T>) {
+    }
+
+    async createMany(rows: Partial<T>[]): Promise<T[]> {
+        try {
+            return await this.abstractModel.insertMany(rows);
+        } catch (error) {
+            throw new CreateManyException(
+                {
+                    error,
+                    message: 'Error on create many',
+                    data: {
+                        documents: rows,
+                    },
+                },
+            );
+        }
     }
 
     createOne(row: Partial<T>): Promise<T> {
