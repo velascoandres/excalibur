@@ -3,7 +3,7 @@ import {Document} from 'mongoose';
 import {MongooseCrudMethodsInterface} from '../../interfaces/service.crud.methods.interfaces';
 import {
     CreateManyException,
-    CreateOneException,
+    CreateOneException, DeleteManyException,
     DeleteOneException,
     FindAllException,
     FindOneByIdException,
@@ -13,6 +13,38 @@ import {
 export abstract class AbstractMongooseService<T extends Document> implements MongooseCrudMethodsInterface<T> {
     protected constructor(
         protected abstractModel: Model<T>) {
+    }
+
+
+    async deleteMany(ids: string[]): Promise<string[]> {
+        try {
+            const conditions = {_id: {$in: ids}} as FilterQuery<T>;
+            const promise: Promise<any[]> = new Promise(
+                (resolve, reject) => {
+                    this.abstractModel.deleteMany(
+                        conditions,
+                        (error) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(ids);
+                            }
+                        },
+                    );
+                }
+            );
+            return await promise;
+        } catch (error) {
+            throw new DeleteManyException(
+                {
+                    error,
+                    message: 'Error on delete many',
+                    data: {
+                        ids,
+                    },
+                },
+            );
+        }
     }
 
     async createMany(rows: Partial<T>[]): Promise<T[]> {
