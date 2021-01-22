@@ -20,7 +20,8 @@ export function IsTypeOr(
                     return validationsKeys.some(key => validations[key](value));
                 },
                 defaultMessage(validationArguments?: ValidationArguments) {
-                    const lastType = validationsKeys.pop();
+                    const lastIndex = validationsKeys.length - 1;
+                    const lastType = validationsKeys[lastIndex];
                     if (validationsKeys.length === 0)
                         return `Has to be ${lastType}`;
                     return `Can only be ${validationsKeys.join(', ')} or ${lastType}.`;
