@@ -26,7 +26,8 @@ export function IsTypeDirect<Types = TypesCollectionInterface>(
                         );
                     },
                     defaultMessage(validationArguments?: ValidationArguments) {
-                        const lastType = keys.pop();
+                        const lastIndex = keys.length - 1;
+                        const lastType = keys[lastIndex];
                         if (keys.length === 0)
                             return `Has to be ${lastType}`;
                         return `Can only be ${keys.join(', ')} or ${lastType}.`;
