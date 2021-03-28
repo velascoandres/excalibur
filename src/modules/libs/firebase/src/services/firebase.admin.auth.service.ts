@@ -3,7 +3,6 @@ import * as admin from 'firebase-admin';
 import {App, AdminAuth} from '../interfaces';
 
 
-
 @Injectable()
 export class FirebaseAdminAuthService implements AdminAuth {
 
@@ -12,6 +11,10 @@ export class FirebaseAdminAuthService implements AdminAuth {
         public readonly  app: App,
     ) {
 
+    }
+
+    getUserByProviderUid(providerId: string, uid: string): Promise<admin.auth.UserRecord> {
+        return this.auth.getUserByProviderUid(providerId, uid);
     }
 
     protected get auth() {
@@ -67,7 +70,7 @@ export class FirebaseAdminAuthService implements AdminAuth {
     }
 
     generateSignInWithEmailLink(email: string, actionCodeSettings: admin.auth.ActionCodeSettings): Promise<string> {
-        return this.auth.generateSignInWithEmailLink(email,actionCodeSettings);
+        return this.auth.generateSignInWithEmailLink(email, actionCodeSettings);
     }
 
     getProviderConfig(providerId: string): Promise<admin.auth.AuthProviderConfig> {
