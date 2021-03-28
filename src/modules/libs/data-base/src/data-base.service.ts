@@ -28,7 +28,7 @@ export class DataBaseService {
                 entityName: name,
                 connection,
             };
-            const filePath = this.productionFlag ? bulk.pathProd : bulk.pathDev
+            const filePath = this.productionFlag ? bulk.pathProd : bulk.pathDev;
             if (filePath) {
                 const DtoClass = bulk.dtoClassValidation;
                 let totalCreated: number = 0;
@@ -39,6 +39,7 @@ export class DataBaseService {
                             DtoClass,
                             entity,
                             connection,
+                            bulk.refs,
                         );
                     currentLog.created = totalCreated;
                 } catch (error) {

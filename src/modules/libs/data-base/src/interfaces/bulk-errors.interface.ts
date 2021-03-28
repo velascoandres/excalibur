@@ -3,4 +3,5 @@ export interface BulkErrors {
     fileError: any | any[];
     validationError: any | any[];
     insertionError: any | any[];
+    refsError: any | any[];
 }
