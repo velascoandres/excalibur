@@ -1,0 +1,30 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: mongoose
+    versions:
+    - 5.12.0
+    - 5.12.1
+    - 5.12.2
+    - 5.12.3
+    - 5.12.5
+  - dependency-name: y18n
+    versions:
+    - 4.0.1
+    - 4.0.2
+  - dependency-name: typescript
+    versions:
+    - 4.2.3
+  - dependency-name: "@nestjs/platform-express"
+    versions:
+    - 7.6.14
+    - 7.6.15
+  - dependency-name: nodemailer
+    versions:
+    - 6.5.0
